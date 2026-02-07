@@ -268,3 +268,92 @@ button:active {
     width: 90%;
   }
 }
+
+/* =========================
+   Mobile-first improvements
+   Paste at very bottom
+   ========================= */
+
+/* Prevent accidental horizontal scrolling on small screens */
+html, body {
+  overflow-x: hidden;
+}
+
+/* If your layout is side-by-side on desktop,
+   this makes it stack nicely on mobile */
+@media (max-width: 768px) {
+
+  /* Make notes easier to tap */
+  .sticky-note {
+    width: 140px;
+    min-height: 110px;
+    padding: 12px;
+  }
+
+  /* Reduce hover scale on touch devices (hover can be weird on mobile) */
+  .sticky-note:hover {
+    transform: rotate(0deg) !important;
+    box-shadow: var(--shadow-note);
+  }
+
+  /* Sidebar becomes a bottom sheet vibe */
+  #sidebar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 38vh;
+    width: 100%;
+
+    overflow-y: auto;
+    border-left: none;
+    border-top: var(--dash);
+    box-shadow: 0 -12px 30px rgba(0,0,0,0.12);
+    border-radius: 16px 16px 0 0;
+
+    z-index: 50;
+  }
+
+  /* Map takes the rest of the screen */
+  #map {
+    height: 62vh;
+    width: 100%;
+  }
+
+  /* Topbar stays visible (if you have it) */
+  #topbar {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+  }
+
+  /* Modal fits screen better */
+  #modal {
+    width: min(92vw, 420px);
+    max-height: 80vh;
+    overflow: auto;
+  }
+
+  /* Sticker tray: 4 -> 5 columns if tiny stickers */
+  #sticker-tray {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 420px) {
+  .sticky-note {
+    width: 128px;
+    min-height: 100px;
+  }
+
+  #sticker-tray {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  button {
+    padding: 8px 10px;
+  }
+}
