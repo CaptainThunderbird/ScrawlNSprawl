@@ -7,7 +7,34 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
+  <!-- Top Bar -->
+  <div id="topbar">
+    <div class="topbar-left">
+      <div class="brand">
+        <!-- you can change logo path later -->
+        <img class="brand-logo" src="assets/icons/logo.png" alt="logo">
+        <div class="brand-text">
+          <div class="brand-name">🌸 Scrawl & Sprawl</div>
+          <div class="brand-tagline">turn doomscrolling into bloomscrolling</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="topbar-center">
+      <div class="pill">Kindness Map</div>
+    </div>
+
+    <div class="topbar-right">
+      <button class="topbar-btn" type="button">+ Add Vibe</button>
+      <button class="topbar-btn ghost" type="button">Bloom Feed</button>
+      <button class="topbar-icon" type="button">⚙️</button>
+    </div>
+  </div>
+
+  <!-- Map -->
   <div id="map" style="height: 100vh; width: 100%;"></div>
+
 
   <!-- Modal -->
   <div id="modal" class="hidden">
