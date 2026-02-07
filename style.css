@@ -1,55 +1,98 @@
-body, html {
+/* Base */
+html, body {
+  margin: 0;
+  padding: 0;
   background: #F8F4E1; /* cream paper background */
   color: #484639;       /* charcoal-brown text */
-  font-family: 'Patrick Hand', cursive; /* handwritten style */
+  font-family: 'Patrick Hand', cursive;
 }
 
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Sidebar */
 #sidebar {
   background: #F5F0DD; /* eggshell sidebar */
   box-shadow: -5px 0 10px rgba(0,0,0,0.1);
 }
 
+/* Sticky Notes */
 .sticky-note {
-  width: 150px;
-  min-height: 120px;
-  padding: 10px;
+  width: 160px;
+  min-height: 140px;
+  padding: 15px;
   margin: 5px;
-  border-radius: 8px;
-  box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
-  position: absolute; /* JS will position it */
-  cursor: grab;
+
+  border-radius: 2px; /* paper-cut look */
+  box-shadow: 3px 3px 10px rgba(0,0,0,0.15);
+
+  position: absolute; /* JS positions it */
   transform-origin: center;
-  background-color: #C1EDB9; /* default green sticky */
+
+  cursor: grab;
+  user-select: none;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+
+  /* “Physical” feel */
+  transition:
+    transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    box-shadow 0.2s ease;
+
+  background-color: #C1EDB9; /* default green */
+}
+
+.sticky-note:active {
+  cursor: grabbing;
+}
+
+.sticky-note:hover {
+  transform: scale(1.1) rotate(0deg) !important;
+  z-index: 1000;
+  box-shadow: 8px 12px 20px rgba(0,0,0,0.2);
 }
 
 /* Color palette options */
-.sticky-note.blue { background-color: #C4DFF2; }
+.sticky-note.blue   { background-color: #C4DFF2; }
 .sticky-note.yellow { background-color: #F5F59F; }
-.sticky-note.pink { background-color: #FAD4EF; }
+.sticky-note.pink   { background-color: #FAD4EF; }
 .sticky-note.purple { background-color: #ECDCFA; }
 .sticky-note.orange { background-color: #F5CC9D; }
-.sticky-note.red { background-color: #FFB0B0; }
+.sticky-note.red    { background-color: #FFB0B0; }
 
-/* Tape effect at top */
+/* Washi tape */
 .sticky-note::before {
   content: "";
   display: block;
-  width: 40px;
-  height: 10px;
-  background: repeating-linear-gradient(
-    45deg,
-    rgba(255,255,255,0.7),
-    rgba(255,255,255,0.7) 2px,
-    rgba(255,255,255,0.3) 2px,
-    rgba(255,255,255,0.3) 4px
-  );
+  width: 70px;
+  height: 24px;
+
   position: absolute;
-  top: -5px;
+  top: -10px;
   left: 50%;
   transform: translateX(-50%);
+
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(2px);
+
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+
+  border-left: 1px dashed rgba(0,0,0,0.1);
+  border-right: 1px dashed rgba(0,0,0,0.1);
   border-radius: 2px;
 }
 
+/* Modal */
 #modal {
   background: #F5F0DD;
   border-radius: 12px;
@@ -58,6 +101,7 @@ body, html {
   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
+/* Buttons */
 button {
   padding: 6px 12px;
   margin: 5px 0;
@@ -73,6 +117,18 @@ button:hover {
   background-color: #EAADA2;
 }
 
+/* Paper grain overlay */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  opacity: 0.04; /* subtle */
+  pointer-events: none;
+  z-index: 10; /* not insanely high */
+  background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
+}
+
+/* Mobile */
 @media (max-width: 768px) {
   #map {
     width: 100%;
@@ -89,72 +145,10 @@ button:hover {
   .sticky-note {
     width: 120px;
     min-height: 100px;
+    padding: 12px;
   }
 
   #modal {
     width: 90%;
   }
 }
-
-/* Update this in your style.css */
-
-.sticky-note {
-  width: 160px;
-  min-height: 140px;
-  padding: 15px;
-  margin: 5px;
-  border-radius: 2px; /* Slightly sharper for a paper-cut look */
-  box-shadow: 3px 3px 10px rgba(0,0,0,0.15); /* Softer shadow */
-  position: absolute;
-  cursor: pointer;
-  
-  /* The Secret Sauce: Transitions for that "Physical" feel */
-  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease;
-  
-  /* Prevents text from being highlighted while dragging */
-  user-select: none; 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-}
-
-/* Make it pop when the user hovers! */
-.sticky-note:hover {
-  transform: scale(1.1) rotate(0deg) !important; 
-  z-index: 1000;
-  box-shadow: 8px 12px 20px rgba(0,0,0,0.2);
-}
-
-/* Upgraded Washi Tape Effect */
-.sticky-note::before {
-  content: "";
-  display: block;
-  width: 70px;
-  height: 24px;
-  background: rgba(255, 255, 255, 0.4); /* Frosted tape */
-  backdrop-filter: blur(2px);
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  /* Jagged edges for a hand-torn look */
-  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-  border-left: 1px dashed rgba(0,0,0,0.1);
-  border-right: 1px dashed rgba(0,0,0,0.1);
-}
-
-/* Paper grain overlay for the whole app */
-body::after {
-  content: "";
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  opacity: 0.04; /* Very subtle */
-  z-index: 9999;
-  pointer-events: none;
-  background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
-}
-
-// Inside your function that creates a new note
-const randomRotation = Math.floor(Math.random() * 10) - 5; // -5 to +5 degrees
-newNote.style.transform = `rotate(${randomRotation}deg)`;
