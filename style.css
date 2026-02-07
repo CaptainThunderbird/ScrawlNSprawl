@@ -1,3 +1,12 @@
+/* =========================================================
+   Scrawl & Sprawl — Scrapbook Theme (ONE CLEAN FILE)
+   - Left sidebar on desktop
+   - Topbar UI
+   - Paper grain + vignette
+   - Map paper filter + dashed frame
+   - Mobile bottom-sheet sidebar
+   ========================================================= */
+
 :root {
   --paper: #F8F4E1;
   --paper-2: #F3EED8;
@@ -50,8 +59,8 @@ body::after {
   content: "";
   position: fixed;
   inset: 0;
-  opacity: 0.07;                 /* slightly stronger */
-  mix-blend-mode: multiply;      /* makes it feel like paper */
+  opacity: 0.07;
+  mix-blend-mode: multiply;
   pointer-events: none;
   z-index: 2;
   background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
@@ -61,12 +70,23 @@ body::after {
    Map
    ========================= */
 #map {
-  position: relative; /* notes are absolute inside here */
+  position: relative; /* important for ::before/::after + absolute notes */
   width: 100%;
   height: 100vh;
 }
 
-/* Cute scrapbook frame around map */
+/* Soft “paper filter” over map (does not break map clicks) */
+#map::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index: 3;
+  background: rgba(248,244,225,0.18);
+  mix-blend-mode: multiply;
+}
+
+/* Cute scrapbook frame */
 #map::after{
   content:"";
   position:absolute;
@@ -75,7 +95,7 @@ body::after {
   border-radius: 18px;
   border: 2px dashed rgba(72,70,57,0.22);
   box-shadow: inset 0 0 0 6px rgba(255,255,255,0.18);
-  z-index: 5;
+  z-index: 4;
 }
 
 /* =========================
@@ -91,7 +111,7 @@ body::after {
   height: 100vh;
   overflow-y: auto;
 
-  z-index: 50;
+  z-index: 70;
   padding: 16px;
 
   background: rgba(245, 240, 221, 0.92);
@@ -233,7 +253,7 @@ body::after {
   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 
   position: fixed;
-  z-index: 60;
+  z-index: 90;
 }
 
 /* =========================
@@ -247,7 +267,7 @@ button {
   background: rgba(236, 199, 121, 0.9);
   cursor: pointer;
 
-  font-family: 'Patrick Hand', cursive, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-family: inherit;
 
   transition: all 0.2s ease;
   box-shadow: var(--shadow-press);
@@ -265,7 +285,7 @@ button:active {
 }
 
 /* =========================
-   Sticker tray + Topbar (only applies if they exist)
+   Sticker tray (only if exists)
    ========================= */
 #sticker-tray {
   display: grid;
@@ -292,78 +312,160 @@ button:active {
   transform: translateY(-2px) rotate(-1deg);
 }
 
-/* Optional topbar if you add it */
-#topbar {
+/* =========================
+   TOPBAR (Scrapbook UI Chrome)
+   ========================= */
+#topbar{
+  position: fixed;
+  top: 14px;
+  left: calc(14px + var(--sidebar-w));
+  right: 14px;
+  z-index: 80;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 12px;
+
   padding: 10px 12px;
-  border-bottom: var(--dash);
-  background: rgba(245,240,221,0.75);
-  backdrop-filter: blur(6px);
+  border-radius: 18px;
+
+  background: rgba(245, 240, 221, 0.88);
+  border: 2px dashed rgba(72,70,57,0.22);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.12);
+  backdrop-filter: blur(10px);
 }
 
-.mode-btn {
-  border-radius: 999px;
-  border: 1px solid rgba(0,0,0,0.10);
+.topbar-left, .topbar-center, .topbar-right{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-logo{
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: var(--shadow-press);
+}
+
+.brand-name{
+  font-size: 22px;
+  line-height: 1;
+  letter-spacing: 0.3px;
+}
+
+.brand-tagline{
+  font-size: 13px;
+  opacity: 0.75;
+  margin-top: 2px;
+}
+
+.pill{
   padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px dashed rgba(72,70,57,0.28);
+  background: rgba(255,255,255,0.40);
+  box-shadow: var(--shadow-press);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.topbar-btn{
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(236, 199, 121, 0.92);
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: var(--shadow-press);
+  transition: transform .15s ease, background .15s ease;
+}
+
+.topbar-btn:hover{
+  background: rgba(234, 173, 162, 0.95);
+  transform: translateY(-1px);
+}
+
+.topbar-btn.ghost{
   background: rgba(255,255,255,0.55);
 }
 
-.mode-btn.is-active {
-  background: rgba(194, 223, 242, 0.8);
+.topbar-icon{
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.55);
+  cursor: pointer;
+  box-shadow: var(--shadow-press);
 }
 
 /* =========================
-   Mobile (bottom sheet sidebar)
+   Mobile (bottom sheet sidebar + topbar full width)
    ========================= */
 @media (max-width: 768px) {
   body { padding-left: 0; }
 
-  #map {
+  #topbar{
+    left: 14px;
+    right: 14px;
+    top: 12px;
+  }
+
+  .brand-tagline{ display: none; }
+  .pill{ display: none; }
+
+  #map{
     height: 62vh;
     width: 100%;
   }
 
-  #sidebar {
+  #sidebar{
     position: fixed;
     left: 0;
     right: 0;
     bottom: 0;
     top: auto;
-
-    height: 38vh;
     width: 100%;
-
+    height: 38vh;
     overflow-y: auto;
+
     border-right: none;
     border-top: var(--dash);
-    border-radius: 16px 16px 0 0;
+    border-radius: 18px 18px 0 0;
+    z-index: 70;
 
     box-shadow: 0 -12px 30px rgba(0,0,0,0.12);
   }
 
-  /* Make notes easier to tap */
-  .sticky-note {
+  .sticky-note{
     width: 140px;
     min-height: 110px;
     padding: 12px;
   }
 
-  /* Reduce hover weirdness on mobile */
-  .sticky-note:hover {
+  .sticky-note:hover{
     transform: rotate(0deg) !important;
     box-shadow: var(--shadow-note);
   }
 
-  #modal {
+  #modal{
     width: min(92vw, 420px);
     max-height: 80vh;
     overflow: auto;
   }
 
-  #sticker-tray {
+  #sticker-tray{
     grid-template-columns: repeat(5, 1fr);
     gap: 8px;
   }
@@ -385,4 +487,5 @@ button:active {
   }
 }
 
-.hidden {display: none; }
+/* Utility */
+.hidden { display: none; }
