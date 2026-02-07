@@ -1,48 +1,77 @@
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
-  import {
-    getFirestore,
-    collection,
-    addDoc,
-    onSnapshot,
-    serverTimestamp
-  } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Scrawl & Sprawl</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="map" style="height: 100vh; width: 100%;"></div>
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDaIhADuSB359aD6MThCPqwNQieseJ9-4c",
-    authDomain: "scrawl-and-sprawl.firebaseapp.com",
-    projectId: "scrawl-and-sprawl",
-    storageBucket: "scrawl-and-sprawl.firebasestorage.app",
-    messagingSenderId: "326407925260",
-    appId: "1:326407925260:web:90c3eed500fd57250e8829"
-  };
+  <!-- Modal -->
+  <div id="modal" class="hidden">
+    <div class="modal-content">
+      <h3>New Note</h3>
+      <input id="username" placeholder="Name (optional)" />
+      <textarea id="note-text" placeholder="Write a kind note..."></textarea>
+      <select id="sticker-select">
+        <option value="">No sticker</option>
+        <option value="heart.svg">Heart</option>
+        <option value="star.svg">Star</option>
+      </select>
+      <button id="save-note">Save</button>
+      <button id="cancel-note">Cancel</button>
+    </div>
+  </div>
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const postsRef = collection(db, "posts");
+  <ul id="recent-notes"></ul>
 
-  // Post shape: { type, lat, lng, content?, color?, stickerId?, imageUrl?, authorName?, isAnonymous? }
-  window.savePost = async (post) => {
-    await addDoc(postsRef, { ...post, createdAt: serverTimestamp() });
-  };
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      onSnapshot,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
-  window.listenPosts = (onPost) => {
-    return onSnapshot(postsRef, (snapshot) => {
-      snapshot.docChanges().forEach((change) => {
-        if (change.type === "added") {
-          onPost({ id: change.doc.id, ...change.doc.data() });
-        }
+    const firebaseConfig = {
+      apiKey: "AIzaSyDaIhADuSB359aD6MThCPqwNQieseJ9-4c",
+      authDomain: "scrawl-and-sprawl.firebaseapp.com",
+      projectId: "scrawl-and-sprawl",
+      storageBucket: "scrawl-and-sprawl.firebasestorage.app",
+      messagingSenderId: "326407925260",
+      appId: "1:326407925260:web:90c3eed500fd57250e8829"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const postsRef = collection(db, "posts");
+
+    window.savePost = async (post) => {
+      await addDoc(postsRef, { ...post, createdAt: serverTimestamp() });
+    };
+
+    window.listenPosts = (onPost) => {
+      return onSnapshot(postsRef, (snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+          if (change.type === "added") {
+            onPost({ id: change.doc.id, ...change.doc.data() });
+          }
+        });
       });
-    });
-  };
+    };
+  </script>
 
-  console.log("Firebase ready");
-</script>
+  <script src="app.js" defer></script>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmaWy-IsFFqQzIlh5dX0H6IHGM5dWLk5A&callback=initMap"
+    defer
+  ></script>
+</body>
+</html>
 
-<script src="app.js"></script>
-<script
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmaWy-IsFFqQzIlh5dX0H6IHGM5dWLk5A&callback=initMap"
-  async
-  defer
-></script>
 
