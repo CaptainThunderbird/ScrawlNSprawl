@@ -1,0 +1,9 @@
+{
+  "stickers": [
+    { "id": "heart", "label": "Heart", "src": "assets/stickers/heart.svg" },
+    { "id": "sparkle", "label": "Sparkle", "src": "assets/stickers/sparkle.svg" }
+    { "id": "smile", "label": "Smile", "src": "assets/stickers/smile.svg" }
+  ],
+  "sounds": {},
+  "textures": {}
+}
