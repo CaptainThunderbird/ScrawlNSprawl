@@ -1,9 +1,14 @@
 {
   "stickers": [
     { "id": "heart", "label": "Heart", "src": "assets/stickers/heart.svg" },
-    { "id": "sparkle", "label": "Sparkle", "src": "assets/stickers/sparkle.svg" }
+    { "id": "sparkle", "label": "Sparkle", "src": "assets/stickers/sparkle.svg" },
     { "id": "smile", "label": "Smile", "src": "assets/stickers/smile.svg" }
   ],
-  "sounds": {},
+  "sounds": {
+    "openModal": "assets/sounds/ui-pop.mp3",
+    "placeNote": "assets/sounds/paper-place.mp3",
+    "placeSticker": "assets/sounds/sticker-tap.mp3",
+    "closeModal": "assets/sounds/ui-click.mp3"
+  },
   "textures": {}
 }
