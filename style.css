@@ -356,20 +356,4 @@ html, body {
   button {
     padding: 8px 10px;
   }
-
-  /* Heatmap-lite glow levels */
-.sticky-note.heat-0 { }
-.sticky-note.heat-1 { box-shadow: 0 0 0 2px rgba(236,199,121,0.25), var(--shadow-soft); }
-.sticky-note.heat-2 { box-shadow: 0 0 0 3px rgba(234,173,162,0.35), 0 18px 30px rgba(234,173,162,0.18); }
-.sticky-note.heat-3 { box-shadow: 0 0 0 4px rgba(255,139,148,0.40), 0 24px 42px rgba(255,139,148,0.22); }
-
-/* Bookmarked star */
-.sticky-note.is-bookmarked::after{
-  content:"★";
-  position:absolute;
-  top:8px; right:10px;
-  font-size:18px;
-  opacity:0.85;
-}
-
 }
