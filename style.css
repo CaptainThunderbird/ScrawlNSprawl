@@ -8,484 +8,545 @@
    ========================================================= */
 
 :root {
-  --paper: #F8F4E1;
-  --paper-2: #F3EED8;
-  --ink: #484639;
-  --ink-soft: rgba(72, 70, 57, 0.6);
+    --paper: #F8F4E1;
+    --paper-2: #F3EED8;
+    --ink: #484639;
+    --ink-soft: rgba(72, 70, 57, 0.6);
 
-  --shadow-soft: 0 6px 18px rgba(0,0,0,0.10);
-  --shadow-note: 0 10px 22px rgba(0,0,0,0.18);
-  --shadow-press: 0 2px 6px rgba(0,0,0,0.12);
+    --shadow-soft: 0 6px 18px rgba(0, 0, 0, 0.10);
+    --shadow-note: 0 10px 22px rgba(0, 0, 0, 0.18);
+    --shadow-press: 0 2px 6px rgba(0, 0, 0, 0.12);
 
-  --radius-card: 14px;
-  --radius-note: 6px;
-  --dash: 2px dashed rgba(72, 70, 57, 0.25);
+    --radius-card: 14px;
+    --radius-note: 6px;
+    --dash: 2px dashed rgba(72, 70, 57, 0.25);
 
-  --sidebar-w: 340px;
+    --sidebar-w: 340px;
 }
 
 /* =========================
    Base
    ========================= */
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
 
-  background: var(--paper);
-  color: var(--ink);
-  font-family: 'Patrick Hand', cursive, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Patrick Hand', cursive, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
-*, *::before, *::after {
-  box-sizing: border-box;
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
 }
 
 /* Soft lighting + vignette (scrapbook desk vibe) */
 body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  background:
-    radial-gradient(1200px 600px at 20% 10%, rgba(255,255,255,0.65), transparent 60%),
-    radial-gradient(900px 500px at 80% 90%, rgba(0,0,0,0.05), transparent 55%);
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(255, 255, 255, 0.65), transparent 60%),
+        radial-gradient(900px 500px at 80% 90%, rgba(0, 0, 0, 0.05), transparent 55%);
 }
 
 /* Paper grain overlay */
 body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  opacity: 0.07;
-  mix-blend-mode: multiply;
-  pointer-events: none;
-  z-index: 2;
-  background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
+    content: "";
+    position: fixed;
+    inset: 0;
+    opacity: 0.07;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    z-index: 2;
+    background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
 }
 
 /* =========================
    Map
    ========================= */
 #map {
-  position: relative; /* important for ::before/::after + absolute notes */
-  width: 100%;
-  height: 100vh;
+    position: relative;
+    /* important for ::before/::after + absolute notes */
+    width: 100%;
+    height: 100vh;
 }
 
 /* Soft “paper filter” over map (does not break map clicks) */
-#map::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  z-index: 3;
-  background: rgba(248,244,225,0.18);
-  mix-blend-mode: multiply;
+#map::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 3;
+    background: rgba(248, 244, 225, 0.18);
+    mix-blend-mode: multiply;
 }
 
 /* Cute scrapbook frame */
-#map::after{
-  content:"";
-  position:absolute;
-  inset: 12px;
-  pointer-events:none;
-  border-radius: 18px;
-  border: 2px dashed rgba(72,70,57,0.22);
-  box-shadow: inset 0 0 0 6px rgba(255,255,255,0.18);
-  z-index: 4;
+#map::after {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    pointer-events: none;
+    border-radius: 18px;
+    border: 2px dashed rgba(72, 70, 57, 0.22);
+    box-shadow: inset 0 0 0 6px rgba(255, 255, 255, 0.18);
+    z-index: 4;
 }
 
 /* =========================
    Sidebar (LEFT on desktop)
    ========================= */
 #sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: auto;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: auto;
 
-  width: var(--sidebar-w);
-  height: 100vh;
-  overflow-y: auto;
+    width: var(--sidebar-w);
+    height: 100vh;
+    overflow-y: auto;
 
-  z-index: 70;
-  padding: 16px;
+    z-index: 70;
+    padding: 16px;
 
-  background: rgba(245, 240, 221, 0.92);
-  color: var(--ink);
+    background: rgba(245, 240, 221, 0.92);
+    color: var(--ink);
 
-  border-right: var(--dash);
-  border-left: none;
+    border-right: var(--dash);
+    border-left: none;
 
-  box-shadow: 18px 0 40px rgba(0,0,0,0.12);
+    box-shadow: 18px 0 40px rgba(0, 0, 0, 0.12);
 
-  /* optional “lined journal paper” feel */
-  background-image:
-    linear-gradient(to bottom, rgba(255,255,255,0.35), rgba(255,255,255,0)),
-    repeating-linear-gradient(
-      to bottom,
-      rgba(72,70,57,0.06),
-      rgba(72,70,57,0.06) 1px,
-      transparent 1px,
-      transparent 22px
-    );
+    /* optional “lined journal paper” feel */
+    background-image:
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0)),
+        repeating-linear-gradient(to bottom,
+            rgba(72, 70, 57, 0.06),
+            rgba(72, 70, 57, 0.06) 1px,
+            transparent 1px,
+            transparent 22px);
 }
 
 /* Cute divider line under headings */
-#sidebar h1, #sidebar h2 {
-  margin: 8px 0 14px;
-  letter-spacing: 0.5px;
-  position: relative;
+#sidebar h1,
+#sidebar h2 {
+    margin: 8px 0 14px;
+    letter-spacing: 0.5px;
+    position: relative;
 }
 
-#sidebar h1::after, #sidebar h2::after {
-  content: "";
-  display: block;
-  margin-top: 10px;
-  border-top: var(--dash);
+#sidebar h1::after,
+#sidebar h2::after {
+    content: "";
+    display: block;
+    margin-top: 10px;
+    border-top: var(--dash);
 }
 
 /* Make room for sidebar so map isn't hidden */
-@media (min-width: 769px){
-  body { padding-left: var(--sidebar-w); }
+@media (min-width: 769px) {
+    body {
+        padding-left: var(--sidebar-w);
+    }
 }
 
 /* =========================
    Sticky Notes
    ========================= */
 .sticky-note {
-  width: 160px;
-  min-height: 140px;
-  padding: 15px;
-  margin: 5px;
+    width: 160px;
+    min-height: 140px;
+    padding: 15px;
+    margin: 5px;
 
-  border-radius: 10px 8px 10px 7px; /* hand-cut wobble */
-  border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 10px 8px 10px 7px;
+    /* hand-cut wobble */
+    border: 1px solid rgba(0, 0, 0, 0.06);
 
-  /* paper feel */
-  background-image: linear-gradient(to bottom, rgba(255,255,255,0.25), rgba(255,255,255,0));
-  outline: 2px solid rgba(0,0,0,0.04);
-  outline-offset: -6px;
+    /* paper feel */
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0));
+    outline: 2px solid rgba(0, 0, 0, 0.04);
+    outline-offset: -6px;
 
-  box-shadow: 3px 3px 10px rgba(0,0,0,0.15);
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.15);
 
-  position: absolute;
-  transform-origin: center;
+    position: absolute;
+    transform-origin: center;
 
-  cursor: grab;
-  user-select: none;
+    cursor: grab;
+    user-select: none;
 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
 
-  will-change: transform;
+    will-change: transform;
 
-  transition:
-    transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-    box-shadow 0.2s ease;
+    transition:
+        transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+        box-shadow 0.2s ease;
 
-  background-color: #C1EDB9; /* default green */
+    background-color: #C1EDB9;
+    /* default green */
 }
 
 .sticky-note:active {
-  cursor: grabbing;
-  z-index: 1000;
+    cursor: grabbing;
+    z-index: 1000;
 }
 
 .sticky-note:hover {
-  transform: scale(1.1) rotate(0deg) !important;
-  z-index: 1000;
-  box-shadow: var(--shadow-note);
+    transform: scale(1.1) rotate(0deg) !important;
+    z-index: 1000;
+    box-shadow: var(--shadow-note);
 }
 
 /* Color palette options */
-.sticky-note.blue   { background-color: #C4DFF2; }
-.sticky-note.yellow { background-color: #F5F59F; }
-.sticky-note.pink   { background-color: #FAD4EF; }
-.sticky-note.purple { background-color: #ECDCFA; }
-.sticky-note.orange { background-color: #F5CC9D; }
-.sticky-note.red    { background-color: #FFB0B0; }
+.sticky-note.blue {
+    background-color: #C4DFF2;
+}
+
+.sticky-note.yellow {
+    background-color: #F5F59F;
+}
+
+.sticky-note.pink {
+    background-color: #FAD4EF;
+}
+
+.sticky-note.purple {
+    background-color: #ECDCFA;
+}
+
+.sticky-note.orange {
+    background-color: #F5CC9D;
+}
+
+.sticky-note.red {
+    background-color: #FFB0B0;
+}
 
 /* Washi tape */
 .sticky-note::before {
-  content: "";
-  display: block;
-  width: 70px;
-  height: 24px;
+    content: "";
+    display: block;
+    width: 70px;
+    height: 24px;
 
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%) rotate(-2deg);
-  opacity: 0.9;
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-2deg);
+    opacity: 0.9;
 
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(2px);
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(2px);
 
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent,
-    black 10%,
-    black 90%,
-    transparent
-  );
+    -webkit-mask-image: linear-gradient(to right,
+            transparent,
+            black 10%,
+            black 90%,
+            transparent);
 
-  border-left: 1px dashed rgba(0,0,0,0.1);
-  border-right: 1px dashed rgba(0,0,0,0.1);
-  border-radius: 2px;
+    border-left: 1px dashed rgba(0, 0, 0, 0.1);
+    border-right: 1px dashed rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
 
-  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
 /* =========================
    Modal
    ========================= */
 #modal {
-  background: #F5F0DD;
-  border-radius: 12px;
-  padding: 20px;
-  border: 2px solid #484639;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    background: #F5F0DD;
+    border-radius: 12px;
+    padding: 20px;
+    border: 2px solid #484639;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 
-  position: fixed;
-  z-index: 90;
+    position: fixed;
+    z-index: 90;
 }
 
 /* =========================
    Buttons (label stickers)
    ========================= */
 button {
-  padding: 8px 12px;
-  margin: 5px 0;
-  border-radius: 999px;
-  border: 1px solid rgba(0,0,0,0.10);
-  background: rgba(236, 199, 121, 0.9);
-  cursor: pointer;
+    padding: 8px 12px;
+    margin: 5px 0;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, 0.10);
+    background: rgba(236, 199, 121, 0.9);
+    cursor: pointer;
 
-  font-family: inherit;
+    font-family: inherit;
 
-  transition: all 0.2s ease;
-  box-shadow: var(--shadow-press);
-  transform: translateY(0);
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-press);
+    transform: translateY(0);
 }
 
 button:hover {
-  background: rgba(234, 173, 162, 0.95);
-  transform: translateY(-1px);
+    background: rgba(234, 173, 162, 0.95);
+    transform: translateY(-1px);
 }
 
 button:active {
-  transform: translateY(1px);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.10);
+    transform: translateY(1px);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.10);
 }
 
 /* =========================
    Sticker tray (only if exists)
    ========================= */
 #sticker-tray {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  padding: 10px;
-  border-radius: var(--radius-card);
-  background: rgba(255,255,255,0.35);
-  border: var(--dash);
-  box-shadow: var(--shadow-soft);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    padding: 10px;
+    border-radius: var(--radius-card);
+    background: rgba(255, 255, 255, 0.35);
+    border: var(--dash);
+    box-shadow: var(--shadow-soft);
 }
 
-#sticker-tray button, #sticker-tray .sticker {
-  aspect-ratio: 1 / 1;
-  border-radius: 12px;
-  border: 1px solid rgba(0,0,0,0.08);
-  background: rgba(255,255,255,0.6);
-  display: grid;
-  place-items: center;
-  cursor: pointer;
+#sticker-tray button,
+#sticker-tray .sticker {
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: rgba(255, 255, 255, 0.6);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
 }
 
-#sticker-tray button:hover, #sticker-tray .sticker:hover {
-  transform: translateY(-2px) rotate(-1deg);
+#sticker-tray button:hover,
+#sticker-tray .sticker:hover {
+    transform: translateY(-2px) rotate(-1deg);
 }
 
 /* =========================
    TOPBAR (Scrapbook UI Chrome)
    ========================= */
-#topbar{
-  position: fixed;
-  top: 14px;
-  left: calc(14px + var(--sidebar-w));
-  right: 14px;
-  z-index: 80;
+#topbar {
+    position: fixed;
+    top: 14px;
+    left: calc(14px + var(--sidebar-w));
+    right: 14px;
+    z-index: 80;
 
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
 
-  padding: 10px 12px;
-  border-radius: 18px;
+    padding: 10px 12px;
+    border-radius: 18px;
 
-  background: rgba(245, 240, 221, 0.88);
-  border: 2px dashed rgba(72,70,57,0.22);
-  box-shadow: 0 14px 30px rgba(0,0,0,0.12);
-  backdrop-filter: blur(10px);
+    background: rgba(245, 240, 221, 0.88);
+    border: 2px dashed rgba(72, 70, 57, 0.22);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
+    backdrop-filter: blur(10px);
 }
 
-.topbar-left, .topbar-center, .topbar-right{
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.topbar-left,
+.topbar-center,
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.brand{
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.brand-logo{
-  width: 34px;
-  height: 34px;
-  object-fit: contain;
-  border-radius: 10px;
-  background: rgba(255,255,255,0.55);
-  border: 1px solid rgba(0,0,0,0.08);
-  box-shadow: var(--shadow-press);
+.brand-logo {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-press);
 }
 
-.brand-name{
-  font-size: 22px;
-  line-height: 1;
-  letter-spacing: 0.3px;
+.brand-name {
+    font-size: 22px;
+    line-height: 1;
+    letter-spacing: 0.3px;
 }
 
-.brand-tagline{
-  font-size: 13px;
-  opacity: 0.75;
-  margin-top: 2px;
+.brand-tagline {
+    font-size: 13px;
+    opacity: 0.75;
+    margin-top: 2px;
 }
 
-.pill{
-  padding: 8px 12px;
-  border-radius: 999px;
-  border: 1px dashed rgba(72,70,57,0.28);
-  background: rgba(255,255,255,0.40);
-  box-shadow: var(--shadow-press);
-  font-size: 14px;
-  white-space: nowrap;
+.pill {
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px dashed rgba(72, 70, 57, 0.28);
+    background: rgba(255, 255, 255, 0.40);
+    box-shadow: var(--shadow-press);
+    font-size: 14px;
+    white-space: nowrap;
 }
 
-.topbar-btn{
-  padding: 8px 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(0,0,0,0.12);
-  background: rgba(236, 199, 121, 0.92);
-  cursor: pointer;
-  font-family: inherit;
-  box-shadow: var(--shadow-press);
-  transition: transform .15s ease, background .15s ease;
+.topbar-btn {
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    background: rgba(236, 199, 121, 0.92);
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: var(--shadow-press);
+    transition: transform .15s ease, background .15s ease;
 }
 
-.topbar-btn:hover{
-  background: rgba(234, 173, 162, 0.95);
-  transform: translateY(-1px);
+.topbar-btn:hover {
+    background: rgba(234, 173, 162, 0.95);
+    transform: translateY(-1px);
 }
 
-.topbar-btn.ghost{
-  background: rgba(255,255,255,0.55);
+.topbar-btn.ghost {
+    background: rgba(255, 255, 255, 0.55);
 }
 
-.topbar-icon{
-  width: 40px;
-  height: 40px;
-  border-radius: 999px;
-  border: 1px solid rgba(0,0,0,0.12);
-  background: rgba(255,255,255,0.55);
-  cursor: pointer;
-  box-shadow: var(--shadow-press);
+.topbar-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    background: rgba(255, 255, 255, 0.55);
+    cursor: pointer;
+    box-shadow: var(--shadow-press);
 }
 
 /* =========================
    Mobile (bottom sheet sidebar + topbar full width)
    ========================= */
 @media (max-width: 768px) {
-  body { padding-left: 0; }
+    body {
+        padding-left: 0;
+    }
 
-  #topbar{
-    left: 14px;
-    right: 14px;
-    top: 12px;
-  }
+    #topbar {
+        left: 14px;
+        right: 14px;
+        top: 12px;
+    }
 
-  .brand-tagline{ display: none; }
-  .pill{ display: none; }
+    .brand-tagline {
+        display: none;
+    }
 
-  #map{
-    height: 62vh;
-    width: 100%;
-  }
+    .pill {
+        display: none;
+    }
 
-  #sidebar{
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: auto;
-    width: 100%;
-    height: 38vh;
-    overflow-y: auto;
+    #map {
+        height: 62vh;
+        width: 100%;
+    }
 
-    border-right: none;
-    border-top: var(--dash);
-    border-radius: 18px 18px 0 0;
-    z-index: 70;
+    #sidebar {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: auto;
+        width: 100%;
+        height: 38vh;
+        overflow-y: auto;
 
-    box-shadow: 0 -12px 30px rgba(0,0,0,0.12);
-  }
+        border-right: none;
+        border-top: var(--dash);
+        border-radius: 18px 18px 0 0;
+        z-index: 70;
 
-  .sticky-note{
-    width: 140px;
-    min-height: 110px;
-    padding: 12px;
-  }
+        box-shadow: 0 -12px 30px rgba(0, 0, 0, 0.12);
+    }
 
-  .sticky-note:hover{
-    transform: rotate(0deg) !important;
-    box-shadow: var(--shadow-note);
-  }
+    .sticky-note {
+        width: 140px;
+        min-height: 110px;
+        padding: 12px;
+    }
 
-  #modal{
-    width: min(92vw, 420px);
-    max-height: 80vh;
-    overflow: auto;
-  }
+    .sticky-note:hover {
+        transform: rotate(0deg) !important;
+        box-shadow: var(--shadow-note);
+    }
 
-  #sticker-tray{
-    grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
-  }
+    #modal {
+        width: min(92vw, 420px);
+        max-height: 80vh;
+        overflow: auto;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    #modal {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.25);
+        z-index: 999;
+    }
+
+    #modal .modal-content {
+        background: #F5F0DD;
+        border-radius: 12px;
+        padding: 20px;
+        border: 2px solid #484639;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        min-width: 280px;
+        max-width: 90vw;
+    }
+
+
+    #sticker-tray {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+    }
 }
 
 /* Extra small phones */
 @media (max-width: 420px) {
-  .sticky-note {
-    width: 128px;
-    min-height: 100px;
-  }
+    .sticky-note {
+        width: 128px;
+        min-height: 100px;
+    }
 
-  #sticker-tray {
-    grid-template-columns: repeat(4, 1fr);
-  }
+    #sticker-tray {
+        grid-template-columns: repeat(4, 1fr);
+    }
 
-  button {
-    padding: 8px 10px;
-  }
+    button {
+        padding: 8px 10px;
+    }
 }
 
 /* Utility */
-.hidden { display: none; }
+.hidden {
+    display: none;
+}
