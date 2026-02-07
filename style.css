@@ -1,20 +1,79 @@
+:root {
+  --paper: #F8F4E1;
+  --paper-2: #F3EED8;
+  --ink: #484639;
+  --ink-soft: rgba(72, 70, 57, 0.6);
+
+  --shadow-soft: 0 6px 18px rgba(0,0,0,0.10);
+  --shadow-note: 0 10px 22px rgba(0,0,0,0.18);
+  --shadow-press: 0 2px 6px rgba(0,0,0,0.12);
+
+  --radius-card: 14px;
+  --radius-note: 6px;
+  --dash: 2px dashed rgba(72, 70, 57, 0.25);
+}
+
 /* Base */
 html, body {
   margin: 0;
   padding: 0;
-  background: #F8F4E1; /* cream paper background */
-  color: #484639;       /* charcoal-brown text */
-  font-family: 'Patrick Hand', cursive;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Patrick Hand', cursive, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
 *, *::before, *::after {
   box-sizing: border-box;
 }
 
-/* Sidebar */
+/* Soft lighting + vignette (scrapbook desk vibe) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9;
+  background:
+    radial-gradient(1200px 600px at 20% 10%, rgba(255,255,255,0.65), transparent 60%),
+    radial-gradient(900px 500px at 80% 90%, rgba(0,0,0,0.05), transparent 55%);
+}
+
+/* Paper grain overlay */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  opacity: 0.045; /* subtle */
+  pointer-events: none;
+  z-index: 10;
+  background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
+}
+
+/* Sidebar = journal page */
 #sidebar {
-  background: #F5F0DD; /* eggshell sidebar */
-  box-shadow: -5px 0 10px rgba(0,0,0,0.1);
+  background: var(--paper-2);
+  border-left: var(--dash);
+  box-shadow: -10px 0 28px rgba(0,0,0,0.10);
+  padding: 16px;
+}
+
+/* Optional: cute divider line under sidebar headings */
+#sidebar h1, #sidebar h2 {
+  margin: 8px 0 14px;
+  letter-spacing: 0.5px;
+  position: relative;
+}
+
+#sidebar h1::after, #sidebar h2::after {
+  content: "";
+  display: block;
+  margin-top: 10px;
+  border-top: var(--dash);
+}
+
+/* If notes are appended inside #map, absolute positioning needs a relative parent */
+#map {
+  position: relative;
 }
 
 /* Sticky Notes */
@@ -24,7 +83,14 @@ html, body {
   padding: 15px;
   margin: 5px;
 
-  border-radius: 2px; /* paper-cut look */
+  border-radius: var(--radius-note);
+  border: 1px solid rgba(0,0,0,0.06);
+
+  /* paper feel */
+  background-image: linear-gradient(to bottom, rgba(255,255,255,0.25), rgba(255,255,255,0));
+  outline: 2px solid rgba(0,0,0,0.04);
+  outline-offset: -6px;
+
   box-shadow: 3px 3px 10px rgba(0,0,0,0.15);
 
   position: absolute; /* JS positions it */
@@ -38,6 +104,8 @@ html, body {
   justify-content: center;
   text-align: center;
 
+  will-change: transform;
+
   /* “Physical” feel */
   transition:
     transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275),
@@ -48,12 +116,13 @@ html, body {
 
 .sticky-note:active {
   cursor: grabbing;
+  z-index: 1000;
 }
 
 .sticky-note:hover {
   transform: scale(1.1) rotate(0deg) !important;
   z-index: 1000;
-  box-shadow: 8px 12px 20px rgba(0,0,0,0.2);
+  box-shadow: var(--shadow-note);
 }
 
 /* Color palette options */
@@ -74,7 +143,7 @@ html, body {
   position: absolute;
   top: -10px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) rotate(2deg);
 
   background: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(2px);
@@ -90,6 +159,8 @@ html, body {
   border-left: 1px dashed rgba(0,0,0,0.1);
   border-right: 1px dashed rgba(0,0,0,0.1);
   border-radius: 2px;
+
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
 }
 
 /* Modal */
@@ -101,31 +172,76 @@ html, body {
   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
-/* Buttons */
+/* Buttons = label stickers */
 button {
-  padding: 6px 12px;
+  padding: 8px 12px;
   margin: 5px 0;
-  border-radius: 6px;
-  border: none;
-  background-color: #ECC779;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.10);
+  background: rgba(236, 199, 121, 0.9);
   cursor: pointer;
-  font-family: 'Patrick Hand', cursive;
+  font-family: 'Patrick Hand', cursive, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   transition: all 0.2s ease;
+  box-shadow: var(--shadow-press);
+  transform: translateY(0);
 }
 
 button:hover {
-  background-color: #EAADA2;
+  background: rgba(234, 173, 162, 0.95);
+  transform: translateY(-1px);
 }
 
-/* Paper grain overlay */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  opacity: 0.04; /* subtle */
-  pointer-events: none;
-  z-index: 10; /* not insanely high */
-  background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
+button:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.10);
+}
+
+/* Optional prep: sticker tray + top bar (only applies if you have these IDs/classes) */
+#sticker-tray {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 10px;
+  border-radius: var(--radius-card);
+  background: rgba(255,255,255,0.35);
+  border: var(--dash);
+  box-shadow: var(--shadow-soft);
+}
+
+#sticker-tray button, #sticker-tray .sticker {
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.6);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+#sticker-tray button:hover, #sticker-tray .sticker:hover {
+  transform: translateY(-2px) rotate(-1deg);
+}
+
+#topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-bottom: var(--dash);
+  background: rgba(245,240,221,0.75);
+  backdrop-filter: blur(6px);
+}
+
+.mode-btn {
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.10);
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.55);
+}
+
+.mode-btn.is-active {
+  background: rgba(194, 223, 242, 0.8);
 }
 
 /* Mobile */
