@@ -21,6 +21,7 @@
   const db = getFirestore(app);
   const postsRef = collection(db, "posts");
 
+  // Post shape: { type, lat, lng, content?, color?, stickerId?, imageUrl?, authorName?, isAnonymous? }
   window.savePost = async (post) => {
     await addDoc(postsRef, { ...post, createdAt: serverTimestamp() });
   };
@@ -34,4 +35,14 @@
       });
     });
   };
+
+  console.log("Firebase ready");
 </script>
+
+<script src="app.js"></script>
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmaWy-IsFFqQzIlh5dX0H6IHGM5dWLk5A&callback=initMap"
+  async
+  defer
+></script>
+
