@@ -1,0 +1,37 @@
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    onSnapshot,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDaIhADuSB359aD6MThCPqwNQieseJ9-4c",
+    authDomain: "scrawl-and-sprawl.firebaseapp.com",
+    projectId: "scrawl-and-sprawl",
+    storageBucket: "scrawl-and-sprawl.firebasestorage.app",
+    messagingSenderId: "326407925260",
+    appId: "1:326407925260:web:90c3eed500fd57250e8829"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const postsRef = collection(db, "posts");
+
+  window.savePost = async (post) => {
+    await addDoc(postsRef, { ...post, createdAt: serverTimestamp() });
+  };
+
+  window.listenPosts = (onPost) => {
+    return onSnapshot(postsRef, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === "added") {
+          onPost({ id: change.doc.id, ...change.doc.data() });
+        }
+      });
+    });
+  };
+</script>
