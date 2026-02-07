@@ -11,12 +11,19 @@
   --radius-card: 14px;
   --radius-note: 6px;
   --dash: 2px dashed rgba(72, 70, 57, 0.25);
+
+  --sidebar-w: 340px;
 }
 
-/* Base */
+/* =========================
+   Base
+   ========================= */
 html, body {
+  height: 100%;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
+
   background: var(--paper);
   color: var(--ink);
   font-family: 'Patrick Hand', cursive, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -32,7 +39,7 @@ body::before {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 9;
+  z-index: 1;
   background:
     radial-gradient(1200px 600px at 20% 10%, rgba(255,255,255,0.65), transparent 60%),
     radial-gradient(900px 500px at 80% 90%, rgba(0,0,0,0.05), transparent 55%);
@@ -43,21 +50,71 @@ body::after {
   content: "";
   position: fixed;
   inset: 0;
-  opacity: 0.045; /* subtle */
+  opacity: 0.07;                 /* slightly stronger */
+  mix-blend-mode: multiply;      /* makes it feel like paper */
   pointer-events: none;
-  z-index: 10;
+  z-index: 2;
   background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
 }
 
-/* Sidebar = journal page */
-#sidebar {
-  background: var(--paper-2);
-  border-left: var(--dash);
-  box-shadow: -10px 0 28px rgba(0,0,0,0.10);
-  padding: 16px;
+/* =========================
+   Map
+   ========================= */
+#map {
+  position: relative; /* notes are absolute inside here */
+  width: 100%;
+  height: 100vh;
 }
 
-/* Optional: cute divider line under sidebar headings */
+/* Cute scrapbook frame around map */
+#map::after{
+  content:"";
+  position:absolute;
+  inset: 12px;
+  pointer-events:none;
+  border-radius: 18px;
+  border: 2px dashed rgba(72,70,57,0.22);
+  box-shadow: inset 0 0 0 6px rgba(255,255,255,0.18);
+  z-index: 5;
+}
+
+/* =========================
+   Sidebar (LEFT on desktop)
+   ========================= */
+#sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: auto;
+
+  width: var(--sidebar-w);
+  height: 100vh;
+  overflow-y: auto;
+
+  z-index: 50;
+  padding: 16px;
+
+  background: rgba(245, 240, 221, 0.92);
+  color: var(--ink);
+
+  border-right: var(--dash);
+  border-left: none;
+
+  box-shadow: 18px 0 40px rgba(0,0,0,0.12);
+
+  /* optional “lined journal paper” feel */
+  background-image:
+    linear-gradient(to bottom, rgba(255,255,255,0.35), rgba(255,255,255,0)),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(72,70,57,0.06),
+      rgba(72,70,57,0.06) 1px,
+      transparent 1px,
+      transparent 22px
+    );
+}
+
+/* Cute divider line under headings */
 #sidebar h1, #sidebar h2 {
   margin: 8px 0 14px;
   letter-spacing: 0.5px;
@@ -71,19 +128,21 @@ body::after {
   border-top: var(--dash);
 }
 
-/* If notes are appended inside #map, absolute positioning needs a relative parent */
-#map {
-  position: relative;
+/* Make room for sidebar so map isn't hidden */
+@media (min-width: 769px){
+  body { padding-left: var(--sidebar-w); }
 }
 
-/* Sticky Notes */
+/* =========================
+   Sticky Notes
+   ========================= */
 .sticky-note {
   width: 160px;
   min-height: 140px;
   padding: 15px;
   margin: 5px;
 
-  border-radius: var(--radius-note);
+  border-radius: 10px 8px 10px 7px; /* hand-cut wobble */
   border: 1px solid rgba(0,0,0,0.06);
 
   /* paper feel */
@@ -93,7 +152,7 @@ body::after {
 
   box-shadow: 3px 3px 10px rgba(0,0,0,0.15);
 
-  position: absolute; /* JS positions it */
+  position: absolute;
   transform-origin: center;
 
   cursor: grab;
@@ -106,7 +165,6 @@ body::after {
 
   will-change: transform;
 
-  /* “Physical” feel */
   transition:
     transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275),
     box-shadow 0.2s ease;
@@ -143,7 +201,8 @@ body::after {
   position: absolute;
   top: -10px;
   left: 50%;
-  transform: translateX(-50%) rotate(2deg);
+  transform: translateX(-50%) rotate(-2deg);
+  opacity: 0.9;
 
   background: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(2px);
@@ -163,16 +222,23 @@ body::after {
   box-shadow: 0 2px 6px rgba(0,0,0,0.12);
 }
 
-/* Modal */
+/* =========================
+   Modal
+   ========================= */
 #modal {
   background: #F5F0DD;
   border-radius: 12px;
   padding: 20px;
   border: 2px solid #484639;
   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+
+  position: fixed;
+  z-index: 60;
 }
 
-/* Buttons = label stickers */
+/* =========================
+   Buttons (label stickers)
+   ========================= */
 button {
   padding: 8px 12px;
   margin: 5px 0;
@@ -180,7 +246,9 @@ button {
   border: 1px solid rgba(0,0,0,0.10);
   background: rgba(236, 199, 121, 0.9);
   cursor: pointer;
+
   font-family: 'Patrick Hand', cursive, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
   transition: all 0.2s ease;
   box-shadow: var(--shadow-press);
   transform: translateY(0);
@@ -196,7 +264,9 @@ button:active {
   box-shadow: 0 1px 3px rgba(0,0,0,0.10);
 }
 
-/* Optional prep: sticker tray + top bar (only applies if you have these IDs/classes) */
+/* =========================
+   Sticker tray + Topbar (only applies if they exist)
+   ========================= */
 #sticker-tray {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -222,6 +292,7 @@ button:active {
   transform: translateY(-2px) rotate(-1deg);
 }
 
+/* Optional topbar if you add it */
 #topbar {
   display: flex;
   align-items: center;
@@ -244,44 +315,34 @@ button:active {
   background: rgba(194, 223, 242, 0.8);
 }
 
-/* Mobile */
+/* =========================
+   Mobile (bottom sheet sidebar)
+   ========================= */
 @media (max-width: 768px) {
+  body { padding-left: 0; }
+
   #map {
+    height: 62vh;
     width: 100%;
-    height: 60vh;
   }
 
   #sidebar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: auto;
+
+    height: 38vh;
     width: 100%;
-    height: 40vh;
-    float: none;
-    box-shadow: 0 -5px 10px rgba(0,0,0,0.1);
+
+    overflow-y: auto;
+    border-right: none;
+    border-top: var(--dash);
+    border-radius: 16px 16px 0 0;
+
+    box-shadow: 0 -12px 30px rgba(0,0,0,0.12);
   }
-
-  .sticky-note {
-    width: 120px;
-    min-height: 100px;
-    padding: 12px;
-  }
-
-  #modal {
-    width: 90%;
-  }
-}
-
-/* =========================
-   Mobile-first improvements
-   Paste at very bottom
-   ========================= */
-
-/* Prevent accidental horizontal scrolling on small screens */
-html, body {
-  overflow-x: hidden;
-}
-
-/* If your layout is side-by-side on desktop,
-   this makes it stack nicely on mobile */
-@media (max-width: 768px) {
 
   /* Make notes easier to tap */
   .sticky-note {
@@ -290,52 +351,18 @@ html, body {
     padding: 12px;
   }
 
-  /* Reduce hover scale on touch devices (hover can be weird on mobile) */
+  /* Reduce hover weirdness on mobile */
   .sticky-note:hover {
     transform: rotate(0deg) !important;
     box-shadow: var(--shadow-note);
   }
 
-  /* Sidebar becomes a bottom sheet vibe */
-  #sidebar {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-
-    height: 38vh;
-    width: 100%;
-
-    overflow-y: auto;
-    border-left: none;
-    border-top: var(--dash);
-    box-shadow: 0 -12px 30px rgba(0,0,0,0.12);
-    border-radius: 16px 16px 0 0;
-
-    z-index: 50;
-  }
-
-  /* Map takes the rest of the screen */
-  #map {
-    height: 62vh;
-    width: 100%;
-  }
-
-  /* Topbar stays visible (if you have it) */
-  #topbar {
-    position: sticky;
-    top: 0;
-    z-index: 60;
-  }
-
-  /* Modal fits screen better */
   #modal {
     width: min(92vw, 420px);
     max-height: 80vh;
     overflow: auto;
   }
 
-  /* Sticker tray: 4 -> 5 columns if tiny stickers */
   #sticker-tray {
     grid-template-columns: repeat(5, 1fr);
     gap: 8px;
@@ -356,60 +383,6 @@ html, body {
   button {
     padding: 8px 10px;
   }
-  
 }
 
-/* =========================
-   MAP + SIDEBAR LAYOUT PATCH
-   Paste at very bottom
-   ========================= */
-
-html, body {
-  height: 100%;
-}
-
-#map {
-  width: 100%;
-  height: 100vh;
-}
-
-@media (min-width: 769px) {
-  #sidebar {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 340px;
-    height: 100vh;
-    overflow-y: auto;
-    z-index: 30;
-  }
-
-  body {
-    padding-right: 340px;
-  }
-}
-
-/* overlays should sit behind the map interactions */
-body::before,
-body::after {
-  pointer-events: none;
-  z-index: 1;
-}
-
-#sidebar { z-index: 30; }
-
-#modal {
-  position: fixed;
-  z-index: 60;
-}
-
-/* Tiny “hand cut” wobble border feel */
-.sticky-note {
-  border-radius: 10px 8px 10px 7px;
-}
-
-/* Tape a bit more imperfect */
-.sticky-note::before {
-  transform: translateX(-50%) rotate(-2deg);
-  opacity: 0.9;
-}
+.hidden {display: none; }
