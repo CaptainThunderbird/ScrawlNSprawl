@@ -356,4 +356,60 @@ html, body {
   button {
     padding: 8px 10px;
   }
+  
+}
+
+/* =========================
+   MAP + SIDEBAR LAYOUT PATCH
+   Paste at very bottom
+   ========================= */
+
+html, body {
+  height: 100%;
+}
+
+#map {
+  width: 100%;
+  height: 100vh;
+}
+
+@media (min-width: 769px) {
+  #sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 340px;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 30;
+  }
+
+  body {
+    padding-right: 340px;
+  }
+}
+
+/* overlays should sit behind the map interactions */
+body::before,
+body::after {
+  pointer-events: none;
+  z-index: 1;
+}
+
+#sidebar { z-index: 30; }
+
+#modal {
+  position: fixed;
+  z-index: 60;
+}
+
+/* Tiny “hand cut” wobble border feel */
+.sticky-note {
+  border-radius: 10px 8px 10px 7px;
+}
+
+/* Tape a bit more imperfect */
+.sticky-note::before {
+  transform: translateX(-50%) rotate(-2deg);
+  opacity: 0.9;
 }
