@@ -1,0 +1,48 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+#map {
+  width: 75%;
+  height: 100vh;
+  float: left;
+}
+
+#sidebar {
+  width: 25%;
+  height: 100vh;
+  background: #F8F4E1;
+  float: right;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+/* Modal */
+#modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 20px;
+  border: 2px solid #484639;
+  border-radius: 10px;
+  z-index: 100;
+}
+
+.hidden {
+  display: none;
+}
+
+textarea {
+  width: 100%;
+  height: 60px;
+  margin-bottom: 10px;
+}
+
+button {
+  margin-right: 10px;
+  padding: 5px 10px;
+}
