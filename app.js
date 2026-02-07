@@ -8,85 +8,150 @@ const usernameInput = document.getElementById('username');
 const recentNotes = document.getElementById('recent-notes');
 const mapDiv = document.getElementById('map');
 
-// -------------------- Modal Logic --------------------
-mapDiv.addEventListener('click', () => {
-  modal.classList.remove('hidden');
-});
+// -------------------- Map + Overlay --------------------
+let map;
+let overlayView;
+let overlayProjection;
+let pendingLatLng = null;
+const items = [];
+const renderedIds = new Set();
 
+function initMap() {
+  map = new google.maps.Map(mapDiv, {
+    center: { lat: 49.2827, lng: -123.1207 },
+    zoom: 14
+  });
+
+  // Click on map opens modal + stores coordinates
+  map.addListener('click', (e) => {
+    pendingLatLng = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+    modal.classList.remove('hidden');
+  });
+
+  installOverlay(map);
+
+  // Start listening for posts once map is ready
+  window.listenPosts((post) => {
+    renderNoteOnMap(post);
+  });
+}
+
+// Attach for Google Maps callback
+window.initMap = initMap;
+
+function installOverlay(mapInstance) {
+  overlayView = new google.maps.OverlayView();
+
+  overlayView.onAdd = () => {
+    const overlay = document.createElement('div');
+    overlay.id = 'map-overlay';
+    overlay.style.position = 'absolute';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.pointerEvents = 'none';
+    overlayView.overlay = overlay;
+
+    overlayView.getPanes().overlayMouseTarget.appendChild(overlay);
+  };
+
+  overlayView.draw = () => {
+    overlayProjection = overlayView.getProjection();
+    items.forEach(positionItem);
+  };
+
+  overlayView.onRemove = () => {
+    if (overlayView.overlay?.parentElement) {
+      overlayView.overlay.parentElement.removeChild(overlayView.overlay);
+    }
+  };
+
+  overlayView.setMap(mapInstance);
+}
+
+function positionItem(item) {
+  if (!overlayProjection) return;
+  const point = overlayProjection.fromLatLngToDivPixel(item.latLng);
+  if (!point) return;
+  item.element.style.left = `${point.x}px`;
+  item.element.style.top = `${point.y}px`;
+}
+
+// -------------------- Modal Logic --------------------
 cancelBtn.addEventListener('click', () => {
   modal.classList.add('hidden');
   noteText.value = '';
   usernameInput.value = '';
+  pendingLatLng = null;
 });
 
 // -------------------- Save Note --------------------
 saveBtn.addEventListener('click', () => {
+  if (!pendingLatLng) return;
+
   const newPost = {
-    user: usernameInput.value || `anonymous${Math.floor(Math.random()*1000)}`,
+    type: 'note',
+    user: usernameInput.value || `anonymous${Math.floor(Math.random() * 1000)}`,
+    isAnonymous: !usernameInput.value,
     message: noteText.value,
-    sticker: stickerSelect.value,
-    lat: Math.random() * 0.01 + 49.28,  // temporary coordinates for mock
-    lng: Math.random() * 0.01 - 123.12
+    sticker: stickerSelect.value || '',
+    color: '#C1EDB9',
+    lat: pendingLatLng.lat,
+    lng: pendingLatLng.lng
   };
 
-  // Save to Firebase
-  savePost(newPost);
+  window.savePost(newPost);
 
-  // Reset modal
   modal.classList.add('hidden');
   noteText.value = '';
   usernameInput.value = '';
+  pendingLatLng = null;
 });
 
 // -------------------- Render Note on Map --------------------
 function renderNoteOnMap(post) {
-  // Create sticky note div
+  if (renderedIds.has(post.id)) return;
+  renderedIds.add(post.id);
+
   const noteDiv = document.createElement('div');
   noteDiv.classList.add('sticky-note');
+  noteDiv.style.position = 'absolute';
+  noteDiv.style.pointerEvents = 'auto';
 
-  // Random rotation
-  const rotation = Math.random() * 20 - 10; // -10° to +10°
-  noteDiv.style.transform = `rotate(${rotation}deg)`;
+  const rotation = Math.random() * 20 - 10;
+  noteDiv.style.transform = `translate(-50%, -100%) rotate(${rotation}deg)`;
+  noteDiv.style.backgroundColor = post.color || '#C1EDB9';
 
-  // Color based on sticker type (optional)
-  noteDiv.style.backgroundColor = '#C1EDB9';
-
-  // Content
   noteDiv.innerHTML = `
     <strong>${post.user}</strong><br>
-    ${post.message}<br>
-    <img src="assets/stickers/${post.sticker}" width="40">
+    ${post.message || ''}<br>
+    ${post.sticker ? `<img src="assets/stickers/${post.sticker}" width="40">` : ''}
   `;
 
-  // Append to mapDiv at mock position
-  noteDiv.style.position = 'absolute';
-  noteDiv.style.top = `${Math.random() * 80 + 10}%`; // temporary positioning
-  noteDiv.style.left = `${Math.random() * 80 + 10}%`;
-  mapDiv.appendChild(noteDiv);
+  const item = {
+    element: noteDiv,
+    latLng: new google.maps.LatLng(post.lat, post.lng)
+  };
 
-  // Optional animation with Framer Motion
+  items.push(item);
+  overlayView.overlay.appendChild(noteDiv);
+  positionItem(item);
+
   if (window.motion) {
     motion(noteDiv, { scale: [0, 1], rotate: [0, rotation], transition: { duration: 0.5 } });
   }
 
-  // Update recent notes sidebar
   updateRecentNotes(post);
 }
 
 // -------------------- Update Recent Notes Sidebar --------------------
 function updateRecentNotes(post) {
   const li = document.createElement('li');
-  li.textContent = `${post.user}: ${post.message}`;
+  li.textContent = `${post.user}: ${post.message || ''}`;
   recentNotes.prepend(li);
 
-  // Keep only last 5 notes
   while (recentNotes.children.length > 5) {
     recentNotes.removeChild(recentNotes.lastChild);
   }
 }
-
-// -------------------- Listen for Real-Time Posts --------------------
-listenPosts((newPost) => {
-  renderNoteOnMap(newPost);
-});
-
