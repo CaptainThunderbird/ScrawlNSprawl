@@ -10,5 +10,8 @@
     "placeSticker": "assets/sounds/sticker-tap.mp3",
     "closeModal": "assets/sounds/ui-click.mp3"
   },
-  "textures": {}
+  "textures": {
+  "paper": "assets/textures/paper-grain.png",
+  "grid": "assets/textures/grid-paper.png"
+}
 }
