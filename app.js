@@ -30,6 +30,8 @@ const addVibeBtn = document.getElementById('add-vibe-btn');
 const loadMoreBtn = document.getElementById('load-more-btn');
 const tabButtons = document.querySelectorAll('.tab-btn');
 const tabPanels = document.querySelectorAll('.tab-panel');
+const sidebar = document.getElementById('sidebar');
+const bookmarksToggle = document.getElementById('bookmarks-toggle');
 const photoSection = document.getElementById('photo-section');
 const doodleSection = document.getElementById('doodle-section');
 const logoPopup = document.getElementById('logo-popup');
@@ -212,6 +214,22 @@ bookmarksBtn?.addEventListener('click', () => {
 loadMoreBtn?.addEventListener('click', () => {
     recentLimit += 10;
     renderRecentNotes();
+});
+
+const setSidebarCollapsed = (collapsed) => {
+    if (!sidebar || !bookmarksToggle) return;
+    sidebar.classList.toggle('collapsed', collapsed);
+    bookmarksToggle.textContent = collapsed ? 'Bookmarks ▾' : 'Bookmarks ▴';
+};
+
+if (window.matchMedia && window.matchMedia('(max-width: 768px)').matches) {
+    setSidebarCollapsed(true);
+}
+
+bookmarksToggle?.addEventListener('click', () => {
+    const next = !sidebar?.classList.contains('collapsed');
+    setSidebarCollapsed(next);
+    playSound('pop');
 });
 
 
