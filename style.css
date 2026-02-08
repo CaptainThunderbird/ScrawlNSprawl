@@ -13,6 +13,8 @@
     --paper-2: #F3EED8;
     --ink: #484639;
     --ink-soft: rgba(72, 70, 57, 0.6);
+    --paper-grain: url("assets/textures/paper-grain.png");
+    --paper-grid: url("assets/textures/grid-paper.png");
 
     --shadow-soft: 0 6px 18px rgba(0, 0, 0, 0.10);
     --shadow-note: 0 10px 22px rgba(0, 0, 0, 0.18);
@@ -66,7 +68,7 @@ body::after {
     z-index: 2;
     opacity: 0.07;
     mix-blend-mode: multiply;
-    background-image: url("assets/textures/paper-grain.png");
+    background-image: var(--paper-grain);
 }
 
 /* =========================
@@ -95,7 +97,10 @@ body::after {
     inset: 0;
     pointer-events: none;
     z-index: 3;
-    background: rgba(248, 244, 225, 0.10);
+    background:
+        linear-gradient(to bottom, rgba(248, 244, 225, 0.18), rgba(248, 244, 225, 0.06)),
+        var(--paper-grid);
+    opacity: 0.35;
     /* lighter so map stays crisp */
     mix-blend-mode: multiply;
 }
@@ -104,7 +109,7 @@ body::after {
 #map::after {
     content: "";
     position: absolute;
-    inset: 12px;
+    inset: 8px;
     pointer-events: none;
     z-index: 4;
 
@@ -113,7 +118,7 @@ body::after {
 
     /* Outer “mat” makes the border feel intentional */
     box-shadow:
-        0 0 0 18px rgba(72, 70, 57, 0.10),
+        0 0 0 12px rgba(72, 70, 57, 0.10),
         /* OUTSIDE mat */
         inset 0 0 0 6px rgba(255, 255, 255, 0.18);
 }
@@ -147,7 +152,7 @@ body::after {
             rgba(72, 70, 57, 0.06) 1px,
             transparent 1px,
             transparent 22px),
-        url("assets/textures/paper-grain.png");
+        var(--paper-grain);
 }
 
 #sidebar h1,
@@ -175,9 +180,9 @@ body::after {
    ========================= */
 #topbar {
     position: fixed;
-    top: 14px;
-    left: 14px;
-    right: 14px;
+    top: 8px;
+    left: 8px;
+    right: 8px;
     z-index: 80;
 
     display: flex;
@@ -186,15 +191,15 @@ body::after {
     gap: 12px;
 
     padding: 10px 12px;
-    border-radius: 18px;
+    border-radius: 16px;
 
     background: rgba(245, 240, 221, 0.98);
     border: 1px solid rgba(72, 70, 57, 0.14);
-    box-shadow: 0 18px 46px rgba(0, 0, 0, 0.14);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14);
     backdrop-filter: blur(10px);
     background-image:
         linear-gradient(to bottom, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0)),
-        url("assets/textures/paper-grain.png");
+        var(--paper-grain);
 }
 
 .topbar-left,
@@ -807,6 +812,9 @@ button:active {
     padding: 18px;
     border: 1px solid rgba(72, 70, 57, 0.18);
     box-shadow: 0 18px 44px rgba(0, 0, 0, 0.20);
+    background-image:
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0)),
+        var(--paper-grain);
 }
 
 #type-modal {
@@ -832,6 +840,9 @@ button:active {
     width: min(360px, 90vw);
     display: grid;
     gap: 12px;
+    background-image:
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0)),
+        var(--paper-grain);
 }
 
 
