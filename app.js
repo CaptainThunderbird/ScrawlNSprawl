@@ -83,7 +83,8 @@ let overlayProjection;
 let pendingLatLng = null;
 const items = [];
 let reverseGeocoder = null;
-let lastShortLocation = 'Kindness Map';
+let lastStatusLocation = 'Kindness Map';
+let lastPendingLocation = 'Selected location';
 const doodleCtx = doodleCanvas?.getContext('2d');
 let isDoodling = false;
 let doodleHasStroke = false;
@@ -114,7 +115,7 @@ addVibeBtn?.addEventListener('click', () => {
     const center = map.getCenter();
     if (!center) return;
     pendingLatLng = { lat: center.lat(), lng: center.lng() };
-    updateLocationLabel(pendingLatLng);
+    updateLocationLabel(pendingLatLng, 'pending');
 
     if (typeModal) {
         typeModal.classList.remove('hidden');
@@ -257,6 +258,7 @@ typeButtons.forEach((btn) => {
 typeCancelBtn?.addEventListener('click', () => {
     typeModal?.classList.add('hidden');
     pendingLatLng = null;
+    refreshTopbarLabel();
 });
 
 setActiveTab('recent');
@@ -271,10 +273,11 @@ function initMap() {
     });
 
     reverseGeocoder = new google.maps.Geocoder();
+    refreshTopbarLabel();
 
     map.addListener('click', (e) => {
         pendingLatLng = { lat: e.latLng.lat(), lng: e.latLng.lng() };
-        updateLocationLabel(pendingLatLng);
+        updateLocationLabel(pendingLatLng, 'pending');
 
         if (typeModal) {
             typeModal.classList.remove('hidden');
@@ -290,10 +293,10 @@ function initMap() {
 
     installOverlay(map);
 
-    if (navigator.geolocation) {
+        if (navigator.geolocation) {
         navigator.geolocation.watchPosition((pos) => {
             userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-            updateLocationLabel(userLocation);
+            updateLocationLabel(userLocation, 'status');
             rerenderVisiblePosts();
         });
     }
@@ -309,7 +312,7 @@ function initMap() {
 // Attach for Google Maps callback
 window.initMap = initMap;
 
-function updateLocationLabel(latLng) {
+function updateLocationLabel(latLng, mode = 'status') {
     if (!reverseGeocoder || !locationPill) return;
 
     reverseGeocoder.geocode({ location: latLng }, (results, status) => {
@@ -318,8 +321,12 @@ function updateLocationLabel(latLng) {
         const shortName = getShortLocationName(results);
         if (!shortName) return;
 
-        lastShortLocation = shortName;
-        locationPill.textContent = shortName;
+        if (mode === 'pending') {
+            lastPendingLocation = shortName;
+        } else {
+            lastStatusLocation = shortName;
+        }
+        refreshTopbarLabel();
     });
 }
 
@@ -349,7 +356,30 @@ function getShortLocationName(results) {
         if (comp?.short_name) return comp.short_name;
     }
 
-    return preferred.name || preferred.formatted_address || lastShortLocation;
+    return preferred.name || preferred.formatted_address || lastStatusLocation;
+}
+
+function refreshTopbarLabel() {
+    if (!locationPill) return;
+
+    if (pendingLatLng) {
+        if (userLocation) {
+            const dist = haversineMeters(userLocation, pendingLatLng);
+            if (dist > MAX_RADIUS_METERS) {
+                locationPill.textContent = 'Come closer to within 100 meters';
+                return;
+            }
+        }
+        locationPill.textContent = lastPendingLocation;
+        return;
+    }
+
+    if (userLocation) {
+        locationPill.textContent = lastStatusLocation;
+        return;
+    }
+
+    locationPill.textContent = 'Enable location';
 }
 
 function setActiveTab(name) {
@@ -612,6 +642,7 @@ cancelBtn.addEventListener('click', () => {
     if (photoPreview) photoPreview.src = '';
     clearDoodleCanvas();
     pendingLatLng = null;
+    refreshTopbarLabel();
 });
 
 // -------------------- Save Note --------------------
@@ -675,6 +706,7 @@ saveBtn.addEventListener('click', () => {
     if (photoPreview) photoPreview.src = '';
     clearDoodleCanvas();
     pendingLatLng = null;
+    refreshTopbarLabel();
 });
 
 
