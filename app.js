@@ -133,6 +133,9 @@ addVibeBtn?.addEventListener('click', () => {
     const center = map.getCenter();
     if (!center) return;
     pendingLatLng = { lat: center.lat(), lng: center.lng() };
+    lastPendingLocation = `${pendingLatLng.lat.toFixed(5)}, ${pendingLatLng.lng.toFixed(5)}`;
+    lastPendingAddress = '';
+    refreshTopbarLabel();
     updateLocationLabel(pendingLatLng, 'pending');
 
     if (typeModal) {
@@ -297,6 +300,9 @@ function initMap() {
 
     map.addListener('click', (e) => {
         pendingLatLng = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+        lastPendingLocation = `${pendingLatLng.lat.toFixed(5)}, ${pendingLatLng.lng.toFixed(5)}`;
+        lastPendingAddress = '';
+        refreshTopbarLabel();
         updateLocationLabel(pendingLatLng, 'pending');
 
         if (typeModal) {
