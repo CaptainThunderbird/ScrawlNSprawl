@@ -38,9 +38,9 @@ const clientId = getOrCreateClientId();
 const deletedPostIds = new Set();
 
 const sounds = {
-  pop: new Audio('assets/sounds/ui-pop.mp3'),
-  paper: new Audio('assets/sounds/paper-place.mp3'),
-  sticker: new Audio('assets/sounds/sticker-tap.mp3')
+    pop: new Audio('assets/sounds/ui-pop.mp3'),
+    paper: new Audio('assets/sounds/paper-place.mp3'),
+    sticker: new Audio('assets/sounds/sticker-tap.mp3')
 };
 
 // Store posts + rendered elements for filtering/re-rendering
@@ -128,9 +128,17 @@ function initMap() {
     map.addListener('click', (e) => {
         pendingLatLng = { lat: e.latLng.lat(), lng: e.latLng.lng() };
         updateLocationLabel(pendingLatLng);
-        typeModal?.classList.remove('hidden');
+
+        if (typeModal) {
+            typeModal.classList.remove('hidden');
+        } else {
+            setMode('note');
+            modal.classList.remove('hidden');
+        }
+
         playSound('pop');
     });
+
 
 
     installOverlay(map);
@@ -324,7 +332,7 @@ function playSound(name) {
     const audio = sounds[name];
     if (!audio) return;
     audio.currentTime = 0;
-    audio.play().catch(() => {});
+    audio.play().catch(() => { });
 }
 
 function containsBlockedLanguage(text) {
@@ -454,210 +462,210 @@ cancelBtn.addEventListener('click', () => {
 
 // -------------------- Save Note --------------------
 saveBtn.addEventListener('click', () => {
-  if (!pendingLatLng) return;
+    if (!pendingLatLng) return;
 
-  const isAnonymous = getIsAnonymous();
-  const typedName = usernameInput.value.trim();
-  const displayName = isAnonymous
-    ? `anonymous${Math.floor(Math.random() * 1000)}`
-    : (typedName || 'anonymous');
+    const isAnonymous = getIsAnonymous();
+    const typedName = usernameInput.value.trim();
+    const displayName = isAnonymous
+        ? `anonymous${Math.floor(Math.random() * 1000)}`
+        : (typedName || 'anonymous');
 
-  const days = getDurationDays();
-  const expiresAt = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString();
+    const days = getDurationDays();
+    const expiresAt = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString();
 
-  if (currentMode === 'note' && containsBlockedLanguage(noteText.value)) {
-    alert('Please keep notes kind and positive.');
-    return;
-  }
-  if (currentMode === 'photo' && !photoPreview?.src) {
-    alert('Please upload a photo.');
-    return;
-  }
+    if (currentMode === 'note' && containsBlockedLanguage(noteText.value)) {
+        alert('Please keep notes kind and positive.');
+        return;
+    }
+    if (currentMode === 'photo' && !photoPreview?.src) {
+        alert('Please upload a photo.');
+        return;
+    }
 
-  const newPost = {
-    type: currentMode,
-    user: displayName,
-    isAnonymous,
-    message: currentMode === 'note' ? noteText.value : '',
-    noteIcon: currentMode === 'note' ? (noteIconSelect?.value || 'heart') : '',
-    sticker: currentMode === 'sticker' ? selectedSticker : '',
-    color: getNoteColor(),
-    lat: pendingLatLng.lat,
-    lng: pendingLatLng.lng,
-    expiresAt,
-    clientId
-  };
+    const newPost = {
+        type: currentMode,
+        user: displayName,
+        isAnonymous,
+        message: currentMode === 'note' ? noteText.value : '',
+        noteIcon: currentMode === 'note' ? (noteIconSelect?.value || 'heart') : '',
+        sticker: currentMode === 'sticker' ? selectedSticker : '',
+        color: getNoteColor(),
+        lat: pendingLatLng.lat,
+        lng: pendingLatLng.lng,
+        expiresAt,
+        clientId
+    };
 
-  if (currentMode === 'photo') {
-    newPost.photoData = photoPreview?.src || '';
-  }
+    if (currentMode === 'photo') {
+        newPost.photoData = photoPreview?.src || '';
+    }
 
-  window.savePost(newPost);
-  playSound('paper');
+    window.savePost(newPost);
+    playSound('paper');
 
-  modal.classList.add('hidden');
-  noteText.value = '';
-  usernameInput.value = '';
-  if (photoInput) photoInput.value = '';
-  if (photoPreview) photoPreview.src = '';
-  pendingLatLng = null;
+    modal.classList.add('hidden');
+    noteText.value = '';
+    usernameInput.value = '';
+    if (photoInput) photoInput.value = '';
+    if (photoPreview) photoPreview.src = '';
+    pendingLatLng = null;
 });
 
 
 // -------------------- Render Note on Map --------------------
 
 function rerenderVisiblePosts() {
-  if (!overlayView?.overlay) return;
+    if (!overlayView?.overlay) return;
 
-  const bookmarks = loadBookmarks();
-  const bookmarkedIds = new Set(bookmarks.map((b) => b.id));
-  const candidates = mergeCandidates(bookmarks);
-  const heatCandidates = candidates.filter((p) => !isExpired(p) || bookmarkedIds.has(p.id));
+    const bookmarks = loadBookmarks();
+    const bookmarkedIds = new Set(bookmarks.map((b) => b.id));
+    const candidates = mergeCandidates(bookmarks);
+    const heatCandidates = candidates.filter((p) => !isExpired(p) || bookmarkedIds.has(p.id));
 
-  // remove old DOM nodes
-  itemById.forEach((item) => {
-    if (item.element?.parentElement) item.element.parentElement.removeChild(item.element);
-  });
-  itemById.clear();
+    // remove old DOM nodes
+    itemById.forEach((item) => {
+        if (item.element?.parentElement) item.element.parentElement.removeChild(item.element);
+    });
+    itemById.clear();
 
-  // clear overlay position list so draw() doesn't keep stale items
-  items.length = 0;
+    // clear overlay position list so draw() doesn't keep stale items
+    items.length = 0;
 
-  // render filtered posts with heat levels
-  candidates.forEach((post) => {
-    const isExpiredPost = isExpired(post);
-    const isSaved = bookmarkedIds.has(post.id);
-    if (isExpiredPost && !isSaved) {
-      if (!deletedPostIds.has(post.id)) {
-        deletedPostIds.add(post.id);
-        window.deletePost?.(post.id);
-      }
-      return;
-    }
-    if (!isWithinRadius(post)) return;
-    post._heat = computeHeatLevel(post, heatCandidates);
-    renderPostOnMap(post);
-  });
+    // render filtered posts with heat levels
+    candidates.forEach((post) => {
+        const isExpiredPost = isExpired(post);
+        const isSaved = bookmarkedIds.has(post.id);
+        if (isExpiredPost && !isSaved) {
+            if (!deletedPostIds.has(post.id)) {
+                deletedPostIds.add(post.id);
+                window.deletePost?.(post.id);
+            }
+            return;
+        }
+        if (!isWithinRadius(post)) return;
+        post._heat = computeHeatLevel(post, heatCandidates);
+        renderPostOnMap(post);
+    });
 
-  renderRecentNotes();
-  renderSavedNotes();
+    renderRecentNotes();
+    renderSavedNotes();
 }
 
 function makeStickerDraggable(el) {
-  let dragging = false;
-  let startX = 0;
-  let startY = 0;
-  let baseLeft = 0;
-  let baseTop = 0;
+    let dragging = false;
+    let startX = 0;
+    let startY = 0;
+    let baseLeft = 0;
+    let baseTop = 0;
 
-  el.style.cursor = 'grab';
-  el.style.userSelect = 'none';
-
-  el.addEventListener('mousedown', (e) => {
-    dragging = true;
-    el.style.cursor = 'grabbing';
-    startX = e.clientX;
-    startY = e.clientY;
-    baseLeft = parseFloat(el.style.left || '0');
-    baseTop = parseFloat(el.style.top || '0');
-    e.preventDefault(); // prevents text/image drag behavior
-    e.stopPropagation();
-  });
-
-  window.addEventListener('mousemove', (e) => {
-    if (!dragging) return;
-    const dx = e.clientX - startX;
-    const dy = e.clientY - startY;
-    el.style.left = `${baseLeft + dx}px`;
-    el.style.top = `${baseTop + dy}px`;
-  });
-
-  window.addEventListener('mouseup', () => {
-    dragging = false;
     el.style.cursor = 'grab';
-  });
+    el.style.userSelect = 'none';
+
+    el.addEventListener('mousedown', (e) => {
+        dragging = true;
+        el.style.cursor = 'grabbing';
+        startX = e.clientX;
+        startY = e.clientY;
+        baseLeft = parseFloat(el.style.left || '0');
+        baseTop = parseFloat(el.style.top || '0');
+        e.preventDefault(); // prevents text/image drag behavior
+        e.stopPropagation();
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (!dragging) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        el.style.left = `${baseLeft + dx}px`;
+        el.style.top = `${baseTop + dy}px`;
+    });
+
+    window.addEventListener('mouseup', () => {
+        dragging = false;
+        el.style.cursor = 'grab';
+    });
 }
 
 function getNoteIcon(post) {
-  if (post.noteIcon === 'heart' || post.noteIcon === 'star') return post.noteIcon;
-  if (post.sticker === 'heart.svg') return 'heart';
-  return 'star';
+    if (post.noteIcon === 'heart' || post.noteIcon === 'star') return post.noteIcon;
+    if (post.sticker === 'heart.svg') return 'heart';
+    return 'star';
 }
 
 function getStickerMarkup(sticker) {
-  if (!sticker) return '?';
-  if (sticker.endsWith('.svg')) {
-    return `<img src="assets/stickers/${sticker}" width="50" alt="">`;
-  }
-  if (sticker === 'stub-star') return '?';
-  if (sticker === 'stub-flower') return '??';
-  return '?';
+    if (!sticker) return '?';
+    if (sticker.endsWith('.svg')) {
+        return `<img src="assets/stickers/${sticker}" width="50" alt="">`;
+    }
+    if (sticker === 'stub-star') return '?';
+    if (sticker === 'stub-flower') return '??';
+    return '?';
 }
 
 
 function renderPostOnMap(post) {
-  if (!overlayView?.overlay) return;
-  if (itemById.has(post.id)) return;
+    if (!overlayView?.overlay) return;
+    if (itemById.has(post.id)) return;
 
-  const el = document.createElement('div');
-  el.style.position = 'absolute';
-  el.style.pointerEvents = 'auto';
-  const rotation = Math.random() * 20 - 10;
-  el.style.transform = `translate(-50%, -100%) rotate(${rotation}deg)`;
+    const el = document.createElement('div');
+    el.style.position = 'absolute';
+    el.style.pointerEvents = 'auto';
+    const rotation = Math.random() * 20 - 10;
+    el.style.transform = `translate(-50%, -100%) rotate(${rotation}deg)`;
 
-  const type = post.type || 'note';
-  const bookmarked = isBookmarked(post.id);
-  el.classList.add(`heat-${post._heat ?? 0}`);
+    const type = post.type || 'note';
+    const bookmarked = isBookmarked(post.id);
+    el.classList.add(`heat-${post._heat ?? 0}`);
 
-  if (type === 'sticker') {
-    el.classList.add('sticky-note');
-    el.style.background = 'transparent';
-    el.innerHTML = getStickerMarkup(post.sticker);
-    makeStickerDraggable(el);
-  } else if (type === 'photo') {
-    el.classList.add('sticky-note', 'photo-note');
-    el.innerHTML = `
+    if (type === 'sticker') {
+        el.classList.add('sticky-note');
+        el.style.background = 'transparent';
+        el.innerHTML = getStickerMarkup(post.sticker);
+        makeStickerDraggable(el);
+    } else if (type === 'photo') {
+        el.classList.add('sticky-note', 'photo-note');
+        el.innerHTML = `
       <div class="photo-frame">
         ${post.photoData ? `<img class="photo-note-image" src="${post.photoData}" alt="">` : ''}
       </div>
       <div class="photo-caption">${post.user || 'anonymous'}</div>
     `;
-  } else {
-    const noteIcon = getNoteIcon(post);
-    el.classList.add('sticky-note');
-    el.style.backgroundColor = post.color || '#C1EDB9';
-    el.innerHTML = `
+    } else {
+        const noteIcon = getNoteIcon(post);
+        el.classList.add('sticky-note');
+        el.style.backgroundColor = post.color || '#C1EDB9';
+        el.innerHTML = `
       <strong>${post.user || 'anonymous'}</strong><br>
       ${post.message || ''}<br>
       <div class="note-icon">${noteIcon === 'heart' ? '??' : '?'}</div>
     `;
-  }
-
-  const bookmarkBtn = document.createElement('button');
-  bookmarkBtn.type = 'button';
-  bookmarkBtn.className = 'bookmark-btn';
-  bookmarkBtn.textContent = bookmarked ? 'Saved' : 'Save';
-  bookmarkBtn.title = bookmarked ? 'Remove bookmark' : 'Save bookmark';
-  bookmarkBtn.setAttribute('aria-pressed', String(bookmarked));
-  bookmarkBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    if (isBookmarked(post.id)) {
-      removeBookmark(post.id);
-    } else {
-      upsertBookmark(post);
     }
-    rerenderVisiblePosts();
-  });
-  el.appendChild(bookmarkBtn);
 
-  const item = {
-    id: post.id,
-    element: el,
-    latLng: new google.maps.LatLng(post.lat, post.lng)
-  };
+    const bookmarkBtn = document.createElement('button');
+    bookmarkBtn.type = 'button';
+    bookmarkBtn.className = 'bookmark-btn';
+    bookmarkBtn.textContent = bookmarked ? 'Saved' : 'Save';
+    bookmarkBtn.title = bookmarked ? 'Remove bookmark' : 'Save bookmark';
+    bookmarkBtn.setAttribute('aria-pressed', String(bookmarked));
+    bookmarkBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (isBookmarked(post.id)) {
+            removeBookmark(post.id);
+        } else {
+            upsertBookmark(post);
+        }
+        rerenderVisiblePosts();
+    });
+    el.appendChild(bookmarkBtn);
 
-  items.push(item);
-  itemById.set(post.id, item);
-  overlayView.overlay.appendChild(el);
-  positionItem(item);
+    const item = {
+        id: post.id,
+        element: el,
+        latLng: new google.maps.LatLng(post.lat, post.lng)
+    };
+
+    items.push(item);
+    itemById.set(post.id, item);
+    overlayView.overlay.appendChild(el);
+    positionItem(item);
 }
