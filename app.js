@@ -1,9 +1,16 @@
 // -------------------- DOM Elements --------------------
 const modal = document.getElementById('modal');
+const typeModal = document.getElementById('type-modal');
+const typeCancelBtn = document.getElementById('type-cancel');
+const typeButtons = document.querySelectorAll('[data-create-type]');
 const saveBtn = document.getElementById('save-note');
 const cancelBtn = document.getElementById('cancel-note');
 const noteText = document.getElementById('note-text');
-const stickerSelect = document.getElementById('sticker-select');
+const noteIconSelect = document.getElementById('note-icon-select');
+const modalTitle = document.getElementById('modal-title');
+const noteFields = document.getElementById('note-fields');
+const stickerSection = document.getElementById('sticker-section');
+const stickerPickerButtons = document.querySelectorAll('#sticker-picker [data-sticker]');
 const usernameInput = document.getElementById('username');
 const recentNotes = document.getElementById('recent-notes');
 const savedNotes = document.getElementById('saved-notes');
@@ -15,10 +22,6 @@ const tabPanels = document.querySelectorAll('.tab-panel');
 const photoSection = document.getElementById('photo-section');
 const photoInput = document.getElementById('photo-input');
 const photoPreview = document.getElementById('photo-preview');
-const doodleSection = document.getElementById('doodle-section');
-const doodleCanvas = document.getElementById('doodle-canvas');
-const doodleClear = document.getElementById('doodle-clear');
-const attachSticker = document.getElementById('attach-sticker');
 
 // Optional controls (may be null if index.html doesn't have them yet)
 const noteColorInput = document.getElementById('note-color');
@@ -26,6 +29,7 @@ const anonymousToggle = document.getElementById('anonymous-toggle');
 const durationDaysSelect = document.getElementById('duration-days');
 
 let currentMode = 'note';
+let selectedSticker = 'heart.svg';
 let userLocation = null;
 const MAX_RADIUS_METERS = 100;
 const HEAT_RADIUS_METERS = 250;
@@ -52,10 +56,9 @@ let pendingLatLng = null;
 const items = [];
 let reverseGeocoder = null;
 let lastShortLocation = 'Kindness Map';
-let doodleHasContent = false;
 
 function setMode(mode) {
-    const allowed = new Set(['note', 'sticker', 'doodle', 'photo']);
+    const allowed = new Set(['note', 'sticker', 'photo']);
     if (!allowed.has(mode)) return;
     currentMode = mode;
     updateModalMode();
@@ -65,20 +68,6 @@ function setMode(mode) {
 // For quick testing in browser console: setMode('sticker')
 window.setMode = setMode;
 
-// Keyboard shortcuts: n/s/d/p
-window.addEventListener('keydown', (e) => {
-    const k = e.key.toLowerCase();
-    if (k === 'n') setMode('note');
-    if (k === 's') setMode('sticker');
-    if (k === 'd') setMode('doodle');
-    if (k === 'p') setMode('photo');
-});
-
-// If teammate later adds buttons with data-mode, this will auto-work
-document.querySelectorAll('[data-mode]').forEach((btn) => {
-    btn.addEventListener('click', () => setMode(btn.dataset.mode));
-});
-
 tabButtons.forEach((btn) => {
     btn.addEventListener('click', () => setActiveTab(btn.dataset.tab));
 });
@@ -87,38 +76,14 @@ bookmarksBtn?.addEventListener('click', () => {
     setActiveTab('saved');
 });
 
-document.querySelectorAll('#sticker-tray [data-sticker]').forEach((btn) => {
+stickerPickerButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
-        const sticker = btn.getAttribute('data-sticker');
-        stickerSelect.value = sticker;
-        document.querySelectorAll('#sticker-tray [data-sticker]').forEach((b) => b.classList.remove('active'));
+        selectedSticker = btn.getAttribute('data-sticker') || 'heart.svg';
+        stickerPickerButtons.forEach((b) => b.classList.remove('active'));
         btn.classList.add('active');
         playSound('sticker');
     });
 });
-
-document.querySelectorAll('.swatch-row .swatch').forEach((btn) => {
-    btn.addEventListener('click', () => {
-        const color = btn.getAttribute('data-color');
-        if (!color || !noteColorInput) return;
-        noteColorInput.value = color;
-        document.querySelectorAll('.swatch-row .swatch').forEach((b) => b.classList.remove('active'));
-        btn.classList.add('active');
-    });
-});
-
-const firstSticker = document.querySelector('#sticker-tray [data-sticker]');
-if (firstSticker) {
-    stickerSelect.value = firstSticker.getAttribute('data-sticker');
-    firstSticker.classList.add('active');
-}
-
-const firstSwatch = document.querySelector('.swatch-row .swatch');
-if (firstSwatch && noteColorInput) {
-    const color = firstSwatch.getAttribute('data-color');
-    if (color) noteColorInput.value = color;
-    firstSwatch.classList.add('active');
-}
 
 if (photoInput && photoPreview) {
     photoInput.addEventListener('change', () => {
@@ -132,9 +97,24 @@ if (photoInput && photoPreview) {
     });
 }
 
+typeButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+        const nextType = btn.getAttribute('data-create-type');
+        if (!nextType) return;
+        typeModal?.classList.add('hidden');
+        setMode(nextType);
+        modal.classList.remove('hidden');
+        playSound('pop');
+    });
+});
+
+typeCancelBtn?.addEventListener('click', () => {
+    typeModal?.classList.add('hidden');
+    pendingLatLng = null;
+});
+
 setActiveTab('recent');
 updateModalMode();
-initDoodle();
 
 
 function initMap() {
@@ -148,41 +128,8 @@ function initMap() {
     map.addListener('click', (e) => {
         pendingLatLng = { lat: e.latLng.lat(), lng: e.latLng.lng() };
         updateLocationLabel(pendingLatLng);
-
-        if (currentMode === 'note') {
-            modal.classList.remove('hidden');
-            playSound('pop');
-            return;
-        }
-
-        if (currentMode === 'sticker') {
-            const days = getDurationDays();
-            window.savePost({
-                type: 'sticker',
-                user: 'anonymous',
-                isAnonymous: true,
-                sticker: stickerSelect.value || 'heart.svg',
-                color: getNoteColor(),
-                lat: pendingLatLng.lat,
-                lng: pendingLatLng.lng,
-                expiresAt: new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString(),
-                clientId
-            });
-            pendingLatLng = null;
-            playSound('sticker');
-            return;
-        }
-
-        if (currentMode === 'doodle') {
-            modal.classList.remove('hidden');
-            playSound('pop');
-            return;
-        }
-
-        if (currentMode === 'photo') {
-            modal.classList.remove('hidden');
-            playSound('pop');
-        }
+        typeModal?.classList.remove('hidden');
+        playSound('pop');
     });
 
 
@@ -262,57 +209,15 @@ function setActiveTab(name) {
 }
 
 function updateModalMode() {
-    if (!photoSection || !doodleSection) return;
-    photoSection.classList.toggle('hidden', currentMode !== 'photo');
-    doodleSection.classList.toggle('hidden', currentMode !== 'doodle');
-    noteText.classList.toggle('hidden', currentMode !== 'note');
-    stickerSelect.classList.toggle('hidden', currentMode === 'photo' || currentMode === 'doodle');
-}
-
-function initDoodle() {
-    if (!doodleCanvas) return;
-    const ctx = doodleCanvas.getContext('2d');
-    ctx.lineWidth = 3;
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = '#484639';
-
-    let drawing = false;
-    const getPos = (e) => {
-        const rect = doodleCanvas.getBoundingClientRect();
-        const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
-        const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
-        return { x, y };
-    };
-
-    const start = (e) => {
-        drawing = true;
-        const { x, y } = getPos(e);
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        e.preventDefault();
-    };
-    const move = (e) => {
-        if (!drawing) return;
-        const { x, y } = getPos(e);
-        ctx.lineTo(x, y);
-        ctx.stroke();
-        doodleHasContent = true;
-        e.preventDefault();
-    };
-    const end = () => { drawing = false; };
-
-    doodleCanvas.addEventListener('mousedown', start);
-    doodleCanvas.addEventListener('mousemove', move);
-    doodleCanvas.addEventListener('mouseup', end);
-    doodleCanvas.addEventListener('mouseleave', end);
-    doodleCanvas.addEventListener('touchstart', start, { passive: false });
-    doodleCanvas.addEventListener('touchmove', move, { passive: false });
-    doodleCanvas.addEventListener('touchend', end);
-
-    doodleClear?.addEventListener('click', () => {
-        ctx.clearRect(0, 0, doodleCanvas.width, doodleCanvas.height);
-        doodleHasContent = false;
-    });
+    if (modalTitle) {
+        modalTitle.textContent =
+            currentMode === 'sticker'
+                ? 'New Sticker'
+                : (currentMode === 'photo' ? 'New Photo' : 'New Sticky Note');
+    }
+    noteFields?.classList.toggle('hidden', currentMode !== 'note');
+    stickerSection?.classList.toggle('hidden', currentMode !== 'sticker');
+    photoSection?.classList.toggle('hidden', currentMode !== 'photo');
 }
 
 function installOverlay(mapInstance) {
@@ -452,9 +357,9 @@ function upsertBookmark(post) {
         user: post.user || 'anonymous',
         message: post.message || '',
         sticker: post.sticker || '',
+        noteIcon: post.noteIcon || '',
         color: post.color || '#C1EDB9',
         photoData: post.photoData || '',
-        doodleData: post.doodleData || '',
         lat: post.lat,
         lng: post.lng,
         expiresAt: post.expiresAt || null
@@ -501,7 +406,7 @@ function renderRecentNotes() {
         .slice(0, 10);
     mine.forEach((post) => {
         const li = document.createElement('li');
-        li.textContent = `${post.user}: ${post.message || ''}`;
+        li.textContent = `${post.user}: ${post.message || post.type}`;
         recentNotes.appendChild(li);
     });
 }
@@ -544,11 +449,6 @@ cancelBtn.addEventListener('click', () => {
     usernameInput.value = '';
     if (photoInput) photoInput.value = '';
     if (photoPreview) photoPreview.src = '';
-    if (doodleCanvas) {
-        const ctx = doodleCanvas.getContext('2d');
-        ctx.clearRect(0, 0, doodleCanvas.width, doodleCanvas.height);
-    }
-    doodleHasContent = false;
     pendingLatLng = null;
 });
 
@@ -573,17 +473,14 @@ saveBtn.addEventListener('click', () => {
     alert('Please upload a photo.');
     return;
   }
-  if (currentMode === 'doodle' && !doodleHasContent) {
-    alert('Please add a doodle.');
-    return;
-  }
 
-  let newPost = {
+  const newPost = {
     type: currentMode,
     user: displayName,
     isAnonymous,
     message: currentMode === 'note' ? noteText.value : '',
-    sticker: (currentMode === 'note' || currentMode === 'sticker') ? (stickerSelect.value || '') : '',
+    noteIcon: currentMode === 'note' ? (noteIconSelect?.value || 'heart') : '',
+    sticker: currentMode === 'sticker' ? selectedSticker : '',
     color: getNoteColor(),
     lat: pendingLatLng.lat,
     lng: pendingLatLng.lng,
@@ -595,26 +492,6 @@ saveBtn.addEventListener('click', () => {
     newPost.photoData = photoPreview?.src || '';
   }
 
-  if (currentMode === 'doodle') {
-    newPost.doodleData = doodleCanvas?.toDataURL('image/png') || '';
-  }
-
-  if (currentMode === 'note' && !attachSticker?.checked && newPost.sticker) {
-    const stickerPost = {
-      type: 'sticker',
-      user: displayName,
-      isAnonymous,
-      sticker: newPost.sticker,
-      color: getNoteColor(),
-      lat: pendingLatLng.lat,
-      lng: pendingLatLng.lng,
-      expiresAt,
-      clientId
-    };
-    newPost.sticker = '';
-    window.savePost(stickerPost);
-  }
-
   window.savePost(newPost);
   playSound('paper');
 
@@ -623,11 +500,6 @@ saveBtn.addEventListener('click', () => {
   usernameInput.value = '';
   if (photoInput) photoInput.value = '';
   if (photoPreview) photoPreview.src = '';
-  if (doodleCanvas) {
-    const ctx = doodleCanvas.getContext('2d');
-    ctx.clearRect(0, 0, doodleCanvas.width, doodleCanvas.height);
-  }
-  doodleHasContent = false;
   pendingLatLng = null;
 });
 
@@ -706,6 +578,22 @@ function makeStickerDraggable(el) {
   });
 }
 
+function getNoteIcon(post) {
+  if (post.noteIcon === 'heart' || post.noteIcon === 'star') return post.noteIcon;
+  if (post.sticker === 'heart.svg') return 'heart';
+  return 'star';
+}
+
+function getStickerMarkup(sticker) {
+  if (!sticker) return '?';
+  if (sticker.endsWith('.svg')) {
+    return `<img src="assets/stickers/${sticker}" width="50" alt="">`;
+  }
+  if (sticker === 'stub-star') return '?';
+  if (sticker === 'stub-flower') return '??';
+  return '?';
+}
+
 
 function renderPostOnMap(post) {
   if (!overlayView?.overlay) return;
@@ -724,36 +612,31 @@ function renderPostOnMap(post) {
   if (type === 'sticker') {
     el.classList.add('sticky-note');
     el.style.background = 'transparent';
-    el.innerHTML = `${post.sticker ? `<img src="assets/stickers/${post.sticker}" width="50">` : '*'}`;
+    el.innerHTML = getStickerMarkup(post.sticker);
     makeStickerDraggable(el);
   } else if (type === 'photo') {
-    el.classList.add('sticky-note');
-    el.style.backgroundColor = post.color || '#C1EDB9';
+    el.classList.add('sticky-note', 'photo-note');
     el.innerHTML = `
-      <strong>${post.user || 'anonymous'}</strong><br>
-      ${post.photoData ? `<img src="${post.photoData}" width="120">` : ''}<br>
-    `;
-  } else if (type === 'doodle') {
-    el.classList.add('sticky-note');
-    el.style.backgroundColor = post.color || '#C1EDB9';
-    el.innerHTML = `
-      <strong>${post.user || 'anonymous'}</strong><br>
-      ${post.doodleData ? `<img src="${post.doodleData}" width="120">` : ''}<br>
+      <div class="photo-frame">
+        ${post.photoData ? `<img class="photo-note-image" src="${post.photoData}" alt="">` : ''}
+      </div>
+      <div class="photo-caption">${post.user || 'anonymous'}</div>
     `;
   } else {
+    const noteIcon = getNoteIcon(post);
     el.classList.add('sticky-note');
     el.style.backgroundColor = post.color || '#C1EDB9';
     el.innerHTML = `
       <strong>${post.user || 'anonymous'}</strong><br>
       ${post.message || ''}<br>
-      ${post.sticker ? `<img src="assets/stickers/${post.sticker}" width="40">` : ''}
+      <div class="note-icon">${noteIcon === 'heart' ? '??' : '?'}</div>
     `;
   }
 
   const bookmarkBtn = document.createElement('button');
   bookmarkBtn.type = 'button';
   bookmarkBtn.className = 'bookmark-btn';
-  bookmarkBtn.textContent = bookmarked ? '★' : '☆';
+  bookmarkBtn.textContent = bookmarked ? 'Saved' : 'Save';
   bookmarkBtn.title = bookmarked ? 'Remove bookmark' : 'Save bookmark';
   bookmarkBtn.setAttribute('aria-pressed', String(bookmarked));
   bookmarkBtn.addEventListener('click', (e) => {
@@ -778,4 +661,3 @@ function renderPostOnMap(post) {
   overlayView.overlay.appendChild(el);
   positionItem(item);
 }
-
