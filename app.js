@@ -27,6 +27,7 @@ const mapDiv = document.getElementById('map');
 const locationPill = document.getElementById('location-pill');
 const bookmarksBtn = document.getElementById('bookmarks-btn');
 const addVibeBtn = document.getElementById('add-vibe-btn');
+const loadMoreBtn = document.getElementById('load-more-btn');
 const tabButtons = document.querySelectorAll('.tab-btn');
 const tabPanels = document.querySelectorAll('.tab-panel');
 const photoSection = document.getElementById('photo-section');
@@ -92,6 +93,7 @@ const itemById = new Map();
 const BOOKMARKS_KEY = 'sns_bookmarks_v1';
 let landmarks = [];
 let landmarksLoaded = false;
+let recentLimit = 10;
 
 // -------------------- Map + Overlay --------------------
 let map;
@@ -129,6 +131,11 @@ tabButtons.forEach((btn) => {
 
 bookmarksBtn?.addEventListener('click', () => {
     setActiveTab('saved');
+});
+
+loadMoreBtn?.addEventListener('click', () => {
+    recentLimit += 10;
+    renderRecentNotes();
 });
 
 addVibeBtn?.addEventListener('click', () => {
@@ -741,7 +748,7 @@ function renderRecentNotes() {
     const mine = Array.from(postsById.values())
         .filter((p) => p.clientId === clientId && !isExpired(p))
         .sort((a, b) => toMillis(b.createdAt) - toMillis(a.createdAt))
-        .slice(0, 10);
+        .slice(0, recentLimit);
 
     mine.forEach((post) => {
         const li = document.createElement('li');
