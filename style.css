@@ -454,7 +454,7 @@ body::after {
 }
 
 .sticky-note:hover {
-    transform: rotate(0deg) translateY(-2px) !important;
+    transform: rotate(0deg) translateY(-1px) !important;
     z-index: 1000;
     box-shadow: var(--shadow-note);
 }
