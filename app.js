@@ -743,8 +743,8 @@ function renderRecentNotes() {
         .sort((a, b) => toMillis(b.createdAt) - toMillis(a.createdAt))
         .slice(0, 10);
     mine.forEach((post) => {
-        const li = buildFeedItem(post);
-        recentNotes.appendChild(li);
+        const item = buildFeedItem(post);
+        recentNotes.appendChild(item.li);
     });
 }
 
@@ -753,7 +753,7 @@ function renderSavedNotes() {
     savedNotes.innerHTML = '';
     const list = loadBookmarks();
     list.forEach((post) => {
-        const li = buildFeedItem(post);
+        const item = buildFeedItem(post);
         const goBtn = document.createElement('button');
         goBtn.type = 'button';
         goBtn.textContent = 'Go to location';
@@ -771,9 +771,12 @@ function renderSavedNotes() {
             rerenderVisiblePosts();
         });
         removeBtn.addEventListener('click', (e) => e.stopPropagation());
-        li.appendChild(goBtn);
-        li.appendChild(removeBtn);
-        savedNotes.appendChild(li);
+        const actions = document.createElement('div');
+        actions.className = 'feed-actions';
+        actions.appendChild(goBtn);
+        actions.appendChild(removeBtn);
+        item.body.appendChild(actions);
+        savedNotes.appendChild(item.li);
     });
 }
 
@@ -1009,8 +1012,8 @@ function renderPostOnMap(post) {
         const bookmarkBtn = document.createElement('button');
         bookmarkBtn.type = 'button';
         bookmarkBtn.className = 'bookmark-btn';
-        const isNote = type === 'note';
-        bookmarkBtn.textContent = isNote ? (bookmarked ? '⭐' : '☆') : (bookmarked ? 'Bookmarked' : 'Bookmark');
+        const isStarType = type === 'note' || type === 'photo';
+        bookmarkBtn.textContent = isStarType ? (bookmarked ? '⭐' : '☆') : (bookmarked ? 'Bookmarked' : 'Bookmark');
         bookmarkBtn.title = bookmarked ? 'Remove bookmark' : 'Bookmark';
         bookmarkBtn.setAttribute('aria-pressed', String(bookmarked));
         bookmarkBtn.setAttribute('aria-label', bookmarked ? 'Remove bookmark' : 'Bookmark');
@@ -1055,6 +1058,8 @@ function buildFeedItem(post) {
     icon.className = 'feed-icon';
     icon.textContent = getTypeIcon(post.type);
 
+    const body = document.createElement('div');
+    body.className = 'feed-body';
     const text = document.createElement('div');
     const label =
         post.type === 'doodle'
@@ -1062,8 +1067,9 @@ function buildFeedItem(post) {
             : (post.message || post.type);
     text.textContent = `${post.user}: ${label}`;
 
+    body.appendChild(text);
     li.appendChild(icon);
-    li.appendChild(text);
+    li.appendChild(body);
 
     const goTo = () => {
         if (!map) return;
@@ -1084,5 +1090,5 @@ function buildFeedItem(post) {
         }
     });
 
-    return li;
+    return { li, body };
 }

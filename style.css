@@ -20,10 +20,10 @@
     --shadow-note: 0 10px 22px rgba(0, 0, 0, 0.18);
     --shadow-press: 0 2px 6px rgba(0, 0, 0, 0.12);
 
-    --radius-card: 14px;
+    --radius-card: 8px;
     --dash: 2px dashed rgba(72, 70, 57, 0.25);
 
-    --sidebar-w: 340px;
+    --sidebar-w: 300px;
 }
 
 /* =========================
@@ -155,6 +155,32 @@ body::after {
         var(--paper-grain);
 }
 
+#sidebar::after {
+    content: "";
+    position: absolute;
+    top: 10px;
+    right: -6px;
+    bottom: 10px;
+    width: 10px;
+    background:
+        repeating-linear-gradient(to bottom,
+            rgba(72, 70, 57, 0.25),
+            rgba(72, 70, 57, 0.25) 3px,
+            transparent 3px,
+            transparent 9px);
+    opacity: 0.35;
+    pointer-events: none;
+}
+
+#sidebar::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+#sidebar {
+    scrollbar-width: none;
+}
+
 #sidebar h1,
 #sidebar h2 {
     margin: 8px 0 14px;
@@ -191,7 +217,7 @@ body::after {
     gap: 12px;
 
     padding: 10px 12px;
-    border-radius: 16px;
+    border-radius: 8px;
 
     background: rgba(245, 240, 221, 0.98);
     border: 1px solid rgba(72, 70, 57, 0.14);
@@ -200,6 +226,29 @@ body::after {
     background-image:
         linear-gradient(to bottom, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0)),
         var(--paper-grain);
+}
+
+#topbar::before,
+#topbar::after {
+    content: "";
+    position: absolute;
+    width: 42px;
+    height: 16px;
+    top: -8px;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(72, 70, 57, 0.12);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    opacity: 0.85;
+    transform: rotate(-4deg);
+}
+
+#topbar::before {
+    left: 22px;
+}
+
+#topbar::after {
+    right: 22px;
+    transform: rotate(6deg);
 }
 
 .topbar-left,
@@ -262,7 +311,7 @@ body::after {
 
 .topbar-btn {
     padding: 6px 10px;
-    border-radius: 8px;
+    border-radius: 6px;
     border: 1px solid rgba(0, 0, 0, 0.20);
     background: rgba(240, 221, 182, 0.95);
     cursor: pointer;
@@ -294,7 +343,7 @@ body::after {
 .sidebar-title-card {
     margin: 14px 0 10px;
     padding: 12px;
-    border-radius: 10px;
+    border-radius: 6px;
     background: rgba(255, 255, 255, 0.7);
     border: 1px solid rgba(0, 0, 0, 0.15);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
@@ -366,7 +415,7 @@ body::after {
     padding: 15px;
     margin: 5px;
 
-    border-radius: 10px 8px 10px 7px;
+    border-radius: 8px 6px 8px 6px;
     /* hand-cut wobble */
     border: 1px solid rgba(0, 0, 0, 0.06);
 
@@ -440,7 +489,7 @@ body::after {
     padding: 4px 8px;
     font-size: 12px;
     line-height: 1;
-    border-radius: 999px;
+    border-radius: 6px;
     border: 1px solid rgba(0, 0, 0, 0.12);
     background: rgba(255, 255, 255, 0.85);
     cursor: pointer;
@@ -466,6 +515,19 @@ body::after {
 .sticky-note:hover .bookmark-btn {
     opacity: 1;
     transform: translateY(0);
+}
+
+.pulse-highlight {
+    animation: pulseHighlight 1.1s ease-out 1;
+}
+
+@keyframes pulseHighlight {
+    0% {
+        box-shadow: 0 0 0 0 rgba(234, 173, 162, 0.6), var(--shadow-note);
+    }
+    100% {
+        box-shadow: 0 0 0 18px rgba(234, 173, 162, 0), var(--shadow-note);
+    }
 }
 
 /* Color palette options */
@@ -527,7 +589,7 @@ body::after {
 button {
     padding: 8px 12px;
     margin: 5px 0;
-    border-radius: 999px;
+    border-radius: 6px;
     border: 1px solid rgba(0, 0, 0, 0.10);
     background: rgba(236, 199, 121, 0.9);
     cursor: pointer;
@@ -556,7 +618,7 @@ button {
     padding: 8px 10px;
     background: rgba(255, 255, 255, 0.75);
     border: 1px solid rgba(0, 0, 0, 0.14);
-    border-radius: 8px;
+    border-radius: 6px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.10);
 }
 
@@ -564,8 +626,43 @@ button {
     margin-right: 6px;
     margin-top: 6px;
     padding: 4px 8px;
-    border-radius: 8px;
+    border-radius: 6px;
     background: rgba(255, 255, 255, 0.85);
+}
+
+.feed-item {
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    gap: 8px;
+    align-items: start;
+    cursor: pointer;
+}
+
+.feed-icon {
+    width: 22px;
+    height: 22px;
+    display: grid;
+    place-items: center;
+    font-size: 14px;
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 4px;
+}
+
+.feed-item:focus-visible {
+    outline: 2px dashed rgba(72, 70, 57, 0.6);
+    outline-offset: 2px;
+}
+
+.feed-body {
+    display: grid;
+    gap: 6px;
+}
+
+.feed-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
 }
 
 .sidebar-tabs {
@@ -577,7 +674,7 @@ button {
 .tab-btn {
     flex: 1 1 0;
     padding: 6px 8px;
-    border-radius: 8px;
+    border-radius: 6px;
     border: 1px solid rgba(0, 0, 0, 0.18);
     background: rgba(255, 255, 255, 0.75);
     font-size: 13px;
@@ -808,7 +905,7 @@ button:active {
     max-height: 80vh;
     overflow: auto;
     background: rgba(245, 240, 221, 0.98);
-    border-radius: 16px;
+    border-radius: 8px;
     padding: 18px;
     border: 1px solid rgba(72, 70, 57, 0.18);
     box-shadow: 0 18px 44px rgba(0, 0, 0, 0.20);
@@ -833,7 +930,7 @@ button:active {
 
 #type-modal .modal-content {
     background: #F8F4E1;
-    border-radius: 16px;
+    border-radius: 8px;
     padding: 18px 20px;
     border: 1px solid rgba(72, 70, 57, 0.18);
     box-shadow: 0 18px 44px rgba(0, 0, 0, 0.20);
@@ -843,6 +940,16 @@ button:active {
     background-image:
         linear-gradient(to bottom, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0)),
         var(--paper-grain);
+}
+
+#doodle-name {
+    margin-bottom: 8px;
+    width: 100%;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.18);
+    background: rgba(255, 255, 255, 0.9);
+    font-family: inherit;
 }
 
 
