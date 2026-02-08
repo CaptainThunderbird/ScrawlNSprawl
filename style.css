@@ -166,7 +166,7 @@ body::after{
 #topbar{
   position: fixed;
   top: 14px;
-  left: calc(14px + var(--sidebar-w));
+  left: 14px;
   right: 14px;
   z-index: 80;
 
@@ -223,7 +223,7 @@ body::after{
 }
 
 .topbar-label{
-  font-size: 14px;
+  font-size: 15px;
   padding-bottom: 3px;
   border-bottom: 2px solid rgba(72,70,57,0.45);
   letter-spacing: 0.3px;
@@ -290,13 +290,20 @@ body::after{
   border-radius: 4px;
   border: 1px solid rgba(0,0,0,0.12);
   box-shadow: var(--shadow-press);
+  padding: 0;
+  margin: 0;
 }
-.swatch.s1{ background: #f7d9a5; }
-.swatch.s2{ background: #cfe9d3; }
-.swatch.s3{ background: #cfe2f5; }
-.swatch.s4{ background: #f3c6d6; }
-.swatch.s5{ background: #e6d3f2; }
-.swatch.s6{ background: #f5e6b8; }
+.swatch.s1{ background: #C1EDB9; }
+.swatch.s2{ background: #C4DFF2; }
+.swatch.s3{ background: #F5F59F; }
+.swatch.s4{ background: #FAD4EF; }
+.swatch.s5{ background: #ECDCFA; }
+.swatch.s6{ background: #F5CC9D; }
+.swatch.s7{ background: #FFB0B0; }
+
+.swatch.active{
+  outline: 2px solid rgba(72,70,57,0.5);
+}
 
 /* =========================
    Sticky Notes
@@ -340,9 +347,11 @@ body::after{
   position: absolute;
   top: 6px;
   right: 6px;
-  padding: 4px 8px;
-  font-size: 11px;
-  border-radius: 10px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  font-size: 14px;
+  border-radius: 50%;
   border: 1px solid rgba(0,0,0,0.12);
   background: rgba(255,255,255,0.85);
   cursor: pointer;

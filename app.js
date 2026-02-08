@@ -18,6 +18,7 @@ const photoPreview = document.getElementById('photo-preview');
 const doodleSection = document.getElementById('doodle-section');
 const doodleCanvas = document.getElementById('doodle-canvas');
 const doodleClear = document.getElementById('doodle-clear');
+const attachSticker = document.getElementById('attach-sticker');
 
 // Optional controls (may be null if index.html doesn't have them yet)
 const noteColorInput = document.getElementById('note-color');
@@ -96,10 +97,27 @@ document.querySelectorAll('#sticker-tray [data-sticker]').forEach((btn) => {
     });
 });
 
+document.querySelectorAll('.swatch-row .swatch').forEach((btn) => {
+    btn.addEventListener('click', () => {
+        const color = btn.getAttribute('data-color');
+        if (!color || !noteColorInput) return;
+        noteColorInput.value = color;
+        document.querySelectorAll('.swatch-row .swatch').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+    });
+});
+
 const firstSticker = document.querySelector('#sticker-tray [data-sticker]');
 if (firstSticker) {
     stickerSelect.value = firstSticker.getAttribute('data-sticker');
     firstSticker.classList.add('active');
+}
+
+const firstSwatch = document.querySelector('.swatch-row .swatch');
+if (firstSwatch && noteColorInput) {
+    const color = firstSwatch.getAttribute('data-color');
+    if (color) noteColorInput.value = color;
+    firstSwatch.classList.add('active');
 }
 
 if (photoInput && photoPreview) {
@@ -581,6 +599,22 @@ saveBtn.addEventListener('click', () => {
     newPost.doodleData = doodleCanvas?.toDataURL('image/png') || '';
   }
 
+  if (currentMode === 'note' && !attachSticker?.checked && newPost.sticker) {
+    const stickerPost = {
+      type: 'sticker',
+      user: displayName,
+      isAnonymous,
+      sticker: newPost.sticker,
+      color: getNoteColor(),
+      lat: pendingLatLng.lat,
+      lng: pendingLatLng.lng,
+      expiresAt,
+      clientId
+    };
+    newPost.sticker = '';
+    window.savePost(stickerPost);
+  }
+
   window.savePost(newPost);
   playSound('paper');
 
@@ -719,7 +753,7 @@ function renderPostOnMap(post) {
   const bookmarkBtn = document.createElement('button');
   bookmarkBtn.type = 'button';
   bookmarkBtn.className = 'bookmark-btn';
-  bookmarkBtn.textContent = bookmarked ? 'Saved' : 'Save';
+  bookmarkBtn.textContent = bookmarked ? '★' : '☆';
   bookmarkBtn.title = bookmarked ? 'Remove bookmark' : 'Save bookmark';
   bookmarkBtn.setAttribute('aria-pressed', String(bookmarked));
   bookmarkBtn.addEventListener('click', (e) => {
