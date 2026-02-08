@@ -756,6 +756,18 @@ button {
     cursor: pointer;
 }
 
+#mobile-header {
+    display: none;
+}
+
+#sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(2px);
+    z-index: 90;
+}
+
 
 .location-pill{
   display: block;
@@ -1241,9 +1253,9 @@ button:active {
         display: none;
     }
 
-    /* Map shorter so bottom sheet fits */
+    /* Map is the hero */
     #map {
-        height: 70vh;
+        height: 100vh;
         width: 100%;
     }
 
@@ -1256,35 +1268,77 @@ button:active {
     }
 
 
-    /* Sidebar becomes bottom sheet */
+    /* Sidebar becomes off-canvas panel */
     #sidebar {
         left: 0;
-        right: 0;
+        top: 0;
         bottom: 0;
-        top: auto;
+        right: auto;
 
-        width: 100%;
-        height: 30vh;
-        border-right: none;
-        border-top: var(--dash);
-        border-radius: 18px 18px 0 0;
-        top: auto;
+        width: min(86vw, 320px);
+        height: 100vh;
+        border-right: 2px dashed rgba(92, 72, 52, 0.35);
+        border-top: none;
+        border-radius: 0 14px 14px 0;
 
-        box-shadow: 0 -12px 30px rgba(0, 0, 0, 0.12);
-        padding: 12px 12px 16px;
-        background: rgba(245, 235, 220, 0.85);
+        box-shadow: 16px 0 30px rgba(0, 0, 0, 0.14);
+        padding: 72px 14px 16px;
+        background: rgba(245, 235, 220, 0.95);
         backdrop-filter: blur(4px);
+        transform: translateX(-110%);
+        transition: transform .2s ease;
+    }
+
+    #sidebar.open {
+        transform: translateX(0);
+    }
+
+    #mobile-header {
+        position: fixed;
+        top: 8px;
+        left: 8px;
+        right: 8px;
+        z-index: 95;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 6px 10px;
+        border-radius: 12px;
+        background: rgba(245, 235, 220, 0.92);
+        border: 1px solid rgba(72, 70, 57, 0.18);
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+        backdrop-filter: blur(6px);
+    }
+
+    #menu-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.18);
+        background: rgba(255, 255, 255, 0.85);
+        font-size: 18px;
+        cursor: pointer;
+        box-shadow: var(--shadow-press);
+    }
+
+    .mobile-brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 16px;
+    }
+
+    .mobile-brand img {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        border: 1px solid rgba(72, 70, 57, 0.18);
+        background: rgba(255, 255, 255, 0.85);
     }
 
     .brand-board {
-        position: fixed;
-        top: 10px;
-        left: 50%;
-        transform: translateX(-50%) rotate(0deg);
-        width: 85%;
-        padding: 8px 12px;
-        z-index: 1000;
-        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.14);
+        display: none;
     }
 
     .brand-sparkles {
@@ -1343,8 +1397,7 @@ button:active {
     }
 
     .bookmarks-toggle {
-        display: block;
-        margin-top: 4px;
+        display: none;
     }
 
     #sidebar.collapsed .sidebar-title-card,

@@ -12,7 +12,13 @@
 
 <body>
 
-
+    <header id="mobile-header">
+        <button id="menu-btn" type="button" aria-label="Open menu">☰</button>
+        <div class="mobile-brand">
+            <img src="assets/icons/logo.png" alt="Scrawl & Sprawl logo">
+            <span>Scrawl &amp; Sprawl</span>
+        </div>
+    </header>
 
     <!-- Sidebar -->
     <aside id="sidebar">
@@ -75,6 +81,7 @@
 
         <button id="load-more-btn" class="sidebar-btn" type="button">Load More Blooms</button>
     </aside>
+    <div id="sidebar-overlay" class="hidden"></div>
 
     <!-- Map -->
     <div id="map" style="height: 100vh; width: 100%;"></div>

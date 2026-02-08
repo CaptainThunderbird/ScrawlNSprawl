@@ -32,6 +32,8 @@ const tabButtons = document.querySelectorAll('.tab-btn');
 const tabPanels = document.querySelectorAll('.tab-panel');
 const sidebar = document.getElementById('sidebar');
 const bookmarksToggle = document.getElementById('bookmarks-toggle');
+const menuBtn = document.getElementById('menu-btn');
+const sidebarOverlay = document.getElementById('sidebar-overlay');
 const photoSection = document.getElementById('photo-section');
 const doodleSection = document.getElementById('doodle-section');
 const logoPopup = document.getElementById('logo-popup');
@@ -216,19 +218,25 @@ loadMoreBtn?.addEventListener('click', () => {
     renderRecentNotes();
 });
 
-const setSidebarCollapsed = (collapsed) => {
-    if (!sidebar || !bookmarksToggle) return;
-    sidebar.classList.toggle('collapsed', collapsed);
-    bookmarksToggle.textContent = collapsed ? 'Bookmarks ▾' : 'Bookmarks ▴';
+const setSidebarOpen = (open) => {
+    if (!sidebar) return;
+    sidebar.classList.toggle('open', open);
+    sidebarOverlay?.classList.toggle('hidden', !open);
 };
 
-if (window.matchMedia && window.matchMedia('(max-width: 768px)').matches) {
-    setSidebarCollapsed(true);
-}
+menuBtn?.addEventListener('click', () => {
+    setSidebarOpen(!sidebar?.classList.contains('open'));
+    playSound('pop');
+});
+
+sidebarOverlay?.addEventListener('click', () => {
+    setSidebarOpen(false);
+});
 
 bookmarksToggle?.addEventListener('click', () => {
     const next = !sidebar?.classList.contains('collapsed');
-    setSidebarCollapsed(next);
+    sidebar?.classList.toggle('collapsed', next);
+    bookmarksToggle.textContent = next ? 'Bookmarks ▾' : 'Bookmarks ▴';
     playSound('pop');
 });
 
