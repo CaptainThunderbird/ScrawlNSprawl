@@ -742,11 +742,26 @@ function renderRecentNotes() {
         .filter((p) => p.clientId === clientId && !isExpired(p))
         .sort((a, b) => toMillis(b.createdAt) - toMillis(a.createdAt))
         .slice(0, 10);
+
     mine.forEach((post) => {
-        const item = buildFeedItem(post);
-        recentNotes.appendChild(item.li);
+        const li = document.createElement('li');
+        li.textContent = `${post.user}: ${post.message || post.type}`;
+        li.style.cursor = 'pointer';
+        li.addEventListener('click', () => {
+            if (!map) return;
+            map.panTo({ lat: post.lat, lng: post.lng });
+            map.setZoom(17);
+
+            const item = itemById.get(post.id);
+            if (item?.element) {
+                item.element.classList.add('pulse');
+                setTimeout(() => item.element.classList.remove('pulse'), 1200);
+            }
+        });
+        recentNotes.appendChild(li);
     });
 }
+
 
 function renderSavedNotes() {
     if (!savedNotes) return;

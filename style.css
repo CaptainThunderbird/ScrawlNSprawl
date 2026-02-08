@@ -464,6 +464,12 @@ body::after {
     /* default green */
 }
 
+.pulse {
+  box-shadow: 0 0 0 6px rgba(255, 200, 120, 0.35), 0 0 28px rgba(255, 200, 120, 0.55);
+  transition: box-shadow 0.25s ease;
+}
+
+
 .photo-note {
     width: 200px;
     max-width: 200px;
