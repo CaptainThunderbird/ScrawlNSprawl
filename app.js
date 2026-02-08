@@ -1,4 +1,4 @@
-// -------------------- DOM Elements --------------------
+﻿// -------------------- DOM Elements --------------------
 const modal = document.getElementById('modal');
 const typeModal = document.getElementById('type-modal');
 const typeCancelBtn = document.getElementById('type-cancel');
@@ -661,3 +661,4 @@ function renderPostOnMap(post) {
   overlayView.overlay.appendChild(el);
   positionItem(item);
 }
+
