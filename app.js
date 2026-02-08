@@ -88,6 +88,7 @@ let lastPendingLocation = 'Selected location';
 let lastStatusAddress = '';
 let lastPendingAddress = '';
 let lastAccuracyMeters = null;
+let geoState = 'init';
 const doodleCtx = doodleCanvas?.getContext('2d');
 let isDoodling = false;
 let doodleHasStroke = false;
@@ -276,6 +277,7 @@ function initMap() {
     });
 
     reverseGeocoder = new google.maps.Geocoder();
+    geoState = 'loading';
     refreshTopbarLabel();
 
     map.addListener('click', (e) => {
@@ -296,13 +298,24 @@ function initMap() {
 
     installOverlay(map);
 
-        if (navigator.geolocation) {
-        navigator.geolocation.watchPosition((pos) => {
-            userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-            lastAccuracyMeters = typeof pos.coords.accuracy === 'number' ? pos.coords.accuracy : null;
-            updateLocationLabel(userLocation, 'status');
-            rerenderVisiblePosts();
-        });
+    if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(
+            (pos) => {
+                geoState = 'ready';
+                userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                lastAccuracyMeters = typeof pos.coords.accuracy === 'number' ? pos.coords.accuracy : null;
+                updateLocationLabel(userLocation, 'status');
+                rerenderVisiblePosts();
+            },
+            (err) => {
+                geoState = err?.code === 1 ? 'denied' : 'error';
+                refreshTopbarLabel();
+            },
+            { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
+        );
+    } else {
+        geoState = 'unsupported';
+        refreshTopbarLabel();
     }
 
 
@@ -320,18 +333,20 @@ function updateLocationLabel(latLng, mode = 'status') {
     if (!reverseGeocoder || !locationPill) return;
 
     reverseGeocoder.geocode({ location: latLng }, (results, status) => {
-        if (status !== 'OK' || !results || !results.length) return;
-
-        const shortName = getShortLocationName(results);
-        if (!shortName) return;
-        const fullAddress = results[0]?.formatted_address || shortName;
+        const ok = status === 'OK' && results && results.length;
+        const shortName = ok ? getShortLocationName(results) : null;
+        const fullAddress = ok ? (results[0]?.formatted_address || shortName) : null;
+        const fallback =
+            mode === 'pending'
+                ? 'Selected location'
+                : (latLng ? `${latLng.lat.toFixed(5)}, ${latLng.lng.toFixed(5)}` : 'Nearby');
 
         if (mode === 'pending') {
-            lastPendingLocation = shortName;
-            lastPendingAddress = fullAddress;
+            lastPendingLocation = shortName || fallback;
+            lastPendingAddress = fullAddress || '';
         } else {
-            lastStatusLocation = shortName;
-            lastStatusAddress = fullAddress;
+            lastStatusLocation = shortName || fallback;
+            lastStatusAddress = fullAddress || '';
         }
         refreshTopbarLabel();
     });
@@ -394,6 +409,18 @@ function refreshTopbarLabel() {
         return;
     }
 
+    if (geoState === 'loading' || geoState === 'init') {
+        locationPill.textContent = 'Locating...';
+        return;
+    }
+    if (geoState === 'denied') {
+        locationPill.textContent = 'Location blocked';
+        return;
+    }
+    if (geoState === 'unsupported') {
+        locationPill.textContent = 'Location unsupported';
+        return;
+    }
     locationPill.textContent = 'Enable location';
 }
 
