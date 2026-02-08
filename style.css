@@ -97,7 +97,7 @@ body::after {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    z-index: 1;
+    z-index: 0;
     background:
         url("assets/tape/washi-strip-vert.svg"),
         linear-gradient(to bottom, rgba(248, 244, 225, 0.18), rgba(248, 244, 225, 0.06)),
@@ -116,7 +116,7 @@ body::after {
     position: absolute;
     inset: 8px;
     pointer-events: none;
-    z-index: 2;
+    z-index: 1;
 
     border-radius: 22px;
     border: 2px dashed rgba(72, 70, 57, 0.18);
@@ -880,6 +880,13 @@ button {
     box-shadow: none;
     display: block;
     z-index: 5;
+}
+
+#map-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: auto;
 }
 
 .map-doodle::before {
