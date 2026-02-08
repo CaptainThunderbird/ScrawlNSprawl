@@ -85,6 +85,9 @@ const items = [];
 let reverseGeocoder = null;
 let lastStatusLocation = 'Kindness Map';
 let lastPendingLocation = 'Selected location';
+let lastStatusAddress = '';
+let lastPendingAddress = '';
+let lastAccuracyMeters = null;
 const doodleCtx = doodleCanvas?.getContext('2d');
 let isDoodling = false;
 let doodleHasStroke = false;
@@ -296,6 +299,7 @@ function initMap() {
         if (navigator.geolocation) {
         navigator.geolocation.watchPosition((pos) => {
             userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+            lastAccuracyMeters = typeof pos.coords.accuracy === 'number' ? pos.coords.accuracy : null;
             updateLocationLabel(userLocation, 'status');
             rerenderVisiblePosts();
         });
@@ -320,11 +324,14 @@ function updateLocationLabel(latLng, mode = 'status') {
 
         const shortName = getShortLocationName(results);
         if (!shortName) return;
+        const fullAddress = results[0]?.formatted_address || shortName;
 
         if (mode === 'pending') {
             lastPendingLocation = shortName;
+            lastPendingAddress = fullAddress;
         } else {
             lastStatusLocation = shortName;
+            lastStatusAddress = fullAddress;
         }
         refreshTopbarLabel();
     });
@@ -369,13 +376,21 @@ function refreshTopbarLabel() {
                 locationPill.textContent = 'Come closer to within 100 meters';
                 return;
             }
+            if (dist <= 10 && lastPendingAddress) {
+                locationPill.textContent = lastPendingAddress;
+                return;
+            }
         }
-        locationPill.textContent = lastPendingLocation;
+        locationPill.textContent = lastPendingLocation || lastPendingAddress || 'Selected location';
         return;
     }
 
     if (userLocation) {
-        locationPill.textContent = lastStatusLocation;
+        if (lastAccuracyMeters !== null && lastAccuracyMeters <= 10 && lastStatusAddress) {
+            locationPill.textContent = lastStatusAddress;
+        } else {
+            locationPill.textContent = lastStatusLocation;
+        }
         return;
     }
 
