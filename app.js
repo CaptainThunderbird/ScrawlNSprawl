@@ -32,7 +32,8 @@ const tabButtons = document.querySelectorAll('.tab-btn');
 const tabPanels = document.querySelectorAll('.tab-panel');
 const photoSection = document.getElementById('photo-section');
 const doodleSection = document.getElementById('doodle-section');
-const doodleNameInput = document.getElementById('doodle-name');
+const logoPopup = document.getElementById('logo-popup');
+const brandLogo = document.querySelector('.brand-logo');
 const photoInput = document.getElementById('photo-input');
 const photoPreview = document.getElementById('photo-preview');
 const doodleCanvas = document.getElementById('doodle-canvas');
@@ -86,6 +87,19 @@ document.addEventListener('click', (e) => {
     const sound = soundByButtonType.get(type) || 'pop';
     playSound(sound);
 }, true);
+
+brandLogo?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (!logoPopup) return;
+    logoPopup.classList.toggle('hidden');
+    playSound('pop');
+});
+
+document.addEventListener('click', (e) => {
+    if (!logoPopup || logoPopup.classList.contains('hidden')) return;
+    if (e.target.closest('#logo-popup') || e.target.closest('.brand-logo')) return;
+    logoPopup.classList.add('hidden');
+});
 
 // Store posts + rendered elements for filtering/re-rendering
 const postsById = new Map();
@@ -711,7 +725,6 @@ function upsertBookmark(post) {
         color: post.color || '#C1EDB9',
         photoData: post.photoData || '',
         doodleData: post.doodleData || '',
-        doodleName: post.doodleName || '',
         lat: post.lat,
         lng: post.lng,
         expiresAt: post.expiresAt || null
@@ -774,6 +787,13 @@ function renderSavedNotes() {
     if (!savedNotes) return;
     savedNotes.innerHTML = '';
     const list = loadBookmarks();
+    if (!list.length) {
+        const empty = document.createElement('li');
+        empty.className = 'feed-empty';
+        empty.textContent = 'No blossoms yet—go explore the map!';
+        savedNotes.appendChild(empty);
+        return;
+    }
     list.forEach((post) => {
         const item = buildFeedItem(post);
         const goBtn = document.createElement('button');
@@ -811,7 +831,6 @@ cancelBtn.addEventListener('click', () => {
     if (photoInput) photoInput.value = '';
     if (photoPreview) photoPreview.src = '';
     clearDoodleCanvas();
-    if (doodleNameInput) doodleNameInput.value = '';
     pendingLatLng = null;
     refreshTopbarLabel();
 });
@@ -821,7 +840,6 @@ saveBtn.addEventListener('click', () => {
     if (!pendingLatLng) return;
 
     const typedName = usernameInput.value.trim();
-    const doodleName = doodleNameInput?.value?.trim() || '';
     const isAnonymous = typedName ? false : getIsAnonymous();
     const displayName = isAnonymous
         ? `anonymous${Math.floor(Math.random() * 1000)}`
@@ -866,7 +884,6 @@ saveBtn.addEventListener('click', () => {
     }
     if (currentMode === 'doodle') {
         newPost.doodleData = doodleCanvas?.toDataURL('image/png') || '';
-        newPost.doodleName = doodleName;
     }
 
     window.savePost(newPost);
@@ -878,7 +895,6 @@ saveBtn.addEventListener('click', () => {
     if (photoInput) photoInput.value = '';
     if (photoPreview) photoPreview.src = '';
     clearDoodleCanvas();
-    if (doodleNameInput) doodleNameInput.value = '';
     pendingLatLng = null;
     refreshTopbarLabel();
 });
@@ -1134,7 +1150,7 @@ function buildFeedItem(post, options = {}) {
     } else {
         const label =
             post.type === 'doodle'
-                ? (post.doodleName || post.message || post.type)
+                ? (post.message || post.type)
                 : (post.type === 'sticker' ? getStickerLabel(post.sticker) : (post.message || post.type));
         text.textContent = `${post.user}: ${label}`;
     }

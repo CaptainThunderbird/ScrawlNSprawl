@@ -24,7 +24,17 @@
                 <img src="assets/stickers/sparkle.svg" alt="">
             </div>
             <div class="brand">
-                <img class="brand-logo" src="assets/icons/logo.png" alt="Scrawl & Sprawl logo">
+                <div class="brand-logo-wrap">
+                    <img class="brand-logo" src="assets/icons/logo.png" alt="Scrawl & Sprawl logo">
+                    <div id="logo-popup" class="logo-popup hidden" role="dialog" aria-live="polite">
+                        <div class="logo-popup-title">Made by Bloomscrollers 🌸</div>
+                        <ul class="logo-popup-list">
+                            <li>Lana Garcia</li>
+                            <li>Aisyah Sudarmaji</li>
+                            <li>Mari Yasui</li>
+                        </ul>
+                    </div>
+                </div>
                 <div class="brand-text">
                     <div class="brand-name">
                         <span>Scrawl</span>
@@ -144,7 +154,6 @@
             </div>
             <div id="doodle-section" class="hidden">
                 <label class="modal-label">Doodle</label>
-                <input id="doodle-name" placeholder="Name this doodle (optional)" />
                 <div class="doodle-canvas-wrap">
                     <canvas id="doodle-canvas" width="315" height="237"></canvas>
                 </div>
