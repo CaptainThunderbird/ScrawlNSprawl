@@ -424,6 +424,8 @@ function getShortLocationName(results) {
 function refreshTopbarLabel() {
     if (!locationPill) return;
 
+    const prefixLocation = (label) => `You're at ${label}`;
+
     if (pendingLatLng) {
         if (!landmarksLoaded) {
             locationPill.textContent = 'Loading landmarks...';
@@ -431,13 +433,13 @@ function refreshTopbarLabel() {
         }
         const nearest = findNearestLandmark(pendingLatLng);
         if (nearest) {
-            locationPill.textContent = nearest.name;
+            locationPill.textContent = prefixLocation(nearest.name);
             return;
         }
         if (lastPendingAddress) {
-            locationPill.textContent = lastPendingAddress;
+            locationPill.textContent = prefixLocation(lastPendingAddress);
         } else {
-            locationPill.textContent = lastPendingLocation || 'Selected location';
+            locationPill.textContent = prefixLocation(lastPendingLocation || 'Selected location');
         }
         return;
     }
@@ -445,11 +447,11 @@ function refreshTopbarLabel() {
     if (userLocation) {
         const nearest = findNearestLandmark(userLocation);
         if (nearest && nearest.distMeters <= MAX_RADIUS_METERS) {
-            locationPill.textContent = nearest.name;
+            locationPill.textContent = prefixLocation(nearest.name);
             return;
         }
         if (lastAccuracyMeters !== null && lastAccuracyMeters <= 10 && lastStatusAddress) {
-            locationPill.textContent = lastStatusAddress;
+            locationPill.textContent = prefixLocation(lastStatusAddress);
             return;
         }
         const distFromCenter = pendingLatLng ? 0 : null;
@@ -463,7 +465,7 @@ function refreshTopbarLabel() {
                 }
             }
         }
-        locationPill.textContent = lastStatusLocation;
+        locationPill.textContent = prefixLocation(lastStatusLocation);
         return;
     }
 
