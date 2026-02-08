@@ -392,6 +392,28 @@ body::after {
     /* default green */
 }
 
+.photo-note {
+    width: 220px;
+    max-width: 220px;
+}
+
+.photo-note .photo-frame {
+    width: 200px;
+    height: 140px;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    background: #fff;
+}
+
+.photo-note .photo-note-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+
 .bookmark-btn {
     position: absolute;
     top: 6px;
