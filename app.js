@@ -691,11 +691,11 @@ cancelBtn.addEventListener('click', () => {
 saveBtn.addEventListener('click', () => {
     if (!pendingLatLng) return;
 
-    const isAnonymous = getIsAnonymous();
     const typedName = usernameInput.value.trim();
+    const isAnonymous = typedName ? false : getIsAnonymous();
     const displayName = isAnonymous
         ? `anonymous${Math.floor(Math.random() * 1000)}`
-        : (typedName || 'anonymous');
+        : typedName;
 
     const days = getDurationDays();
     const expiresAt = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString();
@@ -826,12 +826,6 @@ function makeStickerDraggable(el) {
     });
 }
 
-function getNoteIcon(post) {
-    if (post.noteIcon === 'heart' || post.noteIcon === 'star') return post.noteIcon;
-    if (post.sticker === 'heart.svg') return 'heart';
-    return 'star';
-}
-
 function getStickerMarkup(sticker) {
     if (!sticker) return '';
     const imageExt = /\.(svg|png|jpe?g|webp|gif)$/i;
@@ -878,13 +872,11 @@ function renderPostOnMap(post) {
       ${post.doodleData ? `<img class="doodle-image" src="${post.doodleData}" alt="">` : ''}
     `;
     } else {
-        const noteIcon = getNoteIcon(post);
         el.classList.add('sticky-note');
         el.style.backgroundColor = post.color || '#C1EDB9';
         el.innerHTML = `
       <strong>${post.user || 'anonymous'}</strong><br>
       ${post.message || ''}<br>
-      <div class="note-icon">${noteIcon === 'heart' ? '❤️' : '⭐️'}</div>
     `;
     }
 
