@@ -699,6 +699,9 @@ function setActiveTab(name) {
     tabPanels.forEach((panel) => {
         panel.classList.toggle('active', panel.dataset.panel === name);
     });
+    if (deleteAllBtn) {
+        deleteAllBtn.style.display = name === 'recent' ? '' : 'none';
+    }
 }
 
 function updateModalMode() {
