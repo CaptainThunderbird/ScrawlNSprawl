@@ -595,7 +595,12 @@ async function loadLandmarks() {
         if (Array.isArray(data)) {
             landmarks = data
                 .filter((l) => l && typeof l.lat === 'number' && typeof l.lng === 'number' && l.name)
-                .map((l) => ({ name: String(l.name), lat: l.lat, lng: l.lng }));
+                .map((l) => ({
+                    name: String(l.name),
+                    lat: l.lat,
+                    lng: l.lng,
+                    priority: typeof l.priority === 'number' ? l.priority : 0
+                }));
         }
         landmarksLoaded = true;
         refreshTopbarLabel();
@@ -609,11 +614,26 @@ function findNearestLandmark(latLng) {
     if (!latLng || !landmarks.length) return null;
     let best = null;
     let bestDist = Infinity;
+    let bestPriority = -Infinity;
     for (const lm of landmarks) {
         const dist = haversineMeters(latLng, { lat: lm.lat, lng: lm.lng });
-        if (dist < bestDist) {
+        const priority = lm.priority ?? 0;
+        const withinPriorityRange = dist <= 200;
+        if (withinPriorityRange && priority > bestPriority) {
+            best = lm;
+            bestDist = dist;
+            bestPriority = priority;
+            continue;
+        }
+        if (priority === bestPriority && dist < bestDist) {
             bestDist = dist;
             best = lm;
+            continue;
+        }
+        if (!best) {
+            bestDist = dist;
+            best = lm;
+            bestPriority = priority;
         }
     }
     if (!best) return null;
