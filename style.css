@@ -308,8 +308,10 @@ body::after {
 }
 
 .brand-name {
-    font-size: 28px;
+    font-size: 32px;
 }
+
+.brand-name { font-weight: 700; }
 
 .brand-tagline {
     font-size: 14px;
