@@ -514,6 +514,7 @@ function installOverlay(mapInstance) {
         overlay.style.width = '100%';
         overlay.style.height = '100%';
         overlay.style.pointerEvents = 'auto';
+        overlay.style.zIndex = '999';
         overlayView.overlay = overlay;
 
         overlay.addEventListener('click', (e) => {
