@@ -32,6 +32,7 @@
         <div class="topbar-right">
             <button id="add-vibe-btn" class="topbar-btn" type="button">+ Add Vibe</button>
             <button id="bookmarks-btn" class="topbar-btn ghost" type="button">Bookmarks</button>
+            <button id="mod-delete-btn" class="topbar-btn danger" type="button">Delete All</button>
         </div>
     </div>
 
@@ -150,6 +151,7 @@
             getFirestore,
             collection,
             addDoc,
+            getDocs,
             deleteDoc,
             doc,
             onSnapshot,
@@ -177,6 +179,15 @@
         window.deletePost = async (id) => {
             if (!id) return;
             await deleteDoc(doc(db, "posts", id));
+        };
+
+        window.deleteAllPosts = async () => {
+            const snapshot = await getDocs(postsRef);
+            const deletes = [];
+            snapshot.forEach((d) => {
+                deletes.push(deleteDoc(doc(db, "posts", d.id)));
+            });
+            await Promise.all(deletes);
         };
 
         window.listenPosts = (onPost) => {

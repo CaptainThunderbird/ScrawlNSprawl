@@ -27,6 +27,7 @@ const mapDiv = document.getElementById('map');
 const locationPill = document.getElementById('location-pill');
 const bookmarksBtn = document.getElementById('bookmarks-btn');
 const addVibeBtn = document.getElementById('add-vibe-btn');
+const modDeleteBtn = document.getElementById('mod-delete-btn');
 const tabButtons = document.querySelectorAll('.tab-btn');
 const tabPanels = document.querySelectorAll('.tab-panel');
 const photoSection = document.getElementById('photo-section');
@@ -142,6 +143,19 @@ addVibeBtn?.addEventListener('click', () => {
         modal.classList.remove('hidden');
     }
     playSound('pop');
+});
+
+modDeleteBtn?.addEventListener('click', async () => {
+    const ok = confirm('Delete ALL posts? This cannot be undone.');
+    if (!ok) return;
+    try {
+        await window.deleteAllPosts?.();
+        postsById.clear();
+        rerenderVisiblePosts();
+    } catch (err) {
+        console.error(err);
+        alert('Delete failed. Check console for details.');
+    }
 });
 
 function buildStickerPicker() {
