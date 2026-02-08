@@ -378,7 +378,7 @@ function getShortLocationName(results) {
         results.find((r) => types.some((t) => r.types.includes(t)));
 
     const preferred =
-        pick(['point_of_interest', 'park', 'university']) ||
+        pick(['point_of_interest', 'establishment', 'tourist_attraction', 'museum', 'park', 'university']) ||
         pick(['neighborhood', 'sublocality', 'sublocality_level_1']) ||
         pick(['locality']) ||
         pick(['administrative_area_level_2']) ||
@@ -387,16 +387,24 @@ function getShortLocationName(results) {
     if (!preferred) return null;
 
     if (preferred.address_components) {
-        const comp =
-            preferred.address_components.find((c) =>
-                c.types.includes('point_of_interest')
-            ) ||
-            preferred.address_components.find((c) => c.types.includes('park')) ||
-            preferred.address_components.find((c) => c.types.includes('neighborhood')) ||
-            preferred.address_components.find((c) => c.types.includes('sublocality')) ||
-            preferred.address_components.find((c) => c.types.includes('locality'));
+        const comps = preferred.address_components;
+        const findComp = (t) => comps.find((c) => c.types.includes(t));
+        const poi =
+            findComp('point_of_interest') ||
+            findComp('establishment') ||
+            findComp('tourist_attraction') ||
+            findComp('museum') ||
+            findComp('park');
+        const univ = findComp('university');
+        const neighborhood =
+            findComp('neighborhood') ||
+            findComp('sublocality') ||
+            findComp('locality');
 
-        if (comp?.short_name) return comp.short_name;
+        // Prefer POI/landmark names; keep UBC building names when available
+        if (poi?.short_name) return poi.short_name;
+        if (univ?.short_name) return univ.short_name;
+        if (neighborhood?.short_name) return neighborhood.short_name;
     }
 
     return preferred.name || preferred.formatted_address || lastStatusLocation;
