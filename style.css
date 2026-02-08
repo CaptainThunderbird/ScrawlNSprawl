@@ -124,7 +124,7 @@ body::after {
     overflow-y: auto;
     z-index: 70;
 
-    padding: 84px 16px 18px 18px;
+    padding: 60px 16px 18px 18px;
 
     background: rgba(235, 220, 198, 0.98);
     color: var(--ink);
@@ -640,6 +640,7 @@ button {
   background: rgba(255,255,255,0.7);
   font-size: 13px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+  transform: rotate(-1.2deg);
 }
 
 
