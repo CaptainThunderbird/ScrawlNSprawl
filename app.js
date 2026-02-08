@@ -399,27 +399,31 @@ function refreshTopbarLabel() {
     if (!locationPill) return;
 
     if (pendingLatLng) {
-        if (userLocation && geoState === 'ready') {
-            const dist = haversineMeters(userLocation, pendingLatLng);
-            if (dist > MAX_RADIUS_METERS) {
-                locationPill.textContent = 'Come closer to within 100 meters';
-                return;
-            }
-            if (dist <= 10 && lastPendingAddress) {
-                locationPill.textContent = lastPendingAddress;
-                return;
-            }
+        if (lastPendingAddress) {
+            locationPill.textContent = lastPendingAddress;
+        } else {
+            locationPill.textContent = lastPendingLocation || 'Selected location';
         }
-        locationPill.textContent = lastPendingLocation || lastPendingAddress || 'Selected location';
         return;
     }
 
     if (userLocation) {
         if (lastAccuracyMeters !== null && lastAccuracyMeters <= 10 && lastStatusAddress) {
             locationPill.textContent = lastStatusAddress;
-        } else {
-            locationPill.textContent = lastStatusLocation;
+            return;
         }
+        const distFromCenter = pendingLatLng ? 0 : null;
+        if (geoState === 'ready' && map) {
+            const center = map.getCenter()?.toJSON?.();
+            if (center) {
+                const dist = haversineMeters(userLocation, center);
+                if (dist > MAX_RADIUS_METERS) {
+                    locationPill.textContent = 'Come closer to within 100 meters';
+                    return;
+                }
+            }
+        }
+        locationPill.textContent = lastStatusLocation;
         return;
     }
 
