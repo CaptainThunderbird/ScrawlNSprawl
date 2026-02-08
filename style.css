@@ -116,24 +116,25 @@ body::after {
    ========================= */
 #sidebar {
     position: fixed;
-    top: 72px;
+    top: 8px;
     left: 0;
 
     width: var(--sidebar-w);
-    height: calc(100vh - 72px);
+    height: calc(100vh - 16px);
     overflow-y: auto;
     z-index: 70;
 
-    padding: 16px;
+    padding: 18px 16px 16px;
 
     background: rgba(235, 220, 198, 0.98);
     color: var(--ink);
 
-    border-right: var(--dash);
-    box-shadow: 18px 0 40px rgba(0, 0, 0, 0.12);
+    border-right: 2px dashed rgba(92, 72, 52, 0.25);
+    box-shadow: 16px 0 30px rgba(0, 0, 0, 0.14);
 
     /* lined paper feel */
     background-image:
+        radial-gradient(circle at 18px 18px, rgba(92, 72, 52, 0.08) 1px, transparent 2px),
         linear-gradient(to bottom, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0)),
         repeating-linear-gradient(to bottom,
             rgba(72, 70, 57, 0.06),
