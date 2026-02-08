@@ -33,6 +33,58 @@
     </div>
   </div>
 
+  <!-- Sidebar -->
+  <aside id="sidebar">
+    <h1>Scrawl & Sprawl</h1>
+    <p>Leave a kind note, sticker, or doodle near your location.</p>
+
+    <h2>Mode</h2>
+    <div class="mode-row">
+      <button type="button" data-mode="note">Note</button>
+      <button type="button" data-mode="sticker">Sticker</button>
+      <button type="button" data-mode="doodle">Doodle</button>
+      <button type="button" data-mode="photo">Photo</button>
+    </div>
+
+    <h2>Note Settings</h2>
+    <label>
+      Color
+      <input id="note-color" type="color" value="#C1EDB9" />
+    </label>
+    <label>
+      Post as anonymous
+      <input id="anonymous-toggle" type="checkbox" checked />
+    </label>
+    <label>
+      Duration
+      <select id="duration-days">
+        <option value="1">1 day</option>
+        <option value="2">2 days</option>
+        <option value="3">3 days</option>
+        <option value="4">4 days</option>
+        <option value="5">5 days</option>
+        <option value="6">6 days</option>
+        <option value="7">7 days</option>
+      </select>
+    </label>
+
+    <h2>Sticker Tray</h2>
+    <div id="sticker-tray">
+      <button type="button" data-sticker="heart.svg" aria-label="Heart sticker">
+        <img src="assets/stickers/heart.svg" alt="" />
+      </button>
+      <button type="button" data-sticker="smile.svg" aria-label="Smile sticker">
+        <img src="assets/stickers/smile.svg" alt="" />
+      </button>
+      <button type="button" data-sticker="sparkle.svg" aria-label="Sparkle sticker">
+        <img src="assets/stickers/sparkle.svg" alt="" />
+      </button>
+    </div>
+
+    <h2>Recent Notes</h2>
+    <ul id="recent-notes"></ul>
+  </aside>
+
   <!-- Map -->
   <div id="map" style="height: 100vh; width: 100%;"></div>
 
@@ -46,14 +98,14 @@
       <select id="sticker-select">
         <option value="">No sticker</option>
         <option value="heart.svg">Heart</option>
-        <option value="star.svg">Star</option>
+        <option value="smile.svg">Smile</option>
+        <option value="sparkle.svg">Sparkle</option>
       </select>
       <button id="save-note">Save</button>
       <button id="cancel-note">Cancel</button>
     </div>
   </div>
 
-  <ul id="recent-notes"></ul>
 
   <!-- Firebase -->
   <script type="module">
