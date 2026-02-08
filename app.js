@@ -103,7 +103,7 @@ let pendingLatLng = null;
 const items = [];
 let reverseGeocoder = null;
 let lastStatusLocation = 'Kindness Map';
-let lastPendingLocation = 'Selected location';
+let lastPendingLocation = 'Click on the map sprawl to drop a scrawl';
 let lastStatusAddress = '';
 let lastPendingAddress = '';
 let lastAccuracyMeters = null;
@@ -370,7 +370,7 @@ function updateLocationLabel(latLng, mode = 'status') {
         const fullAddress = ok ? (results[0]?.formatted_address || shortName) : null;
         const fallback =
             mode === 'pending'
-                ? 'Selected location'
+                ? 'Click on the map sprawl to drop a scrawl'
                 : (latLng ? `${latLng.lat.toFixed(5)}, ${latLng.lng.toFixed(5)}` : 'Nearby');
 
         if (mode === 'pending') {
@@ -424,13 +424,13 @@ function getShortLocationName(results) {
 function refreshTopbarLabel() {
     if (!locationPill) return;
 
-    const prefixLocation = (label) => `You're at ${label}`;
+    const prefixLocation = (label) => `You're at the ${label}`;
 
-    if (pendingLatLng) {
-        if (!landmarksLoaded) {
-            locationPill.textContent = 'Loading landmarks...';
-            return;
-        }
+  if (pendingLatLng) {
+      if (!landmarksLoaded) {
+          locationPill.textContent = 'Loading landmarks...';
+          return;
+      }
         const nearest = findNearestLandmark(pendingLatLng);
         if (nearest) {
             locationPill.textContent = prefixLocation(nearest.name);
@@ -439,13 +439,18 @@ function refreshTopbarLabel() {
         if (lastPendingAddress) {
             locationPill.textContent = prefixLocation(lastPendingAddress);
         } else {
-            locationPill.textContent = prefixLocation(lastPendingLocation || 'Selected location');
+            locationPill.textContent = prefixLocation(lastPendingLocation || 'Click on the map sprawl to drop a scrawl');
         }
-        return;
-    }
+      return;
+  }
 
-    if (userLocation) {
-        const nearest = findNearestLandmark(userLocation);
+  if (!pendingLatLng && userLocation && geoState === 'ready') {
+      locationPill.textContent = 'Click on the map sprawl to drop a scrawl';
+      return;
+  }
+
+  if (userLocation) {
+      const nearest = findNearestLandmark(userLocation);
         if (nearest && nearest.distMeters <= MAX_RADIUS_METERS) {
             locationPill.textContent = prefixLocation(nearest.name);
             return;
@@ -1147,6 +1152,7 @@ function buildFeedItem(post, options = {}) {
 
     const goTo = () => {
         if (!map) return;
+        playSound('pop');
         map.panTo({ lat: post.lat, lng: post.lng });
         if (minZoom !== null && map.getZoom) {
             map.setZoom(Math.max(map.getZoom(), minZoom));

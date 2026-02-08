@@ -103,7 +103,14 @@ body::after {
 /* Soft “paper filter” over map (does not break map clicks) */
 /* Disabled map overlay so notes render above the map reliably */
 #map::before {
-    content: none;
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.4;
+    mix-blend-mode: multiply;
+    background-image: var(--paper-grain);
 }
 
 /* Dashed scrapbook frame + outer mat so it doesn't look naked */
@@ -148,26 +155,7 @@ body::after {
 
 #sidebar::before,
 #sidebar::after {
-    content: "";
-    position: absolute;
-    width: 54px;
-    height: 18px;
-    background-image: url("assets/tape/washi-tape.svg");
-    background-size: cover;
-    opacity: 0.9;
-    pointer-events: none;
-}
-
-#sidebar::before {
-    top: 10px;
-    right: 14px;
-    transform: rotate(-6deg);
-}
-
-#sidebar::after {
-    bottom: 12px;
-    right: 18px;
-    transform: rotate(4deg);
+    content: none;
 }
 
 #sidebar::-webkit-scrollbar {
@@ -230,23 +218,23 @@ body::after {
 #topbar::after {
     content: "";
     position: absolute;
-    width: 42px;
-    height: 16px;
-    top: -8px;
+    width: 62px;
+    height: 22px;
+    top: -12px;
     background: rgba(255, 255, 255, 0.55);
     border: 1px solid rgba(72, 70, 57, 0.12);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
     opacity: 0.85;
-    transform: rotate(-4deg);
+    transform: rotate(-12deg);
 }
 
 #topbar::before {
-    left: 22px;
+    left: 18px;
 }
 
 #topbar::after {
-    right: 22px;
-    transform: rotate(6deg);
+    right: 18px;
+    transform: rotate(-12deg);
 }
 
 #topbar::after,
@@ -343,29 +331,66 @@ body::after {
     box-shadow: var(--shadow-press);
 }
 
-.sidebar-title-card {
-    margin: 14px 0 10px;
-    padding: 12px;
-    border-radius: 4px;
-    background: rgba(255, 255, 255, 0.7);
-    border: 1px solid rgba(0, 0, 0, 0.15);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
-    transform: rotate(-1.4deg);
-}
+  .sidebar-title-card {
+      position: relative;
+      margin: 10px 0 8px;
+      padding: 12px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+      transform: rotate(-1.4deg);
+  }
+
+  .sidebar-title-card::before {
+      content: "";
+      position: absolute;
+      width: 96px;
+      height: 32px;
+      top: -16px;
+      left: 70%;
+      background-image: url("assets/tape/washi-tape.svg");
+      background-size: cover;
+      opacity: 0.9;
+      transform: rotate(-6deg);
+      pointer-events: none;
+      z-index: 2;
+  }
 
 .brand-board {
     background: rgba(236, 212, 178, 0.95);
     border: 2px solid rgba(152, 114, 74, 0.5);
     border-radius: 10px;
     padding: 22px 18px 18px 18px;
-    margin: 6px 6px 18px 6px;
+    margin: 6px 6px 10px 6px;
     transform: rotate(1.6deg);
     box-shadow: 0 12px 26px rgba(0, 0, 0, 0.16);
+    position: relative;
+    overflow: hidden;
 }
 
 .brand-board .brand {
     gap: 12px;
 }
+
+.brand-sparkles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.brand-sparkles img {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    opacity: 0.85;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.brand-sparkles img:nth-child(1) { top: 6px; left: 10px; transform: rotate(-8deg); }
+.brand-sparkles img:nth-child(2) { top: 8px; right: 14px; transform: rotate(-6deg); }
+.brand-sparkles img:nth-child(3) { bottom: 10px; left: 18px; transform: rotate(6deg); }
+.brand-sparkles img:nth-child(4) { bottom: 8px; right: 22px; transform: rotate(-10deg); }
 
 .sidebar-title {
     font-family: 'Gaegu', 'Patrick Hand', cursive;
@@ -633,13 +658,17 @@ button {
 }
 
 .location-pill{
-  display: inline-block;
-  margin: 6px 0 12px;
-  padding: 6px 10px;
-  border-radius: 12px;
+  display: block;
+  width: fit-content;
+  max-width: calc(100% - 24px);
+  margin: 4px auto 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+    min-width: 0;
   border: 1px dashed rgba(72,70,57,0.35);
-  background: rgba(255,255,255,0.7);
+  background: rgba(72,70,57,0.35);
   font-size: 13px;
+  color: #ffffff;
   box-shadow: 0 2px 6px rgba(0,0,0,0.10);
   transform: rotate(-1.2deg);
 }
@@ -658,6 +687,21 @@ button {
     border: 1px solid rgba(0, 0, 0, 0.14);
     border-radius: 6px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.10);
+    cursor: pointer;
+    transition: transform .15s ease, background .15s ease, box-shadow .15s ease;
+}
+
+.note-feed li:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+    box-shadow:
+        0 0 18px rgba(236, 199, 121, 0.45),
+        0 4px 10px rgba(0, 0, 0, 0.14);
+}
+
+.note-feed li:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.10);
 }
 
 .note-feed li button {
