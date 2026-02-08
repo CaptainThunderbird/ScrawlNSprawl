@@ -747,10 +747,19 @@ function renderRecentNotes() {
         const li = document.createElement('li');
         li.textContent = `${post.user}: ${post.message || post.type}`;
         li.style.cursor = 'pointer';
-        li.addEventListener('click', () => {
+        li.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             if (!map) return;
-            map.panTo({ lat: post.lat, lng: post.lng });
-            map.setZoom(17);
+
+            console.log('Jump to', post.id, post.lat, post.lng);
+
+            const lat = Number(post.lat);
+            const lng = Number(post.lng);
+            if (Number.isNaN(lat) || Number.isNaN(lng)) return;
+
+            map.panTo({ lat, lng });
+            map.setZoom(Math.max(map.getZoom(), 17));
 
             const item = itemById.get(post.id);
             if (item?.element) {
@@ -758,6 +767,7 @@ function renderRecentNotes() {
                 setTimeout(() => item.element.classList.remove('pulse'), 1200);
             }
         });
+
         recentNotes.appendChild(li);
     });
 }
