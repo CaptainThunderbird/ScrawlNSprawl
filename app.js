@@ -62,7 +62,7 @@ const durationDaysSelect = document.getElementById('duration-days');
 let currentMode = 'note';
 let selectedSticker = 'heart.svg';
 let userLocation = null;
-const MAX_RADIUS_METERS = 100;
+const MAX_RADIUS_METERS = 300;
 const HEAT_RADIUS_METERS = 250;
 const HEAT_LEVELS = [1, 3, 7];
 const clientId = getOrCreateClientId();
@@ -387,7 +387,14 @@ function initMap() {
     refreshTopbarLabel();
 
     map.addListener('click', (e) => {
-        pendingLatLng = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+        const clickedLatLng = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+        const createCheck = canCreateWithinRadius(clickedLatLng);
+        if (!createCheck.allowed) {
+            alert(createCheck.message);
+            return;
+        }
+
+        pendingLatLng = clickedLatLng;
         lastPendingLocation = `${pendingLatLng.lat.toFixed(5)}, ${pendingLatLng.lng.toFixed(5)}`;
         lastPendingAddress = '';
         refreshTopbarLabel();
@@ -618,7 +625,7 @@ function refreshTopbarLabel() {
             if (center) {
                 const dist = haversineMeters(userLocation, center);
                 if (dist > MAX_RADIUS_METERS) {
-                    locationPill.textContent = 'Come closer to within 100 meters';
+                    locationPill.textContent = 'Come closer to within 300 meters';
                     return;
                 }
             }
@@ -813,6 +820,20 @@ function isWithinRadius(post) {
     return true;
 }
 
+function canCreateWithinRadius(latLng) {
+    if (!latLng) {
+        return { allowed: false, message: 'Pick a location on the map first.' };
+    }
+    if (!userLocation) {
+        return { allowed: false, message: 'Enable location so we can enforce the 300 meter creation limit.' };
+    }
+    const dist = haversineMeters(userLocation, latLng);
+    if (dist > MAX_RADIUS_METERS) {
+        return { allowed: false, message: 'You can only add notes within 300 meters of your current location.' };
+    }
+    return { allowed: true, message: '' };
+}
+
 function getOrCreateClientId() {
     const key = 'sns_client_id';
     let id = localStorage.getItem(key);
@@ -976,6 +997,11 @@ cancelBtn.addEventListener('click', () => {
 // -------------------- Save Note --------------------
 saveBtn.addEventListener('click', () => {
     if (!pendingLatLng) return;
+    const createCheck = canCreateWithinRadius(pendingLatLng);
+    if (!createCheck.allowed) {
+        alert(createCheck.message);
+        return;
+    }
 
     const typedName = usernameInput.value.trim();
     const isAnonymous = typedName ? false : getIsAnonymous();
