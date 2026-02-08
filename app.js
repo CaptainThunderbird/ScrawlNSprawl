@@ -29,8 +29,11 @@ const bookmarksBtn = document.getElementById('bookmarks-btn');
 const tabButtons = document.querySelectorAll('.tab-btn');
 const tabPanels = document.querySelectorAll('.tab-panel');
 const photoSection = document.getElementById('photo-section');
+const doodleSection = document.getElementById('doodle-section');
 const photoInput = document.getElementById('photo-input');
 const photoPreview = document.getElementById('photo-preview');
+const doodleCanvas = document.getElementById('doodle-canvas');
+const doodleClearBtn = document.getElementById('doodle-clear');
 
 // Optional controls (may be null if index.html doesn't have them yet)
 const noteColorInput = document.getElementById('note-color');
@@ -80,9 +83,14 @@ let pendingLatLng = null;
 const items = [];
 let reverseGeocoder = null;
 let lastShortLocation = 'Kindness Map';
+const doodleCtx = doodleCanvas?.getContext('2d');
+let isDoodling = false;
+let doodleHasStroke = false;
+const DOODLE_OUTLINE_WIDTH = 18;
+const DOODLE_STROKE_WIDTH = 8;
 
 function setMode(mode) {
-    const allowed = new Set(['note', 'sticker', 'photo']);
+    const allowed = new Set(['note', 'sticker', 'photo', 'doodle']);
     if (!allowed.has(mode)) return;
     currentMode = mode;
     updateModalMode();
@@ -152,6 +160,71 @@ if (photoInput && photoPreview) {
         reader.readAsDataURL(file);
     });
 }
+
+function clearDoodleCanvas() {
+    if (!doodleCanvas || !doodleCtx) return;
+    doodleCtx.clearRect(0, 0, doodleCanvas.width, doodleCanvas.height);
+    doodleCtx.lineCap = 'round';
+    doodleCtx.lineJoin = 'round';
+    doodleHasStroke = false;
+}
+
+function getCanvasPointFromEvent(evt) {
+    if (!doodleCanvas) return { x: 0, y: 0 };
+    const rect = doodleCanvas.getBoundingClientRect();
+    const sx = doodleCanvas.width / rect.width;
+    const sy = doodleCanvas.height / rect.height;
+    const x = (evt.clientX - rect.left) * sx;
+    const y = (evt.clientY - rect.top) * sy;
+    return { x, y };
+}
+
+if (doodleCanvas && doodleCtx) {
+    clearDoodleCanvas();
+
+    doodleCanvas.addEventListener('pointerdown', (evt) => {
+        evt.preventDefault();
+        const { x, y } = getCanvasPointFromEvent(evt);
+        doodleCtx.beginPath();
+        doodleCtx.moveTo(x, y);
+        doodleCtx.lineTo(x + 0.01, y + 0.01);
+        doodleCtx.strokeStyle = '#ffffff';
+        doodleCtx.lineWidth = DOODLE_OUTLINE_WIDTH;
+        doodleCtx.stroke();
+        doodleCtx.strokeStyle = '#111111';
+        doodleCtx.lineWidth = DOODLE_STROKE_WIDTH;
+        doodleCtx.stroke();
+        isDoodling = true;
+        doodleHasStroke = true;
+    });
+
+    doodleCanvas.addEventListener('pointermove', (evt) => {
+        if (!isDoodling) return;
+        evt.preventDefault();
+        const { x, y } = getCanvasPointFromEvent(evt);
+        doodleCtx.lineTo(x, y);
+        doodleCtx.strokeStyle = '#ffffff';
+        doodleCtx.lineWidth = DOODLE_OUTLINE_WIDTH;
+        doodleCtx.stroke();
+        doodleCtx.strokeStyle = '#111111';
+        doodleCtx.lineWidth = DOODLE_STROKE_WIDTH;
+        doodleCtx.stroke();
+        doodleHasStroke = true;
+    });
+
+    const stopDoodle = () => {
+        if (!isDoodling) return;
+        doodleCtx.closePath();
+        isDoodling = false;
+    };
+    doodleCanvas.addEventListener('pointerup', stopDoodle);
+    doodleCanvas.addEventListener('pointerleave', stopDoodle);
+    doodleCanvas.addEventListener('pointercancel', stopDoodle);
+}
+
+doodleClearBtn?.addEventListener('click', () => {
+    clearDoodleCanvas();
+});
 
 typeButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -278,11 +351,15 @@ function updateModalMode() {
         modalTitle.textContent =
             currentMode === 'sticker'
                 ? 'New Sticker'
-                : (currentMode === 'photo' ? 'New Photo' : 'New Sticky Note');
+                : (currentMode === 'photo'
+                    ? 'New Photo'
+                    : (currentMode === 'doodle' ? 'New Doodle' : 'New Sticky Note'));
     }
     noteFields?.classList.toggle('hidden', currentMode !== 'note');
     stickerSection?.classList.toggle('hidden', currentMode !== 'sticker');
     photoSection?.classList.toggle('hidden', currentMode !== 'photo');
+    doodleSection?.classList.toggle('hidden', currentMode !== 'doodle');
+    modal?.classList.toggle('doodle-mode', currentMode === 'doodle');
 }
 
 function installOverlay(mapInstance) {
@@ -426,6 +503,7 @@ function upsertBookmark(post) {
         noteIcon: post.noteIcon || '',
         color: post.color || '#C1EDB9',
         photoData: post.photoData || '',
+        doodleData: post.doodleData || '',
         lat: post.lat,
         lng: post.lng,
         expiresAt: post.expiresAt || null
@@ -515,6 +593,7 @@ cancelBtn.addEventListener('click', () => {
     usernameInput.value = '';
     if (photoInput) photoInput.value = '';
     if (photoPreview) photoPreview.src = '';
+    clearDoodleCanvas();
     pendingLatLng = null;
 });
 
@@ -543,6 +622,10 @@ saveBtn.addEventListener('click', () => {
         alert('Please upload a photo.');
         return;
     }
+    if (currentMode === 'doodle' && !doodleHasStroke) {
+        alert('Please draw something first.');
+        return;
+    }
 
     const newPost = {
         type: currentMode,
@@ -561,6 +644,9 @@ saveBtn.addEventListener('click', () => {
     if (currentMode === 'photo') {
         newPost.photoData = photoPreview?.src || '';
     }
+    if (currentMode === 'doodle') {
+        newPost.doodleData = doodleCanvas?.toDataURL('image/png') || '';
+    }
 
     window.savePost(newPost);
     playSound('paper');
@@ -570,6 +656,7 @@ saveBtn.addEventListener('click', () => {
     usernameInput.value = '';
     if (photoInput) photoInput.value = '';
     if (photoPreview) photoPreview.src = '';
+    clearDoodleCanvas();
     pendingLatLng = null;
 });
 
@@ -678,7 +765,7 @@ function renderPostOnMap(post) {
 
     const type = post.type || 'note';
     const bookmarked = isBookmarked(post.id);
-    if (type !== 'sticker') {
+    if (type !== 'sticker' && type !== 'doodle') {
         el.classList.add(`heat-${post._heat ?? 0}`);
     }
 
@@ -694,6 +781,11 @@ function renderPostOnMap(post) {
       </div>
       <div class="photo-caption">${post.user || 'anonymous'}</div>
     `;
+    } else if (type === 'doodle') {
+        el.classList.add('map-doodle');
+        el.innerHTML = `
+      ${post.doodleData ? `<img class="doodle-image" src="${post.doodleData}" alt="">` : ''}
+    `;
     } else {
         const noteIcon = getNoteIcon(post);
         el.classList.add('sticky-note');
@@ -705,7 +797,7 @@ function renderPostOnMap(post) {
     `;
     }
 
-    if (type !== 'sticker') {
+    if (type !== 'sticker' && type !== 'doodle') {
         const bookmarkBtn = document.createElement('button');
         bookmarkBtn.type = 'button';
         bookmarkBtn.className = 'bookmark-btn';
