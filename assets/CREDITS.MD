@@ -8,14 +8,14 @@
 
 ## Stickers
 - Flaticon sticker pack(s): <link>
-  - heart.svg — Author/Pack
-  - sparkle.svg — Author/Pack
-  - smile.svg — Author/Pack
+  - heart.svg 
+  - sparkle.svg
+  - smile.svg 
 
 ## Textures
 - Transparent Textures / Subtle Patterns: <link>
-  - paper-grain.png — Source
-  - grid-paper.png - Source
+  - paper-grain.png 
+  - grid-paper.png 
 
 ## Fonts
 - Patrick Hand — Google Fonts

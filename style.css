@@ -156,21 +156,28 @@ body::after {
         var(--paper-grain);
 }
 
+#sidebar::before,
 #sidebar::after {
     content: "";
     position: absolute;
-    top: 10px;
-    right: -6px;
-    bottom: 10px;
-    width: 10px;
-    background:
-        repeating-linear-gradient(to bottom,
-            rgba(72, 70, 57, 0.25),
-            rgba(72, 70, 57, 0.25) 3px,
-            transparent 3px,
-            transparent 9px);
-    opacity: 0.35;
+    width: 54px;
+    height: 18px;
+    background-image: url("assets/tape/washi-tape.svg");
+    background-size: cover;
+    opacity: 0.9;
     pointer-events: none;
+}
+
+#sidebar::before {
+    top: 10px;
+    right: 14px;
+    transform: rotate(-6deg);
+}
+
+#sidebar::after {
+    bottom: 12px;
+    right: 18px;
+    transform: rotate(4deg);
 }
 
 #sidebar::-webkit-scrollbar {
