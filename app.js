@@ -70,6 +70,20 @@ const sounds = {
     paper: new Audio('assets/sounds/paper-place.mp3'),
     sticker: new Audio('assets/sounds/sticker-tap.mp3')
 };
+const soundByButtonType = new Map([
+    ['button', 'pop'],
+    ['submit', 'pop'],
+    ['reset', 'pop']
+]);
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    if (btn.disabled || btn.getAttribute('aria-disabled') === 'true') return;
+    if (btn.dataset.sound === 'off') return;
+    const type = btn.getAttribute('type') || 'button';
+    const sound = soundByButtonType.get(type) || 'pop';
+    playSound(sound);
+}, true);
 
 // Store posts + rendered elements for filtering/re-rendering
 const postsById = new Map();
@@ -385,7 +399,7 @@ function refreshTopbarLabel() {
     if (!locationPill) return;
 
     if (pendingLatLng) {
-        if (userLocation) {
+        if (userLocation && geoState === 'ready') {
             const dist = haversineMeters(userLocation, pendingLatLng);
             if (dist > MAX_RADIUS_METERS) {
                 locationPill.textContent = 'Come closer to within 100 meters';
