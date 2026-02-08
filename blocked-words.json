@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "notes": "Placeholder list. Replace with your private blocklist.",
+  "blocked": [
+    "SLUR_1",
+    "SLUR_2",
+    "SLUR_3",
+    "SLUR_4",
+    "SLUR_5"
+  ]
+}

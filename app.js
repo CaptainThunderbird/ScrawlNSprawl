@@ -73,6 +73,63 @@ const sounds = {
     paper: new Audio('assets/sounds/paper-place.mp3'),
     sticker: new Audio('assets/sounds/sticker-tap.mp3')
 };
+
+const defaultBlockedWords = ['hate', 'kill', 'stupid', 'idiot', 'dumb', 'racist'];
+let blockedWords = [...defaultBlockedWords];
+const countryNameSet = new Set();
+const countryBBoxes = [];
+
+async function loadBlockedWords() {
+    try {
+        const res = await fetch('blocked-words.json', { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (Array.isArray(data?.blocked)) {
+            blockedWords = [...new Set([...defaultBlockedWords, ...data.blocked])];
+        }
+    } catch {
+        // Keep defaults on failure
+    }
+}
+
+async function loadCountryNames() {
+    try {
+        const res = await fetch('countries.json', { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (Array.isArray(data?.countries)) {
+            data.countries.forEach((c) => {
+                if (typeof c === 'string' && c.trim()) {
+                    countryNameSet.add(c.trim().toLowerCase());
+                }
+            });
+        }
+    } catch {
+        // Leave set empty on failure
+    }
+}
+
+async function loadCountryBBoxes() {
+    try {
+        const res = await fetch('country-bboxes.json', { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (Array.isArray(data?.bboxes)) {
+            data.bboxes.forEach((b) => {
+                if (!b || typeof b.name !== 'string') return;
+                countryBBoxes.push({
+                    name: b.name,
+                    minLat: Number(b.minLat),
+                    maxLat: Number(b.maxLat),
+                    minLng: Number(b.minLng),
+                    maxLng: Number(b.maxLng)
+                });
+            });
+        }
+    } catch {
+        // Leave empty on failure
+    }
+}
 const soundByButtonType = new Map([
     ['button', 'pop'],
     ['submit', 'pop'],
@@ -87,6 +144,10 @@ document.addEventListener('click', (e) => {
     const sound = soundByButtonType.get(type) || 'pop';
     playSound(sound);
 }, true);
+
+loadBlockedWords();
+loadCountryNames();
+loadCountryBBoxes();
 
 brandLogo?.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -151,6 +212,7 @@ loadMoreBtn?.addEventListener('click', () => {
     recentLimit += 10;
     renderRecentNotes();
 });
+
 
 addVibeBtn?.addEventListener('click', () => {
     if (!map) return;
@@ -380,21 +442,45 @@ function updateLocationLabel(latLng, mode = 'status') {
 
     reverseGeocoder.geocode({ location: latLng }, (results, status) => {
         const ok = status === 'OK' && results && results.length;
-        const shortName = ok ? getShortLocationName(results) : null;
+        const nearest = findNearestLandmark(latLng);
+        const withinLandmark = nearest && nearest.distMeters <= MAX_RADIUS_METERS;
+        const country = ok ? getCountryName(results) : null;
+        const countryBBox = !country ? getCountryNameFromBBoxes(latLng) : null;
+        const shortName = ok
+            ? (withinLandmark ? nearest.name : (country || countryBBox || getShortLocationName(results)))
+            : (countryBBox || null);
         const fullAddress = ok ? (results[0]?.formatted_address || shortName) : null;
         const fallback =
             mode === 'pending'
-                ? 'Click on the map sprawl to drop a scrawl'
+                ? (latLng ? `${latLng.lat.toFixed(5)}, ${latLng.lng.toFixed(5)}` : 'Selected location')
                 : (latLng ? `${latLng.lat.toFixed(5)}, ${latLng.lng.toFixed(5)}` : 'Nearby');
 
         if (mode === 'pending') {
             lastPendingLocation = shortName || fallback;
-            lastPendingAddress = fullAddress || '';
+            // Prefer country name over full address when outside landmark radius.
+            lastPendingAddress = (!withinLandmark && (country || countryBBox)) ? '' : (fullAddress || '');
         } else {
             lastStatusLocation = shortName || fallback;
-            lastStatusAddress = fullAddress || '';
+            lastStatusAddress = (!withinLandmark && (country || countryBBox)) ? '' : (fullAddress || '');
         }
         refreshTopbarLabel();
+
+        // If we didn't get a country, try a country-only reverse geocode.
+        if (!withinLandmark && !country && reverseGeocoder) {
+            reverseGeocoder.geocode({ location: latLng, resultType: ['country'] }, (r2, s2) => {
+                if (s2 !== 'OK' || !r2 || !r2.length) return;
+                const countryOnly = getCountryName(r2);
+                if (!countryOnly) return;
+                if (mode === 'pending') {
+                    lastPendingLocation = countryOnly;
+                    lastPendingAddress = '';
+                } else {
+                    lastStatusLocation = countryOnly;
+                    lastStatusAddress = '';
+                }
+                refreshTopbarLabel();
+            });
+        }
     });
 }
 
@@ -435,6 +521,53 @@ function getShortLocationName(results) {
     return preferred.name || preferred.formatted_address || lastStatusLocation;
 }
 
+function getCountryName(results) {
+    if (!results || !results.length) return null;
+    for (const r of results) {
+        const comps = r.address_components || [];
+        const country = comps.find((c) => c.types?.includes('country'));
+        if (country) {
+            const name = country.long_name || country.short_name || null;
+            if (!name) return null;
+            const normalized = name.toLowerCase();
+            if (normalized === 'canada') return null;
+            if (countryNameSet.size > 0 && countryNameSet.has(normalized)) return name;
+            if (countryNameSet.size === 0) return name;
+            // If Google returns a localized country name not in the ASCII list, still use it.
+            return name;
+        }
+    }
+    // Fallback: Google often returns a final result that is the country name.
+    const last = results[results.length - 1];
+    const formatted = last?.formatted_address || '';
+    if (formatted) {
+        const normalized = formatted.toLowerCase();
+        if (normalized === 'canada') return null;
+        if (countryNameSet.size === 0 || countryNameSet.has(normalized)) return formatted;
+        return formatted;
+    }
+    return null;
+}
+
+function getCountryNameFromBBoxes(latLng) {
+    if (!latLng || !countryBBoxes.length) return null;
+    const lat = Number(latLng.lat);
+    const lng = Number(latLng.lng);
+    if (Number.isNaN(lat) || Number.isNaN(lng)) return null;
+    for (const b of countryBBoxes) {
+        if (
+            lat >= b.minLat &&
+            lat <= b.maxLat &&
+            lng >= b.minLng &&
+            lng <= b.maxLng
+        ) {
+            if (String(b.name).toLowerCase() === 'canada') continue;
+            return b.name;
+        }
+    }
+    return null;
+}
+
 function refreshTopbarLabel() {
     if (!locationPill) return;
 
@@ -445,16 +578,16 @@ function refreshTopbarLabel() {
           locationPill.textContent = 'Loading landmarks...';
           return;
       }
-        const nearest = findNearestLandmark(pendingLatLng);
-        if (nearest) {
-            locationPill.textContent = prefixLocation(nearest.name);
-            return;
-        }
-        if (lastPendingAddress) {
-            locationPill.textContent = prefixLocation(lastPendingAddress);
-        } else {
-            locationPill.textContent = prefixLocation(lastPendingLocation || 'Click on the map sprawl to drop a scrawl');
-        }
+      const nearest = findNearestLandmark(pendingLatLng);
+      if (nearest && nearest.distMeters <= MAX_RADIUS_METERS) {
+          locationPill.textContent = prefixLocation(nearest.name);
+          return;
+      }
+      if (lastPendingAddress) {
+          locationPill.textContent = prefixLocation(lastPendingAddress);
+      } else {
+          locationPill.textContent = prefixLocation(lastPendingLocation || 'Click on the map sprawl to drop a scrawl');
+      }
       return;
   }
 
@@ -693,9 +826,8 @@ function playSound(name) {
 
 function containsBlockedLanguage(text) {
     if (!text) return false;
-    const blocked = ['hate', 'kill', 'stupid', 'idiot', 'dumb', 'racist'];
     const lower = text.toLowerCase();
-    return blocked.some((w) => lower.includes(w));
+    return blockedWords.some((w) => lower.includes(String(w).toLowerCase()));
 }
 
 function loadBookmarks() {
@@ -1101,7 +1233,7 @@ function getPostLocationLabel(post) {
     const lng = Number(post.lng);
     if (Number.isNaN(lat) || Number.isNaN(lng)) return null;
     const nearest = findNearestLandmark({ lat, lng });
-    if (!nearest || nearest.distMeters > 250) return null;
+    if (!nearest || nearest.distMeters > MAX_RADIUS_METERS) return null;
     return nearest.name || null;
 }
 
@@ -1125,7 +1257,10 @@ function updateFeedItemLocation(textEl, post) {
     if (Number.isNaN(lat) || Number.isNaN(lng)) return;
     reverseGeocoder.geocode({ location: { lat, lng } }, (results, status) => {
         if (status !== 'OK' || !results || !results.length) return;
-        const shortName = getShortLocationName(results);
+        const nearest = findNearestLandmark({ lat, lng });
+        const withinLandmark = nearest && nearest.distMeters <= MAX_RADIUS_METERS;
+        const country = getCountryName(results);
+        const shortName = withinLandmark ? nearest.name : (country || getShortLocationName(results));
         if (!shortName) return;
         textEl.textContent = formatScrapbookLabel(post.type, shortName);
     });
