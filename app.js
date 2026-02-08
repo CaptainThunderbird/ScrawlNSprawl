@@ -34,6 +34,7 @@ const sidebar = document.getElementById('sidebar');
 const bookmarksToggle = document.getElementById('bookmarks-toggle');
 const menuBtn = document.getElementById('menu-btn');
 const sidebarOverlay = document.getElementById('sidebar-overlay');
+const deleteAllBtn = document.getElementById('delete-all-btn');
 const photoSection = document.getElementById('photo-section');
 const doodleSection = document.getElementById('doodle-section');
 const logoPopup = document.getElementById('logo-popup');
@@ -216,6 +217,20 @@ bookmarksBtn?.addEventListener('click', () => {
 loadMoreBtn?.addEventListener('click', () => {
     recentLimit += 10;
     renderRecentNotes();
+});
+
+deleteAllBtn?.addEventListener('click', async () => {
+    const mine = Array.from(postsById.values()).filter((p) => p.clientId === clientId);
+    if (!mine.length) {
+        alert('No posts to delete.');
+        return;
+    }
+    const ok = confirm(`Delete ${mine.length} of your posts? This cannot be undone.`);
+    if (!ok) return;
+    for (const post of mine) {
+        await window.deletePost?.(post.id);
+    }
+    rerenderVisiblePosts();
 });
 
 const setSidebarOpen = (open) => {

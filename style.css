@@ -733,6 +733,10 @@ button {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.10);
 }
 
+.sidebar-btn.danger {
+    background: rgba(255, 215, 215, 0.85);
+    border-color: rgba(120, 40, 40, 0.35);
+}
 .bookmarks-toggle {
     display: none;
 }
