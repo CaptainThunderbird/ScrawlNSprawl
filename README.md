@@ -14,6 +14,7 @@ We created a digital third-place that acts as a community kindness layer. Studen
 * Leave kind messages on virtual sticky notes.
 * Drop hand-drawn doodle stickers.
 * Discover pockets of positivity near their current location.
+* and most importantly, feel safe!
 
 ---
 
