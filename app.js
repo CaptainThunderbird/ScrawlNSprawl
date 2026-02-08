@@ -417,8 +417,12 @@ function refreshTopbarLabel() {
     if (!locationPill) return;
 
     if (pendingLatLng) {
+        if (!landmarksLoaded) {
+            locationPill.textContent = 'Loading landmarks...';
+            return;
+        }
         const nearest = findNearestLandmark(pendingLatLng);
-        if (nearest && nearest.distMeters <= MAX_RADIUS_METERS) {
+        if (nearest) {
             locationPill.textContent = nearest.name;
             return;
         }
