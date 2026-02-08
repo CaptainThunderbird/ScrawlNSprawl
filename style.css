@@ -16,6 +16,8 @@
     --ink-soft: rgba(72, 70, 57, 0.6);
     --paper-grain: url("assets/textures/paper-grain.png");
     --paper-grid: url("assets/textures/grid-paper.png");
+    --board: url("assets/textures/board.svg");
+    --paper-strip: url("assets/textures/paper-strip.svg");
 
     --shadow-soft: 0 6px 18px rgba(0, 0, 0, 0.10);
     --shadow-note: 0 10px 22px rgba(0, 0, 0, 0.18);
@@ -37,7 +39,11 @@ body {
     padding: 0;
     overflow-x: hidden;
 
-    background: var(--paper-2);
+    background:
+        var(--board),
+        var(--paper-2);
+    background-size: cover, auto;
+    background-attachment: fixed;
     color: var(--ink);
     font-family: 'Patrick Hand', cursive, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
@@ -56,8 +62,8 @@ body::before {
     pointer-events: none;
     z-index: 1;
     background:
-        radial-gradient(1200px 600px at 20% 10%, rgba(255, 255, 255, 0.65), transparent 60%),
-        radial-gradient(900px 500px at 80% 90%, rgba(0, 0, 0, 0.05), transparent 55%);
+        radial-gradient(1200px 600px at 20% 10%, rgba(255, 255, 255, 0.35), transparent 60%),
+        radial-gradient(900px 500px at 80% 90%, rgba(0, 0, 0, 0.12), transparent 55%);
 }
 
 /* Paper grain overlay */
@@ -100,7 +106,7 @@ body::after {
     z-index: 3;
     background:
         url("assets/tape/washi-strip-vert.svg"),
-        linear-gradient(to bottom, rgba(248, 244, 225, 0.18), rgba(248, 244, 225, 0.06)),
+        linear-gradient(to bottom, rgba(248, 244, 225, 0.25), rgba(248, 244, 225, 0.06)),
         var(--paper-grid);
     background-repeat: no-repeat, repeat, repeat;
     background-position: left 14px center, center, center;
@@ -118,12 +124,12 @@ body::after {
     pointer-events: none;
     z-index: 4;
 
-    border-radius: 22px;
-    border: 2px dashed rgba(72, 70, 57, 0.18);
+    border-radius: 14px;
+    border: 2px dashed rgba(92, 72, 52, 0.28);
 
     /* Outer “mat” makes the border feel intentional */
     box-shadow:
-        0 0 0 12px rgba(72, 70, 57, 0.10),
+        0 0 0 14px rgba(92, 72, 52, 0.18),
         /* OUTSIDE mat */
         inset 0 0 0 6px rgba(255, 255, 255, 0.18);
 }
@@ -231,7 +237,7 @@ body::after {
     padding: 12px 14px;
     border-radius: 8px;
 
-    background: rgba(245, 240, 221, 0.98);
+    background: rgba(200, 176, 146, 0.96);
     border: 1px solid rgba(72, 70, 57, 0.14);
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
     backdrop-filter: blur(10px);
@@ -316,16 +322,19 @@ body::after {
 }
 
 .topbar-label {
-    font-size: 16px;
-    padding: 6px 10px;
+    font-size: 15px;
+    padding: 8px 14px;
+    background-image: var(--paper-strip);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    border: 1px solid rgba(92, 72, 52, 0.25);
+    border-radius: 6px;
 }
 
 
 .topbar-label {
-    font-size: 15px;
-    padding-bottom: 3px;
-    border-bottom: 2px solid rgba(72, 70, 57, 0.45);
     letter-spacing: 0.3px;
+    border-bottom: 1px dashed rgba(92, 72, 52, 0.35);
 }
 
 .topbar-btn {

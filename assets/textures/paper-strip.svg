@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="80" viewBox="0 0 420 80">
+  <defs>
+    <filter id="noise" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="1" seed="5"/>
+      <feColorMatrix type="saturate" values="0.3"/>
+      <feComponentTransfer>
+        <feFuncA type="table" tableValues="0 0.12"/>
+      </feComponentTransfer>
+    </filter>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f6ead6"/>
+      <stop offset="1" stop-color="#e7d2b3"/>
+    </linearGradient>
+  </defs>
+  <path d="M8 6 Q210 0 412 6 Q418 40 412 74 Q210 80 8 74 Q2 40 8 6 Z"
+        fill="url(#paper)" stroke="#b99269" stroke-width="2"/>
+  <g filter="url(#noise)">
+    <rect x="6" y="6" width="408" height="68" fill="#000"/>
+  </g>
+  <path d="M12 10 Q210 6 408 10" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+</svg>
