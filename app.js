@@ -845,6 +845,24 @@ function renderPostOnMap(post) {
     const el = document.createElement('div');
     el.style.position = 'absolute';
     el.style.pointerEvents = 'auto';
+    // Prevent map drag/zoom while interacting with notes
+    [
+        'mousedown',
+        'mouseup',
+        'click',
+        'dblclick',
+        'contextmenu',
+        'touchstart',
+        'touchmove',
+        'touchend',
+        'pointerdown',
+        'pointermove',
+        'pointerup'
+    ].forEach((evt) => {
+        el.addEventListener(evt, (e) => {
+            e.stopPropagation();
+        });
+    });
     const rotation = Math.random() * 20 - 10;
     el.style.transform = `translate(-50%, -100%) rotate(${rotation}deg)`;
 
@@ -884,9 +902,11 @@ function renderPostOnMap(post) {
         const bookmarkBtn = document.createElement('button');
         bookmarkBtn.type = 'button';
         bookmarkBtn.className = 'bookmark-btn';
-        bookmarkBtn.textContent = bookmarked ? 'Saved' : 'Save';
-        bookmarkBtn.title = bookmarked ? 'Remove bookmark' : 'Save bookmark';
+        const isNote = type === 'note';
+        bookmarkBtn.textContent = isNote ? (bookmarked ? '⭐' : '☆') : (bookmarked ? 'Bookmarked' : 'Bookmark');
+        bookmarkBtn.title = bookmarked ? 'Remove bookmark' : 'Bookmark';
         bookmarkBtn.setAttribute('aria-pressed', String(bookmarked));
+        bookmarkBtn.setAttribute('aria-label', bookmarked ? 'Remove bookmark' : 'Bookmark');
         bookmarkBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             if (isBookmarked(post.id)) {
