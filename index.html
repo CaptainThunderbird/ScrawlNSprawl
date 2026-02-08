@@ -114,40 +114,45 @@
     <!-- Modal -->
     <div id="modal" class="hidden">
         <div class="modal-content">
-            <h3>New Note</h3>
-            <input id="username" placeholder="Name (optional)" />
-            <textarea id="note-text" placeholder="Write a kind note..."></textarea>
-            <label class="modal-label">
-                Color
-                <input id="note-color" type="color" value="#C1EDB9" />
-            </label>
-            <label class="modal-label">
-                Post as anonymous
-                <input id="anonymous-toggle" type="checkbox" checked />
-            </label>
-            <label class="modal-label">
-                Duration
-                <select id="duration-days">
-                    <option value="1">1 day</option>
-                    <option value="2">2 days</option>
-                    <option value="3">3 days</option>
-                    <option value="4">4 days</option>
-                    <option value="5">5 days</option>
-                    <option value="6">6 days</option>
-                    <option value="7">7 days</option>
+            <h3 id="modal-title">New Note</h3>
+            <div id="note-fields">
+                <input id="username" placeholder="Name (optional)" />
+                <textarea id="note-text" placeholder="Write a kind note..."></textarea>
+                <label class="modal-label">
+                    Color
+                    <div class="swatch-row" id="note-color-options" role="radiogroup" aria-label="Note color">
+                        <button type="button" class="swatch s1 active" data-color="#C1EDB9" aria-label="Green"></button>
+                        <button type="button" class="swatch s2" data-color="#C4DFF2" aria-label="Blue"></button>
+                        <button type="button" class="swatch s3" data-color="#F5F59F" aria-label="Yellow"></button>
+                        <button type="button" class="swatch s4" data-color="#FAD4EF" aria-label="Pink"></button>
+                        <button type="button" class="swatch s5" data-color="#ECDCFA" aria-label="Purple"></button>
+                        <button type="button" class="swatch s6" data-color="#F5CC9D" aria-label="Orange"></button>
+                        <button type="button" class="swatch s7" data-color="#FFB0B0" aria-label="Red"></button>
+                    </div>
+                </label>
+                <label class="modal-label">
+                    Duration
+                    <select id="duration-days">
+                        <option value="1">1 day</option>
+                        <option value="2">2 days</option>
+                        <option value="3">3 days</option>
+                        <option value="4">4 days</option>
+                        <option value="5">5 days</option>
+                        <option value="6">6 days</option>
+                        <option value="7">7 days</option>
+                    </select>
+                </label>
+                <select id="sticker-select" class="hidden" aria-hidden="true" tabindex="-1">
+                    <option value="">No sticker</option>
+                    <option value="heart.svg">Heart</option>
+                    <option value="smile.svg">Smile</option>
+                    <option value="sparkle.svg">Sparkle</option>
                 </select>
-            </label>
-
-            <select id="sticker-select">
-                <option value="">No sticker</option>
-                <option value="heart.svg">Heart</option>
-                <option value="smile.svg">Smile</option>
-                <option value="sparkle.svg">Sparkle</option>
-            </select>
-            <label class="modal-label">
-                <input id="attach-sticker" type="checkbox" checked />
-                Attach sticker to note
-            </label>
+            </div>
+            <div id="sticker-section" class="hidden">
+                <label class="modal-label">Choose sticker</label>
+                <div id="sticker-picker" class="sticker-picker" role="radiogroup" aria-label="Sticker choices"></div>
+            </div>
             <div id="photo-section" class="hidden">
                 <label class="modal-label">Upload Photo</label>
                 <input id="photo-input" type="file" accept="image/*" />

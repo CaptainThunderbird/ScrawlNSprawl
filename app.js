@@ -10,7 +10,8 @@ const noteIconSelect = document.getElementById('note-icon-select');
 const modalTitle = document.getElementById('modal-title');
 const noteFields = document.getElementById('note-fields');
 const stickerSection = document.getElementById('sticker-section');
-const stickerPickerButtons = document.querySelectorAll('#sticker-picker [data-sticker]');
+const stickerSelect = document.getElementById('sticker-select');
+const stickerPicker = document.getElementById('sticker-picker');
 const stickerTrayButtons = document.querySelectorAll('#sticker-tray [data-sticker]');
 stickerTrayButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -37,11 +38,16 @@ const swatches = document.querySelectorAll('.swatch[data-color]');
 let selectedColor = '#C1EDB9';
 swatches.forEach((btn) => {
     btn.addEventListener('click', () => {
-        selectedColor = btn.dataset.color;
+        selectedColor = (btn.dataset.color || '#C1EDB9').toUpperCase();
         swatches.forEach((b) => b.classList.remove('active'));
         btn.classList.add('active');
     });
 });
+if (noteColorInput) {
+    noteColorInput.addEventListener('input', () => {
+        selectedColor = (noteColorInput.value || '#C1EDB9').toUpperCase();
+    });
+}
 
 const anonymousToggle = document.getElementById('anonymous-toggle');
 const durationDaysSelect = document.getElementById('duration-days');
@@ -94,13 +100,45 @@ bookmarksBtn?.addEventListener('click', () => {
     setActiveTab('saved');
 });
 
-stickerPickerButtons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-        selectedSticker = btn.getAttribute('data-sticker') || 'heart.svg';
-        stickerPickerButtons.forEach((b) => b.classList.remove('active'));
-        btn.classList.add('active');
-        playSound('sticker');
+function buildStickerPicker() {
+    if (!stickerPicker || !stickerSelect) return;
+
+    const options = Array.from(stickerSelect.options).filter((opt) => opt.value);
+    stickerPicker.innerHTML = '';
+    if (!options.length) {
+        selectedSticker = '';
+        return;
+    }
+
+    if (!options.some((opt) => opt.value === selectedSticker)) {
+        selectedSticker = options[0].value;
+    }
+
+    options.forEach((opt) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'sticker-choice';
+        btn.dataset.sticker = opt.value;
+        btn.title = opt.textContent || opt.value;
+        btn.setAttribute('aria-label', opt.textContent || opt.value);
+        btn.setAttribute('aria-checked', String(opt.value === selectedSticker));
+        if (opt.value === selectedSticker) btn.classList.add('active');
+        btn.innerHTML = getStickerMarkup(opt.value);
+        stickerPicker.appendChild(btn);
     });
+}
+
+stickerPicker?.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-sticker]');
+    if (!btn) return;
+    selectedSticker = btn.getAttribute('data-sticker') || selectedSticker;
+    const buttons = stickerPicker.querySelectorAll('[data-sticker]');
+    buttons.forEach((b) => {
+        const active = b === btn;
+        b.classList.toggle('active', active);
+        b.setAttribute('aria-checked', String(active));
+    });
+    playSound('sticker');
 });
 
 if (photoInput && photoPreview) {
@@ -132,6 +170,7 @@ typeCancelBtn?.addEventListener('click', () => {
 });
 
 setActiveTab('recent');
+buildStickerPicker();
 updateModalMode();
 
 
@@ -295,7 +334,7 @@ function positionItem(item) {
 }
 
 function getNoteColor() {
-  return noteColorInput?.value || '#C1EDB9';
+    return (selectedColor || noteColorInput?.value || '#C1EDB9').toUpperCase();
 }
 
 
@@ -496,6 +535,10 @@ saveBtn.addEventListener('click', () => {
         alert('Please keep notes kind and positive.');
         return;
     }
+    if (currentMode === 'sticker' && !selectedSticker) {
+        alert('Please choose a sticker.');
+        return;
+    }
     if (currentMode === 'photo' && !photoPreview?.src) {
         alert('Please upload a photo.');
         return;
@@ -612,9 +655,10 @@ function getNoteIcon(post) {
 }
 
 function getStickerMarkup(sticker) {
-    if (!sticker) return '?';
-    if (sticker.endsWith('.svg')) {
-        return `<img src="assets/stickers/${sticker}" width="50" alt="">`;
+    if (!sticker) return '';
+    const imageExt = /\.(svg|png|jpe?g|webp|gif)$/i;
+    if (imageExt.test(sticker)) {
+        return `<img class="map-sticker-image" src="assets/stickers/${sticker}" alt="">`;
     }
     if (sticker === 'stub-star') return '?';
     if (sticker === 'stub-flower') return '??';
@@ -634,11 +678,12 @@ function renderPostOnMap(post) {
 
     const type = post.type || 'note';
     const bookmarked = isBookmarked(post.id);
-    el.classList.add(`heat-${post._heat ?? 0}`);
+    if (type !== 'sticker') {
+        el.classList.add(`heat-${post._heat ?? 0}`);
+    }
 
     if (type === 'sticker') {
-        el.classList.add('sticky-note');
-        el.style.background = 'transparent';
+        el.classList.add('map-sticker');
         el.innerHTML = getStickerMarkup(post.sticker);
         makeStickerDraggable(el);
     } else if (type === 'photo') {
@@ -660,22 +705,24 @@ function renderPostOnMap(post) {
     `;
     }
 
-    const bookmarkBtn = document.createElement('button');
-    bookmarkBtn.type = 'button';
-    bookmarkBtn.className = 'bookmark-btn';
-    bookmarkBtn.textContent = bookmarked ? 'Saved' : 'Save';
-    bookmarkBtn.title = bookmarked ? 'Remove bookmark' : 'Save bookmark';
-    bookmarkBtn.setAttribute('aria-pressed', String(bookmarked));
-    bookmarkBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (isBookmarked(post.id)) {
-            removeBookmark(post.id);
-        } else {
-            upsertBookmark(post);
-        }
-        rerenderVisiblePosts();
-    });
-    el.appendChild(bookmarkBtn);
+    if (type !== 'sticker') {
+        const bookmarkBtn = document.createElement('button');
+        bookmarkBtn.type = 'button';
+        bookmarkBtn.className = 'bookmark-btn';
+        bookmarkBtn.textContent = bookmarked ? 'Saved' : 'Save';
+        bookmarkBtn.title = bookmarked ? 'Remove bookmark' : 'Save bookmark';
+        bookmarkBtn.setAttribute('aria-pressed', String(bookmarked));
+        bookmarkBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (isBookmarked(post.id)) {
+                removeBookmark(post.id);
+            } else {
+                upsertBookmark(post);
+            }
+            rerenderVisiblePosts();
+        });
+        el.appendChild(bookmarkBtn);
+    }
 
     const item = {
         id: post.id,
@@ -688,4 +735,3 @@ function renderPostOnMap(post) {
     overlayView.overlay.appendChild(el);
     positionItem(item);
 }
-

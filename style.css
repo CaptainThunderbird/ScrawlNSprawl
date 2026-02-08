@@ -393,17 +393,28 @@ body::after {
 }
 
 .photo-note {
-    width: 220px;
-    max-width: 220px;
+    width: 200px;
+    max-width: 200px;
+    min-height: auto;
+    padding: 8px 8px 24px;
+    border-radius: 2px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    outline: none;
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.2);
+}
+
+.photo-note::before {
+    display: none;
 }
 
 .photo-note .photo-frame {
-    width: 200px;
+    width: 100%;
     height: 140px;
     overflow: hidden;
-    border-radius: 12px;
-    border: 1px solid rgba(0, 0, 0, 0.12);
-    background: #fff;
+    border-radius: 0;
+    border: 1px solid rgba(0, 0, 0, 0.35);
+    background: #f8f8f8;
 }
 
 .photo-note .photo-note-image {
@@ -411,6 +422,10 @@ body::after {
     height: 100%;
     object-fit: cover;
     display: block;
+}
+
+.photo-note .photo-caption {
+    display: none;
 }
 
 
@@ -571,6 +586,60 @@ button {
     display: block;
     margin-top: 8px;
     font-size: 13px;
+}
+
+.sticker-picker {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.sticker-choice {
+    aspect-ratio: 1 / 1;
+    margin: 0;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.14);
+    background: rgba(255, 255, 255, 0.7);
+    display: grid;
+    place-items: center;
+    padding: 8px;
+}
+
+.sticker-choice.active {
+    outline: 2px solid rgba(72, 70, 57, 0.45);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.sticker-choice .map-sticker-image {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    display: block;
+}
+
+.map-sticker {
+    width: auto;
+    min-height: auto;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background: transparent;
+    outline: none;
+    box-shadow: none;
+    display: block;
+    cursor: grab;
+}
+
+.map-sticker::before {
+    display: none;
+}
+
+.map-sticker .map-sticker-image {
+    width: 62px;
+    height: 62px;
+    object-fit: contain;
+    display: block;
 }
 
 #photo-preview {
