@@ -11,6 +11,14 @@ const modalTitle = document.getElementById('modal-title');
 const noteFields = document.getElementById('note-fields');
 const stickerSection = document.getElementById('sticker-section');
 const stickerPickerButtons = document.querySelectorAll('#sticker-picker [data-sticker]');
+const stickerTrayButtons = document.querySelectorAll('#sticker-tray [data-sticker]');
+stickerTrayButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+        selectedSticker = btn.dataset.sticker;
+        stickerTrayButtons.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+    });
+});
 const usernameInput = document.getElementById('username');
 const recentNotes = document.getElementById('recent-notes');
 const savedNotes = document.getElementById('saved-notes');
@@ -25,6 +33,16 @@ const photoPreview = document.getElementById('photo-preview');
 
 // Optional controls (may be null if index.html doesn't have them yet)
 const noteColorInput = document.getElementById('note-color');
+const swatches = document.querySelectorAll('.swatch[data-color]');
+let selectedColor = '#C1EDB9';
+swatches.forEach((btn) => {
+    btn.addEventListener('click', () => {
+        selectedColor = btn.dataset.color;
+        swatches.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+    });
+});
+
 const anonymousToggle = document.getElementById('anonymous-toggle');
 const durationDaysSelect = document.getElementById('duration-days');
 
@@ -277,8 +295,9 @@ function positionItem(item) {
 }
 
 function getNoteColor() {
-    return noteColorInput?.value || '#C1EDB9';
+    return selectedColor || '#C1EDB9';
 }
+
 
 function getIsAnonymous() {
     return anonymousToggle ? anonymousToggle.checked : true;
@@ -637,7 +656,7 @@ function renderPostOnMap(post) {
         el.innerHTML = `
       <strong>${post.user || 'anonymous'}</strong><br>
       ${post.message || ''}<br>
-      <div class="note-icon">${noteIcon === 'heart' ? '??' : '?'}</div>
+      <div class="note-icon">${noteIcon === 'heart' ? '❤️' : '⭐️'}</div>
     `;
     }
 

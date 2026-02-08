@@ -64,10 +64,7 @@
         </div>
 
         <h2>Note Settings</h2>
-        <label>
-            Color
-            <input id="note-color" type="color" value="#C1EDB9" />
-        </label>
+
         <label>
             Post as anonymous
             <input id="anonymous-toggle" type="checkbox" checked />
@@ -140,6 +137,23 @@
             <h3>New Note</h3>
             <input id="username" placeholder="Name (optional)" />
             <textarea id="note-text" placeholder="Write a kind note..."></textarea>
+            <label class="modal-label">
+                Post as anonymous
+                <input id="anonymous-toggle" type="checkbox" checked />
+            </label>
+            <label class="modal-label">
+                Duration
+                <select id="duration-days">
+                    <option value="1">1 day</option>
+                    <option value="2">2 days</option>
+                    <option value="3">3 days</option>
+                    <option value="4">4 days</option>
+                    <option value="5">5 days</option>
+                    <option value="6">6 days</option>
+                    <option value="7">7 days</option>
+                </select>
+            </label>
+
             <select id="sticker-select">
                 <option value="">No sticker</option>
                 <option value="heart.svg">Heart</option>
