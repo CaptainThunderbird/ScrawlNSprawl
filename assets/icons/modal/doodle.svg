@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="pencil" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffcf55"/>
+      <stop offset="1" stop-color="#f2a11a"/>
+    </linearGradient>
+  </defs>
+  <path d="M14 98 L30 114 L106 38 L90 22 Z" fill="url(#pencil)" stroke="#3a2a1c" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M30 114 L10 118 L14 98 Z" fill="#7a5a3a" stroke="#3a2a1c" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M90 22 L106 38 L114 30 L98 14 Z" fill="#f7e6c2" stroke="#3a2a1c" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M38 106 L98 46" stroke="#3a2a1c" stroke-width="4" stroke-linecap="round"/>
+  <path d="M46 114 L106 54" stroke="#3a2a1c" stroke-width="4" stroke-linecap="round"/>
+</svg>

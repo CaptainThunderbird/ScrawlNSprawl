@@ -808,8 +808,17 @@ button {
 }
 
 .mode-icon {
-    font-size: 18px;
-    line-height: 1;
+    width: 26px;
+    height: 26px;
+    display: grid;
+    place-items: center;
+}
+
+.mode-icon img {
+    width: 24px;
+    height: 24px;
+    display: block;
+    object-fit: contain;
 }
 
 .mode-label {
