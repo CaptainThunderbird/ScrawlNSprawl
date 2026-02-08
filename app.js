@@ -89,6 +89,8 @@ document.addEventListener('click', (e) => {
 const postsById = new Map();
 const itemById = new Map();
 const BOOKMARKS_KEY = 'sns_bookmarks_v1';
+let landmarks = [];
+let landmarksLoaded = false;
 
 // -------------------- Map + Overlay --------------------
 let map;
@@ -286,6 +288,7 @@ typeCancelBtn?.addEventListener('click', () => {
 setActiveTab('recent');
 buildStickerPicker();
 updateModalMode();
+loadLandmarks();
 
 
 function initMap() {
@@ -414,6 +417,11 @@ function refreshTopbarLabel() {
     if (!locationPill) return;
 
     if (pendingLatLng) {
+        const nearest = findNearestLandmark(pendingLatLng);
+        if (nearest && nearest.distMeters <= MAX_RADIUS_METERS) {
+            locationPill.textContent = nearest.name;
+            return;
+        }
         if (lastPendingAddress) {
             locationPill.textContent = lastPendingAddress;
         } else {
@@ -423,6 +431,11 @@ function refreshTopbarLabel() {
     }
 
     if (userLocation) {
+        const nearest = findNearestLandmark(userLocation);
+        if (nearest && nearest.distMeters <= MAX_RADIUS_METERS) {
+            locationPill.textContent = nearest.name;
+            return;
+        }
         if (lastAccuracyMeters !== null && lastAccuracyMeters <= 10 && lastStatusAddress) {
             locationPill.textContent = lastStatusAddress;
             return;
@@ -568,6 +581,39 @@ function haversineMeters(a, b) {
         Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(dLng / 2) ** 2;
 
     return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+async function loadLandmarks() {
+    try {
+        const res = await fetch('assets/landmarks.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error(`Landmarks fetch failed: ${res.status}`);
+        const data = await res.json();
+        if (Array.isArray(data)) {
+            landmarks = data
+                .filter((l) => l && typeof l.lat === 'number' && typeof l.lng === 'number' && l.name)
+                .map((l) => ({ name: String(l.name), lat: l.lat, lng: l.lng }));
+        }
+        landmarksLoaded = true;
+        refreshTopbarLabel();
+    } catch (err) {
+        console.warn('Landmarks load failed', err);
+        landmarksLoaded = true;
+    }
+}
+
+function findNearestLandmark(latLng) {
+    if (!latLng || !landmarks.length) return null;
+    let best = null;
+    let bestDist = Infinity;
+    for (const lm of landmarks) {
+        const dist = haversineMeters(latLng, { lat: lm.lat, lng: lm.lng });
+        if (dist < bestDist) {
+            bestDist = dist;
+            best = lm;
+        }
+    }
+    if (!best) return null;
+    return { ...best, distMeters: bestDist };
 }
 
 function isWithinRadius(post) {
