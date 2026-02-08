@@ -116,15 +116,15 @@ body::after {
    ========================= */
 #sidebar {
     position: fixed;
-    top: 8px;
+    top: 0;
     left: 0;
 
     width: var(--sidebar-w);
-    height: calc(100vh - 16px);
+    height: 100vh;
     overflow-y: auto;
     z-index: 70;
 
-    padding: 20px 16px 18px 18px;
+    padding: 84px 16px 18px 18px;
 
     background: rgba(235, 220, 198, 0.98);
     color: var(--ink);
@@ -144,21 +144,6 @@ body::after {
             transparent 22px),
         var(--paper-grain);
     background-blend-mode: multiply;
-}
-
-#sidebar::before {
-    content: "";
-    position: absolute;
-    top: 4px;
-    left: 10px;
-    width: 210px;
-    height: 40px;
-    background-image: url("assets/textures/paper-strip.svg");
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    opacity: 0.9;
-    transform: rotate(-1.5deg);
-    pointer-events: none;
 }
 
 #sidebar::before,
@@ -365,6 +350,20 @@ body::after {
     border: 1px solid rgba(0, 0, 0, 0.15);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
     transform: rotate(-1.4deg);
+}
+
+.brand-board {
+    background-image: url("assets/textures/jagged-board.svg");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    padding: 16px 14px 12px 14px;
+    margin-bottom: 14px;
+    transform: rotate(1.4deg);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+.brand-board .brand {
+    gap: 12px;
 }
 
 .sidebar-title {
