@@ -295,7 +295,7 @@ function positionItem(item) {
 }
 
 function getNoteColor() {
-    return selectedColor || '#C1EDB9';
+  return noteColorInput?.value || '#C1EDB9';
 }
 
 
