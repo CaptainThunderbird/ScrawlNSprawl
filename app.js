@@ -1049,6 +1049,14 @@ function getTypeIcon(type) {
     return '⭐';
 }
 
+function getStickerLabel(sticker) {
+    if (!sticker) return 'Sticker';
+    if (sticker === 'heart.svg') return 'Heart sticker <3';
+    if (sticker === 'smile.svg') return 'Smile sticker';
+    if (sticker === 'sparkle.svg') return 'Sparkle sticker';
+    return 'Sticker';
+}
+
 function buildFeedItem(post) {
     const li = document.createElement('li');
     li.classList.add('feed-item');
@@ -1064,7 +1072,7 @@ function buildFeedItem(post) {
     const label =
         post.type === 'doodle'
             ? (post.doodleName || post.message || post.type)
-            : (post.message || post.type);
+            : (post.type === 'sticker' ? getStickerLabel(post.sticker) : (post.message || post.type));
     text.textContent = `${post.user}: ${label}`;
 
     body.appendChild(text);

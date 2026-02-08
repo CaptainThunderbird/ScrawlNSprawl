@@ -128,11 +128,11 @@ body::after {
    ========================= */
 #sidebar {
     position: fixed;
-    top: 0;
+    top: 72px;
     left: 0;
 
     width: var(--sidebar-w);
-    height: 100vh;
+    height: calc(100vh - 72px);
     overflow-y: auto;
     z-index: 70;
 
@@ -216,15 +216,15 @@ body::after {
     justify-content: space-between;
     gap: 12px;
 
-    padding: 10px 12px;
+    padding: 12px 14px;
     border-radius: 8px;
 
     background: rgba(245, 240, 221, 0.98);
     border: 1px solid rgba(72, 70, 57, 0.14);
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
     backdrop-filter: blur(10px);
     background-image:
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0)),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0)),
         var(--paper-grain);
 }
 
@@ -249,6 +249,13 @@ body::after {
 #topbar::after {
     right: 22px;
     transform: rotate(6deg);
+}
+
+#topbar::after,
+#topbar::before {
+    background-image:
+        radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.7), transparent 45%),
+        var(--paper-grain);
 }
 
 .topbar-left,
@@ -1003,6 +1010,7 @@ button:active {
         border-right: none;
         border-top: var(--dash);
         border-radius: 18px 18px 0 0;
+        top: auto;
 
         box-shadow: 0 -12px 30px rgba(0, 0, 0, 0.12);
     }
