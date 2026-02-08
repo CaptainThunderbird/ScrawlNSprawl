@@ -751,31 +751,14 @@ function renderRecentNotes() {
         .slice(0, recentLimit);
 
     mine.forEach((post) => {
-        const li = document.createElement('li');
-        li.textContent = `${post.user}: ${post.message || post.type}`;
-        li.style.cursor = 'pointer';
-        li.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            if (!map) return;
-
-            console.log('Jump to', post.id, post.lat, post.lng);
-
-            const lat = Number(post.lat);
-            const lng = Number(post.lng);
-            if (Number.isNaN(lat) || Number.isNaN(lng)) return;
-
-            map.panTo({ lat, lng });
-            map.setZoom(Math.max(map.getZoom(), 17));
-
-            const item = itemById.get(post.id);
-            if (item?.element) {
-                item.element.classList.add('pulse');
-                setTimeout(() => item.element.classList.remove('pulse'), 1200);
-            }
+        const item = buildFeedItem(post, {
+            scrapbookLabel: true,
+            showJump: true,
+            highlightClass: 'pulse',
+            minZoom: 17,
+            zoom: null
         });
-
-        recentNotes.appendChild(li);
+        recentNotes.appendChild(item.li);
     });
 }
 
@@ -1089,7 +1072,27 @@ function getStickerLabel(sticker) {
     return 'Sticker';
 }
 
-function buildFeedItem(post) {
+function getPostLocationLabel(post) {
+    if (!landmarksLoaded) return null;
+    const lat = Number(post.lat);
+    const lng = Number(post.lng);
+    if (Number.isNaN(lat) || Number.isNaN(lng)) return null;
+    const nearest = findNearestLandmark({ lat, lng });
+    if (!nearest || nearest.distMeters > 250) return null;
+    return nearest.name || null;
+}
+
+function getScrapbookLabel(post) {
+    const location = getPostLocationLabel(post);
+    const at = location ? ` at ${location}` : '';
+    if (post.type === 'doodle') return `A doodle was left${at}`;
+    if (post.type === 'sticker') return `A sticker was placed${at}`;
+    if (post.type === 'photo') return `A photo was pinned${at}`;
+    return `A note was left${at}`;
+}
+
+function buildFeedItem(post, options = {}) {
+    const { scrapbookLabel = false, showJump = false, highlightClass = 'pulse-highlight', zoom = 16, minZoom = null } = options;
     const li = document.createElement('li');
     li.classList.add('feed-item');
     li.tabIndex = 0;
@@ -1101,24 +1104,39 @@ function buildFeedItem(post) {
     const body = document.createElement('div');
     body.className = 'feed-body';
     const text = document.createElement('div');
-    const label =
-        post.type === 'doodle'
-            ? (post.doodleName || post.message || post.type)
-            : (post.type === 'sticker' ? getStickerLabel(post.sticker) : (post.message || post.type));
-    text.textContent = `${post.user}: ${label}`;
+    if (scrapbookLabel) {
+        text.textContent = getScrapbookLabel(post);
+    } else {
+        const label =
+            post.type === 'doodle'
+                ? (post.doodleName || post.message || post.type)
+                : (post.type === 'sticker' ? getStickerLabel(post.sticker) : (post.message || post.type));
+        text.textContent = `${post.user}: ${label}`;
+    }
 
     body.appendChild(text);
     li.appendChild(icon);
     li.appendChild(body);
+    if (showJump) {
+        const jump = document.createElement('span');
+        jump.className = 'feed-jump';
+        jump.textContent = '↗';
+        jump.setAttribute('aria-hidden', 'true');
+        li.appendChild(jump);
+    }
 
     const goTo = () => {
         if (!map) return;
         map.panTo({ lat: post.lat, lng: post.lng });
-        map.setZoom(16);
+        if (minZoom !== null && map.getZoom) {
+            map.setZoom(Math.max(map.getZoom(), minZoom));
+        } else if (zoom !== null) {
+            map.setZoom(zoom);
+        }
         const item = itemById.get(post.id);
         if (item?.element) {
-            item.element.classList.add('pulse-highlight');
-            setTimeout(() => item.element?.classList.remove('pulse-highlight'), 1200);
+            item.element.classList.add(highlightClass);
+            setTimeout(() => item.element?.classList.remove(highlightClass), 1200);
         }
     };
 

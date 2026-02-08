@@ -1,33 +1,1002 @@
 [
-    { "name": "Koerner Library", "lat": 49.2667, "lng": -123.2541 },
-    { "name": "The Nest", "lat": 49.2663, "lng": -123.2497 },
-    { "name": "Irving K. Barber Learning Centre", "lat": 49.2676, "lng": -123.2524 },
-    { "name": "Buchanan Tower", "lat": 49.2681, "lng": -123.2528 },
-    { "name": "Sauder School of Business", "lat": 49.2613, "lng": -123.2509 },
-    { "name": "UBC Bookstore", "lat": 49.2660, "lng": -123.2502 },
-    { "name": "AMS Student Nest", "lat": 49.2663, "lng": -123.2497 },
-    { "name": "Life Sciences Centre", "lat": 49.2627, "lng": -123.2523 },
-    { "name": "Life Sciences Institute", "lat": 49.2619, "lng": -123.2489, "priority": 10 },
-    { "name": "UBC Aquatic Centre", "lat": 49.2649, "lng": -123.2486, "priority": 1 },
-    { "name": "Doug Mitchell Thunderbird Sports Centre", "lat": 49.2615, "lng": -123.2388 },
-    { "name": "Museum of Anthropology", "lat": 49.2690, "lng": -123.2595 },
-    { "name": "Beaty Biodiversity Museum", "lat": 49.2658, "lng": -123.2502 },
-    { "name": "Totem Park Residence", "lat": 49.2712, "lng": -123.2577 },
-    { "name": "Place Vanier Residence", "lat": 49.2644, "lng": -123.2614 },
-    { "name": "Wreck Beach Access", "lat": 49.2612, "lng": -123.2619 },
-    { "name": "Eiffel Tower", "lat": 48.8584, "lng": 2.2945 },
-    { "name": "Statue of Liberty", "lat": 40.6892, "lng": -74.0445 },
-    { "name": "Big Ben", "lat": 51.5007, "lng": -0.1246 },
-    { "name": "Great Wall (Badaling)", "lat": 40.3652, "lng": 116.0204 },
-    { "name": "Taj Mahal", "lat": 27.1751, "lng": 78.0421 },
-    { "name": "Colosseum", "lat": 41.8902, "lng": 12.4922 },
-    { "name": "Sydney Opera House", "lat": -33.8568, "lng": 151.2153 },
-    { "name": "Burj Khalifa", "lat": 25.1972, "lng": 55.2744 },
-    { "name": "Mount Fuji", "lat": 35.3606, "lng": 138.7274 },
-    { "name": "Christ the Redeemer", "lat": -22.9519, "lng": -43.2105 },
-    { "name": "Golden Gate Bridge", "lat": 37.8199, "lng": -122.4783 },
-    { "name": "Niagara Falls", "lat": 43.0962, "lng": -79.0377 },
-    { "name": "Angkor Wat", "lat": 13.4125, "lng": 103.8670 },
-    { "name": "Petra", "lat": 30.3285, "lng": 35.4444 },
-    { "name": "Machu Picchu", "lat": -13.1631, "lng": -72.5450 }
+    {
+        "name":  "Allard Hall",
+        "lat":  49.270013,
+        "lng":  -123.253418
+    },
+    {
+        "name":  "AMS Student Nest",
+        "lat":  49.266485,
+        "lng":  -123.249816
+    },
+    {
+        "name":  "Asian Centre",
+        "lat":  49.266735,
+        "lng":  -123.258625
+    },
+    {
+        "name":  "Biological Sciences Building",
+        "lat":  49.264434,
+        "lng":  -123.251407
+    },
+    {
+        "name":  "Buchanan Building",
+        "lat":  49.268691,
+        "lng":  -123.254331
+    },
+    {
+        "name":  "Cecil Green Park House",
+        "lat":  49.271364,
+        "lng":  -123.257754
+    },
+    {
+        "name":  "Chan Centre for the Performing Arts",
+        "lat":  49.269649,
+        "lng":  -123.255285
+    },
+    {
+        "name":  "Chemistry Building",
+        "lat":  49.265908,
+        "lng":  -123.252737
+    },
+    {
+        "name":  "CIRS (Centre for Interactive Research on Sustainability)",
+        "lat":  49.262128,
+        "lng":  -123.252933
+    },
+    {
+        "name":  "David Strangway Building",
+        "lat":  49.265922,
+        "lng":  -123.245965
+    },
+    {
+        "name":  "Dorothy Somerset Studios",
+        "lat":  49.264654,
+        "lng":  -123.254529
+    },
+    {
+        "name":  "Doug Mitchell Thunderbird Sports Centre",
+        "lat":  49.260233,
+        "lng":  -123.241929
+    },
+    {
+        "name":  "Earth Sciences Building",
+        "lat":  49.26305,
+        "lng":  -123.252308
+    },
+    {
+        "name":  "Exchange Residence",
+        "lat":  49.268648,
+        "lng":  -123.24768
+    },
+    {
+        "name":  "Farm Centre",
+        "lat":  49.251621,
+        "lng":  -123.240096
+    },
+    {
+        "name":  "First Nations Longhouse",
+        "lat":  49.265475,
+        "lng":  -123.256659
+    },
+    {
+        "name":  "Forest Sciences Centre",
+        "lat":  49.260565,
+        "lng":  -123.247699
+    },
+    {
+        "name":  "Frederic Wood Theatre",
+        "lat":  49.267989,
+        "lng":  -123.256989
+    },
+    {
+        "name":  "Henry Angus Building",
+        "lat":  49.265058,
+        "lng":  -123.254059
+    },
+    {
+        "name":  "Indian Residential School History and Dialogue Centre",
+        "lat":  49.267003,
+        "lng":  -123.253717
+    },
+    {
+        "name":  "Iona Building",
+        "lat":  49.270971,
+        "lng":  -123.250297
+    },
+    {
+        "name":  "Irving K. Barber Learning Centre",
+        "lat":  49.267677,
+        "lng":  -123.252812
+    },
+    {
+        "name":  "Leon and Thea Koerner University Centre",
+        "lat":  49.268905,
+        "lng":  -123.257235
+    },
+    {
+        "name":  "Life Sciences Centre",
+        "lat":  49.262712,
+        "lng":  -123.245638
+    },
+    {
+        "name":  "Liu Institute for Global Issues",
+        "lat":  49.267444,
+        "lng":  -123.259265
+    },
+    {
+        "name":  "Morris and Helen Belkin Art Gallery",
+        "lat":  49.268239,
+        "lng":  -123.256264
+    },
+    {
+        "name":  "Museum of Anthropology (MOA)",
+        "lat":  49.269368,
+        "lng":  -123.259882
+    },
+    {
+        "name":  "Music Building",
+        "lat":  49.267415,
+        "lng":  -123.256711
+    },
+    {
+        "name":  "National Soccer Development Centre",
+        "lat":  49.257179,
+        "lng":  -123.239909
+    },
+    {
+        "name":  "Neville Scarfe Building",
+        "lat":  49.263927,
+        "lng":  -123.253036
+    },
+    {
+        "name":  "Old Auditorium",
+        "lat":  49.26695,
+        "lng":  -123.256056
+    },
+    {
+        "name":  "Orchard Commons",
+        "lat":  49.2605,
+        "lng":  -123.251227
+    },
+    {
+        "name":  "P. A. Woodward Instructional Resources Centre (IRC)",
+        "lat":  49.264825,
+        "lng":  -123.246785
+    },
+    {
+        "name":  "Public Safety Building",
+        "lat":  49.258965,
+        "lng":  -123.237925
+    },
+    {
+        "name":  "Robert H. Lee Alumni Centre",
+        "lat":  49.265967,
+        "lng":  -123.249835
+    },
+    {
+        "name":  "Shop/Gatehouse Entrance",
+        "lat":  49.254046,
+        "lng":  -123.250527
+    },
+    {
+        "name":  "St. John\u0027s College",
+        "lat":  49.262704,
+        "lng":  -123.256627
+    },
+    {
+        "name":  "Student Recreation Centre",
+        "lat":  49.268232,
+        "lng":  -123.249237
+    },
+    {
+        "name":  "Thunderbird Stadium",
+        "lat":  49.254765,
+        "lng":  -123.244584
+    },
+    {
+        "name":  "UBC Aquatic Centre",
+        "lat":  49.267697,
+        "lng":  -123.248431
+    },
+    {
+        "name":  "UBC Baseball Rose Indoor Training Centre",
+        "lat":  49.256236,
+        "lng":  -123.239524
+    },
+    {
+        "name":  "UBC Bookstore",
+        "lat":  49.264991,
+        "lng":  -123.250578
+    },
+    {
+        "name":  "UBC Life Building",
+        "lat":  49.267416,
+        "lng":  -123.249898
+    },
+    {
+        "name":  "UBC Tennis Centre",
+        "lat":  49.259493,
+        "lng":  -123.243981
+    },
+    {
+        "name":  "Walter C. Koerner Library",
+        "lat":  49.266688,
+        "lng":  -123.255106
+    },
+    {
+        "name":  "War Memorial Gymnasium",
+        "lat":  49.266674,
+        "lng":  -123.247872
+    },
+    {
+        "name":  "West Coast Suites",
+        "lat":  49.269606,
+        "lng":  -123.248577
+    },
+    {
+        "name":  "AERL (Aquatic Ecosystems Research Laboratory)",
+        "lat":  49.263732,
+        "lng":  -123.251014
+    },
+    {
+        "name":  "Anthropology and Sociology Building",
+        "lat":  49.270322,
+        "lng":  -123.25764
+    },
+    {
+        "name":  "Auditorium Annex Offices",
+        "lat":  49.26658,
+        "lng":  -123.256623
+    },
+    {
+        "name":  "B.C. Binning Studios",
+        "lat":  49.264564,
+        "lng":  -123.254822
+    },
+    {
+        "name":  "Beaty Biodiversity Centre",
+        "lat":  49.26336,
+        "lng":  -123.25035
+    },
+    {
+        "name":  "Bioenergy Research and Demonstration Facility",
+        "lat":  49.260256,
+        "lng":  -123.254569
+    },
+    {
+        "name":  "Biomedical Research Centre",
+        "lat":  49.264092,
+        "lng":  -123.247171
+    },
+    {
+        "name":  "Brock East",
+        "lat":  49.269519,
+        "lng":  -123.251235
+    },
+    {
+        "name":  "Brock Hall",
+        "lat":  49.268619,
+        "lng":  -123.25195
+    },
+    {
+        "name":  "Brock North",
+        "lat":  49.269539,
+        "lng":  -123.25262
+    },
+    {
+        "name":  "Brock South",
+        "lat":  49.269018,
+        "lng":  -123.252433
+    },
+    {
+        "name":  "Buchanan Tower",
+        "lat":  49.268585,
+        "lng":  -123.253479
+    },
+    {
+        "name":  "C.K. Choi Building",
+        "lat":  49.267241,
+        "lng":  -123.257945
+    },
+    {
+        "name":  "Campus Energy Centre",
+        "lat":  49.261628,
+        "lng":  -123.245011
+    },
+    {
+        "name":  "Centre for Comparative Medicine",
+        "lat":  49.246955,
+        "lng":  -123.233832
+    },
+    {
+        "name":  "Chan Gunn Pavilion",
+        "lat":  49.260933,
+        "lng":  -123.241622
+    },
+    {
+        "name":  "Chemical and Biological Engineering Building",
+        "lat":  49.262491,
+        "lng":  -123.247055
+    },
+    {
+        "name":  "Chemistry A - Physics",
+        "lat":  49.265656,
+        "lng":  -123.251526
+    },
+    {
+        "name":  "Civil and Mechanical Engineering Building",
+        "lat":  49.262559,
+        "lng":  -123.248716
+    },
+    {
+        "name":  "Civil and Mechanical Engineering Laboratories",
+        "lat":  49.263292,
+        "lng":  -123.249239
+    },
+    {
+        "name":  "Coal and Mineral Processing Laboratory",
+        "lat":  49.261154,
+        "lng":  -123.252056
+    },
+    {
+        "name":  "Continuing Studies Building",
+        "lat":  49.263374,
+        "lng":  -123.255093
+    },
+    {
+        "name":  "Counselling Services",
+        "lat":  49.268256,
+        "lng":  -123.251934
+    },
+    {
+        "name":  "David Lam Management Research Centre",
+        "lat":  49.265869,
+        "lng":  -123.254446
+    },
+    {
+        "name":  "Detwiller Pavilion",
+        "lat":  49.263574,
+        "lng":  -123.244553
+    },
+    {
+        "name":  "Djavad Mowafaghian Centre for Brain Health",
+        "lat":  49.264402,
+        "lng":  -123.244526
+    },
+    {
+        "name":  "Donald Rix Building",
+        "lat":  49.26197,
+        "lng":  -123.246293
+    },
+    {
+        "name":  "Douglas T. Kenny Building",
+        "lat":  49.263421,
+        "lng":  -123.253781
+    },
+    {
+        "name":  "Earth and Ocean Sciences",
+        "lat":  49.262472,
+        "lng":  -123.252435
+    },
+    {
+        "name":  "Engineering Student Centre",
+        "lat":  49.262236,
+        "lng":  -123.249341
+    },
+    {
+        "name":  "Food, Nutrition and Health Building",
+        "lat":  49.263962,
+        "lng":  -123.249674
+    },
+    {
+        "name":  "Frank Forward Building",
+        "lat":  49.261704,
+        "lng":  -123.251634
+    },
+    {
+        "name":  "Fred Kaiser Building",
+        "lat":  49.262447,
+        "lng":  -123.249958
+    },
+    {
+        "name":  "Frederic Lasserre Building",
+        "lat":  49.267594,
+        "lng":  -123.255905
+    },
+    {
+        "name":  "Friedman Building",
+        "lat":  49.265418,
+        "lng":  -123.246023
+    },
+    {
+        "name":  "Gateway Health Building",
+        "lat":  49.2668,
+        "lng":  -123.246521
+    },
+    {
+        "name":  "Gateway North",
+        "lat":  49.267245,
+        "lng":  -123.246833
+    },
+    {
+        "name":  "Geography Building",
+        "lat":  49.266001,
+        "lng":  -123.256082
+    },
+    {
+        "name":  "George Cunningham Building",
+        "lat":  49.264797,
+        "lng":  -123.248672
+    },
+    {
+        "name":  "Gerald McGavin Building",
+        "lat":  49.261781,
+        "lng":  -123.246759
+    },
+    {
+        "name":  "Gerald McGavin UBC Rugby Centre",
+        "lat":  49.259591,
+        "lng":  -123.241255
+    },
+    {
+        "name":  "Gordon B. Shrum Building",
+        "lat":  49.265615,
+        "lng":  -123.247286
+    },
+    {
+        "name":  "Hebb Building",
+        "lat":  49.266182,
+        "lng":  -123.251588
+    },
+    {
+        "name":  "Hector J. MacLeod Building",
+        "lat":  49.261753,
+        "lng":  -123.24943
+    },
+    {
+        "name":  "Hennings Building",
+        "lat":  49.266436,
+        "lng":  -123.251999
+    },
+    {
+        "name":  "HR MacMillan Building",
+        "lat":  49.261027,
+        "lng":  -123.250678
+    },
+    {
+        "name":  "Hugh Dempster Pavilion",
+        "lat":  49.261209,
+        "lng":  -123.247973
+    },
+    {
+        "name":  "ICICS/CS Building",
+        "lat":  49.261167,
+        "lng":  -123.24883
+    },
+    {
+        "name":  "International House",
+        "lat":  49.267795,
+        "lng":  -123.258915
+    },
+    {
+        "name":  "Jack Bell Building",
+        "lat":  49.264478,
+        "lng":  -123.255091
+    },
+    {
+        "name":  "JB Macdonald Building",
+        "lat":  49.265265,
+        "lng":  -123.245255
+    },
+    {
+        "name":  "Koerner Pavilion",
+        "lat":  49.264209,
+        "lng":  -123.245676
+    },
+    {
+        "name":  "Landscape Architecture Annex",
+        "lat":  49.260641,
+        "lng":  -123.25003
+    },
+    {
+        "name":  "Library PARC@UBC",
+        "lat":  49.24507,
+        "lng":  -123.229817
+    },
+    {
+        "name":  "Mary Bollert Hall",
+        "lat":  49.27062,
+        "lng":  -123.256084
+    },
+    {
+        "name":  "Mathematics Annex",
+        "lat":  49.266132,
+        "lng":  -123.254793
+    },
+    {
+        "name":  "Mathematics Building",
+        "lat":  49.266409,
+        "lng":  -123.255571
+    },
+    {
+        "name":  "Medical Sciences Block C",
+        "lat":  49.26493,
+        "lng":  -123.247973
+    },
+    {
+        "name":  "Michael Smith Laboratories",
+        "lat":  49.264555,
+        "lng":  -123.250157
+    },
+    {
+        "name":  "NRC Institute for Fuel Cell Innovation",
+        "lat":  49.245168,
+        "lng":  -123.232259
+    },
+    {
+        "name":  "Old Administration Building",
+        "lat":  49.267135,
+        "lng":  -123.255449
+    },
+    {
+        "name":  "Old Barn Community Centre",
+        "lat":  49.258921,
+        "lng":  -123.248227
+    },
+    {
+        "name":  "Pharmaceutical Sciences Building",
+        "lat":  49.262128,
+        "lng":  -123.243617
+    },
+    {
+        "name":  "Ponderosa East",
+        "lat":  49.263824,
+        "lng":  -123.254251
+    },
+    {
+        "name":  "Ponderosa North",
+        "lat":  49.264133,
+        "lng":  -123.256124
+    },
+    {
+        "name":  "Ponderosa West",
+        "lat":  49.263478,
+        "lng":  -123.255607
+    },
+    {
+        "name":  "Pulp and Paper Centre",
+        "lat":  49.26143,
+        "lng":  -123.247494
+    },
+    {
+        "name":  "Purdy Pavilion",
+        "lat":  49.26328,
+        "lng":  -123.246022
+    },
+    {
+        "name":  "Recreation Centre North",
+        "lat":  49.267979,
+        "lng":  -123.2505
+    },
+    {
+        "name":  "Sauder (Under Construction)",
+        "lat":  49.265025,
+        "lng":  -123.254824
+    },
+    {
+        "name":  "School of Population \u0026 Public Health",
+        "lat":  49.264228,
+        "lng":  -123.248455
+    },
+    {
+        "name":  "Sing Tao Building",
+        "lat":  49.267879,
+        "lng":  -123.257731
+    },
+    {
+        "name":  "TEF3",
+        "lat":  49.261163,
+        "lng":  -123.246187
+    },
+    {
+        "name":  "The Brimacombe Building",
+        "lat":  49.261876,
+        "lng":  -123.248115
+    },
+    {
+        "name":  "The Leonard S. Klinck Building",
+        "lat":  49.265532,
+        "lng":  -123.255188
+    },
+    {
+        "name":  "Thea Koerner House",
+        "lat":  49.268445,
+        "lng":  -123.257871
+    },
+    {
+        "name":  "Theatre-Film Production Building",
+        "lat":  49.263866,
+        "lng":  -123.253867
+    },
+    {
+        "name":  "UBC Football Academic Centre",
+        "lat":  49.255243,
+        "lng":  -123.244989
+    },
+    {
+        "name":  "University Hill Secondary School",
+        "lat":  49.254202,
+        "lng":  -123.239169
+    },
+    {
+        "name":  "Wayne and William White Engineering Design Centre",
+        "lat":  49.262312,
+        "lng":  -123.248101
+    },
+    {
+        "name":  "Wesbrook Building",
+        "lat":  49.265272,
+        "lng":  -123.249074
+    },
+    {
+        "name":  "Wesbrook Community Centre",
+        "lat":  49.253976,
+        "lng":  -123.237701
+    },
+    {
+        "name":  "West Mall Annex",
+        "lat":  49.266192,
+        "lng":  -123.257085
+    },
+    {
+        "name":  "West Mall Swing Space Building",
+        "lat":  49.262804,
+        "lng":  -123.254344
+    },
+    {
+        "name":  "Woodward Library",
+        "lat":  49.264568,
+        "lng":  -123.247526
+    },
+    {
+        "name":  "A",
+        "lat":  49.265178,
+        "lng":  -123.256376
+    },
+    {
+        "name":  "Abdul Ladha Science Student Centre",
+        "lat":  49.266069,
+        "lng":  -123.251321
+    },
+    {
+        "name":  "Admin/Campbell Building",
+        "lat":  49.253909,
+        "lng":  -123.251087
+    },
+    {
+        "name":  "Alpine Greenhouse",
+        "lat":  49.253643,
+        "lng":  -123.245826
+    },
+    {
+        "name":  "Ambulance Station",
+        "lat":  49.263253,
+        "lng":  -123.243586
+    },
+    {
+        "name":  "ARIEL",
+        "lat":  49.247739,
+        "lng":  -123.230052
+    },
+    {
+        "name":  "Arts Student Centre",
+        "lat":  49.269293,
+        "lng":  -123.253051
+    },
+    {
+        "name":  "B",
+        "lat":  49.264753,
+        "lng":  -123.255886
+    },
+    {
+        "name":  "Badge Room",
+        "lat":  49.24749,
+        "lng":  -123.230287
+    },
+    {
+        "name":  "Building Operations Nursery",
+        "lat":  49.244448,
+        "lng":  -123.229174
+    },
+    {
+        "name":  "C",
+        "lat":  49.264819,
+        "lng":  -123.256205
+    },
+    {
+        "name":  "Campus \u0026 Community Planning",
+        "lat":  49.262494,
+        "lng":  -123.253348
+    },
+    {
+        "name":  "Carey Centre",
+        "lat":  49.271525,
+        "lng":  -123.248891
+    },
+    {
+        "name":  "Carey Hall",
+        "lat":  49.271699,
+        "lng":  -123.248512
+    },
+    {
+        "name":  "Cecil Green Park Coach House",
+        "lat":  49.271026,
+        "lng":  -123.258492
+    },
+    {
+        "name":  "Child Care Services Administration Building",
+        "lat":  49.260943,
+        "lng":  -123.234245
+    },
+    {
+        "name":  "Compressor",
+        "lat":  49.24667,
+        "lng":  -123.229901
+    },
+    {
+        "name":  "Dan On Food and Beverage Innovation Centre",
+        "lat":  49.263854,
+        "lng":  -123.248301
+    },
+    {
+        "name":  "E",
+        "lat":  49.264718,
+        "lng":  -123.256672
+    },
+    {
+        "name":  "F",
+        "lat":  49.264962,
+        "lng":  -123.257083
+    },
+    {
+        "name":  "FERIC",
+        "lat":  49.257736,
+        "lng":  -123.244507
+    },
+    {
+        "name":  "FPInnovations",
+        "lat":  49.256721,
+        "lng":  -123.244433
+    },
+    {
+        "name":  "G",
+        "lat":  49.264515,
+        "lng":  -123.256444
+    },
+    {
+        "name":  "Garden Pavilion",
+        "lat":  49.253253,
+        "lng":  -123.24709
+    },
+    {
+        "name":  "Gas Gun Facility",
+        "lat":  49.256008,
+        "lng":  -123.246027
+    },
+    {
+        "name":  "Hillel House",
+        "lat":  49.268632,
+        "lng":  -123.251331
+    },
+    {
+        "name":  "Horticulture Building",
+        "lat":  49.261457,
+        "lng":  -123.252785
+    },
+    {
+        "name":  "IAMI",
+        "lat":  49.246795,
+        "lng":  -123.228305
+    },
+    {
+        "name":  "In-Vessel Composting Facility",
+        "lat":  49.244891,
+        "lng":  -123.227992
+    },
+    {
+        "name":  "ISAC 1",
+        "lat":  49.247803,
+        "lng":  -123.229443
+    },
+    {
+        "name":  "ISAC 2",
+        "lat":  49.248257,
+        "lng":  -123.229572
+    },
+    {
+        "name":  "Ladner Clock Tower",
+        "lat":  49.267349,
+        "lng":  -123.253649
+    },
+    {
+        "name":  "Lower Mall Header House",
+        "lat":  49.260499,
+        "lng":  -123.254836
+    },
+    {
+        "name":  "Lower Mall Research Station",
+        "lat":  49.260601,
+        "lng":  -123.255675
+    },
+    {
+        "name":  "Millennial Time Machine",
+        "lat":  49.267521,
+        "lng":  -123.254481
+    },
+    {
+        "name":  "Offices, Laboratory \u0026 Workshops",
+        "lat":  49.247702,
+        "lng":  -123.230643
+    },
+    {
+        "name":  "Osborne Centre - Unit 1",
+        "lat":  49.260291,
+        "lng":  -123.243727
+    },
+    {
+        "name":  "Osborne Centre - Unit 2",
+        "lat":  49.260027,
+        "lng":  -123.244341
+    },
+    {
+        "name":  "Reception Centre",
+        "lat":  49.254169,
+        "lng":  -123.251325
+    },
+    {
+        "name":  "Rugby Pavilion",
+        "lat":  49.258672,
+        "lng":  -123.243973
+    },
+    {
+        "name":  "Scholar\u0027s Retreat",
+        "lat":  49.254987,
+        "lng":  -123.246886
+    },
+    {
+        "name":  "Shipping / Workshop",
+        "lat":  49.246265,
+        "lng":  -123.229981
+    },
+    {
+        "name":  "South Campus Warehouse",
+        "lat":  49.246263,
+        "lng":  -123.231782
+    },
+    {
+        "name":  "St. John Hospice",
+        "lat":  49.255443,
+        "lng":  -123.247377
+    },
+    {
+        "name":  "St. Mark\u0027s College",
+        "lat":  49.272289,
+        "lng":  -123.249142
+    },
+    {
+        "name":  "Staging Environmental Research Centre",
+        "lat":  49.245362,
+        "lng":  -123.228047
+    },
+    {
+        "name":  "Stores Building",
+        "lat":  49.246508,
+        "lng":  -123.230622
+    },
+    {
+        "name":  "Stores Road Annex",
+        "lat":  49.261642,
+        "lng":  -123.252356
+    },
+    {
+        "name":  "Tea House",
+        "lat":  49.266219,
+        "lng":  -123.259233
+    },
+    {
+        "name":  "The Barn - Owl",
+        "lat":  49.261938,
+        "lng":  -123.251079
+    },
+    {
+        "name":  "Third Space",
+        "lat":  49.263025,
+        "lng":  -123.253266
+    },
+    {
+        "name":  "Ting Lookout",
+        "lat":  49.254092,
+        "lng":  -123.251656
+    },
+    {
+        "name":  "UBC Water Pump Station",
+        "lat":  49.264615,
+        "lng":  -123.254142
+    },
+    {
+        "name":  "Wood Fluid and Thermal Treatments Laboratory",
+        "lat":  49.261466,
+        "lng":  -123.252219
+    },
+    {
+        "name":  "Workshop",
+        "lat":  49.254768,
+        "lng":  -123.247619
+    },
+    {
+        "name":  "Yurt",
+        "lat":  49.251265,
+        "lng":  -123.239912
+    },
+    {
+        "name":  "Fraser River Parkade",
+        "lat":  49.266057,
+        "lng":  -123.258104
+    },
+    {
+        "name":  "Health Sciences Parkade",
+        "lat":  49.26338,
+        "lng":  -123.247816
+    },
+    {
+        "name":  "North Parkade",
+        "lat":  49.269081,
+        "lng":  -123.250995
+    },
+    {
+        "name":  "Rose Garden Parkade",
+        "lat":  49.269307,
+        "lng":  -123.256352
+    },
+    {
+        "name":  "Thunderbird Parkade",
+        "lat":  49.261597,
+        "lng":  -123.24319
+    },
+    {
+        "name":  "University Boulevard Lot",
+        "lat":  49.266736,
+        "lng":  -123.249065
+    },
+    {
+        "name":  "West Parkade",
+        "lat":  49.262651,
+        "lng":  -123.254959
+    },
+    {
+        "name":  "A North",
+        "lat":  49.271162,
+        "lng":  -123.255718
+    },
+    {
+        "name":  "A South",
+        "lat":  49.270926,
+        "lng":  -123.255161
+    },
+    {
+        "name":  "Acadia - Fairview",
+        "lat":  49.263273,
+        "lng":  -123.236838
+    },
+    {
+        "name":  "Acadia - Highrise",
+        "lat":  49.262358,
+        "lng":  -123.236815
+    },
+    {
+        "name":  "Acadia - Melfa",
+        "lat":  49.264259,
+        "lng":  -123.2371
+    }
 ]

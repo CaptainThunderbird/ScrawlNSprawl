@@ -668,7 +668,7 @@ button {
 
 .feed-item {
     display: grid;
-    grid-template-columns: 22px 1fr;
+    grid-template-columns: 22px 1fr auto;
     gap: 8px;
     align-items: start;
     cursor: pointer;
@@ -693,6 +693,13 @@ button {
 .feed-body {
     display: grid;
     gap: 6px;
+}
+
+.feed-jump {
+    font-size: 14px;
+    line-height: 1;
+    opacity: 0.65;
+    margin-top: 2px;
 }
 
 .feed-actions {
