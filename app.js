@@ -918,7 +918,7 @@ function rerenderVisiblePosts() {
             }
             return;
         }
-        if (!isWithinRadius(post)) return;
+        if (!isWithinRadius(post) && !isSaved) return;
         post._heat = computeHeatLevel(post, heatCandidates);
         renderPostOnMap(post);
     });
