@@ -1,209 +1,221 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Scrawl & Sprawl</title>
-  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Gaegu:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Scrawl & Sprawl</title>
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Gaegu:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
-  <!-- Top Bar -->
-  <div id="topbar">
-    <div class="topbar-left">
-      <div class="brand">
-        <!-- you can change logo path later -->
-        <img class="brand-logo" src="assets/icons/logo.png" alt="Scrawl & Sprawl logo">
-        <div class="brand-text">
-          <div class="brand-name">Scrawl & Sprawl</div>
-          <div class="brand-tagline">turn doomscrolling into bloomscrolling</div>
+    <!-- Top Bar -->
+    <div id="topbar">
+        <div class="topbar-left">
+            <div class="brand">
+                <!-- you can change logo path later -->
+                <img class="brand-logo" src="assets/icons/logo.png" alt="Scrawl & Sprawl logo">
+                <div class="brand-text">
+                    <div class="brand-name">Scrawl & Sprawl</div>
+                    <div class="brand-tagline">turn doomscrolling into bloomscrolling</div>
+                </div>
+            </div>
         </div>
-      </div>
+
+        <div class="topbar-center">
+            <div id="location-pill" class="topbar-label">Kindness Map</div>
+        </div>
+
+        <div class="topbar-right">
+            <button class="topbar-btn" type="button">+ Add Vibe</button>
+            <button id="bookmarks-btn" class="topbar-btn ghost" type="button">Bookmarks</button>
+            <button class="topbar-icon" type="button" aria-label="Settings">??</button>
+        </div>
     </div>
 
-    <div class="topbar-center">
-      <div id="location-pill" class="topbar-label">Kindness Map</div>
+    <!-- Sidebar -->
+    <aside id="sidebar">
+        <h1>Scrawl & Sprawl</h1>
+        <p>Leave a kind note, sticker, or doodle near your location.</p>
+
+        <div class="sidebar-title-card">
+            <div class="sidebar-title">The Bookmarks</div>
+        </div>
+
+        <div class="swatch-row" aria-label="Note colors">
+            <button class="swatch s1" type="button" data-color="#C1EDB9" aria-label="Green"></button>
+            <button class="swatch s2" type="button" data-color="#C4DFF2" aria-label="Blue"></button>
+            <button class="swatch s3" type="button" data-color="#F5F59F" aria-label="Yellow"></button>
+            <button class="swatch s4" type="button" data-color="#FAD4EF" aria-label="Pink"></button>
+            <button class="swatch s5" type="button" data-color="#ECDCFA" aria-label="Purple"></button>
+            <button class="swatch s6" type="button" data-color="#F5CC9D" aria-label="Orange"></button>
+            <button class="swatch s7" type="button" data-color="#FFB0B0" aria-label="Red"></button>
+        </div>
+
+        <h2>Mode</h2>
+        <div class="mode-row">
+            <button type="button" data-mode="note">Note</button>
+            <button type="button" data-mode="sticker">Sticker</button>
+            <button type="button" data-mode="doodle">Doodle</button>
+            <button type="button" data-mode="photo">Photo</button>
+        </div>
+
+        <h2>Note Settings</h2>
+        <label>
+            Color
+            <input id="note-color" type="color" value="#C1EDB9" />
+        </label>
+        <label>
+            Post as anonymous
+            <input id="anonymous-toggle" type="checkbox" checked />
+        </label>
+        <label>
+            Duration
+            <select id="duration-days">
+                <option value="1">1 day</option>
+                <option value="2">2 days</option>
+                <option value="3">3 days</option>
+                <option value="4">4 days</option>
+                <option value="5">5 days</option>
+                <option value="6">6 days</option>
+                <option value="7">7 days</option>
+            </select>
+        </label>
+
+        <h2>Sticker Tray</h2>
+        <div id="sticker-tray">
+            <button type="button" data-sticker="heart.svg" aria-label="Heart sticker">
+                <img src="assets/stickers/heart.svg" alt="" />
+            </button>
+            <button type="button" data-sticker="smile.svg" aria-label="Smile sticker">
+                <img src="assets/stickers/smile.svg" alt="" />
+            </button>
+            <button type="button" data-sticker="sparkle.svg" aria-label="Sparkle sticker">
+                <img src="assets/stickers/sparkle.svg" alt="" />
+            </button>
+        </div>
+
+        <div class="sidebar-tabs" role="tablist" aria-label="Feed Tabs">
+            <button class="tab-btn active" data-tab="recent" role="tab" aria-selected="true">Recent</button>
+            <button class="tab-btn" data-tab="saved" role="tab" aria-selected="false">Saved</button>
+        </div>
+
+        <div class="tab-panel active" data-panel="recent" role="tabpanel">
+            <h2>Recent Notes</h2>
+            <ul id="recent-notes" class="note-feed"></ul>
+        </div>
+
+        <div class="tab-panel" data-panel="saved" role="tabpanel">
+            <h2>Saved Notes</h2>
+            <ul id="saved-notes" class="note-feed"></ul>
+        </div>
+
+        <button class="sidebar-btn" type="button">Load More Blooms</button>
+    </aside>
+
+    <!-- Map -->
+    <div id="map" style="height: 100vh; width: 100%;"></div>
+
+    <!-- Type Picker Modal -->
+    <div id="type-modal" class="hidden">
+        <div class="modal-content">
+            <h3>What do you want to add?</h3>
+            <div class="mode-row">
+                <button type="button" data-create-type="note">Note</button>
+                <button type="button" data-create-type="sticker">Sticker</button>
+                <button type="button" data-create-type="doodle">Doodle</button>
+                <button type="button" data-create-type="photo">Photo</button>
+            </div>
+            <button id="type-cancel" type="button">Cancel</button>
+        </div>
     </div>
 
-    <div class="topbar-right">
-      <button class="topbar-btn" type="button">+ Add Vibe</button>
-      <button id="bookmarks-btn" class="topbar-btn ghost" type="button">Bookmarks</button>
-      <button class="topbar-icon" type="button" aria-label="Settings">??</button>
-    </div>
-  </div>
 
-  <!-- Sidebar -->
-  <aside id="sidebar">
-    <h1>Scrawl & Sprawl</h1>
-    <p>Leave a kind note, sticker, or doodle near your location.</p>
-
-    <div class="sidebar-title-card">
-      <div class="sidebar-title">The Bookmarks</div>
-    </div>
-
-    <div class="swatch-row" aria-label="Note colors">
-      <button class="swatch s1" type="button" data-color="#C1EDB9" aria-label="Green"></button>
-      <button class="swatch s2" type="button" data-color="#C4DFF2" aria-label="Blue"></button>
-      <button class="swatch s3" type="button" data-color="#F5F59F" aria-label="Yellow"></button>
-      <button class="swatch s4" type="button" data-color="#FAD4EF" aria-label="Pink"></button>
-      <button class="swatch s5" type="button" data-color="#ECDCFA" aria-label="Purple"></button>
-      <button class="swatch s6" type="button" data-color="#F5CC9D" aria-label="Orange"></button>
-      <button class="swatch s7" type="button" data-color="#FFB0B0" aria-label="Red"></button>
-    </div>
-
-    <h2>Mode</h2>
-    <div class="mode-row">
-      <button type="button" data-mode="note">Note</button>
-      <button type="button" data-mode="sticker">Sticker</button>
-      <button type="button" data-mode="doodle">Doodle</button>
-      <button type="button" data-mode="photo">Photo</button>
+    <!-- Modal -->
+    <div id="modal" class="hidden">
+        <div class="modal-content">
+            <h3>New Note</h3>
+            <input id="username" placeholder="Name (optional)" />
+            <textarea id="note-text" placeholder="Write a kind note..."></textarea>
+            <select id="sticker-select">
+                <option value="">No sticker</option>
+                <option value="heart.svg">Heart</option>
+                <option value="smile.svg">Smile</option>
+                <option value="sparkle.svg">Sparkle</option>
+            </select>
+            <label class="modal-label">
+                <input id="attach-sticker" type="checkbox" checked />
+                Attach sticker to note
+            </label>
+            <div id="photo-section" class="hidden">
+                <label class="modal-label">Upload Photo</label>
+                <input id="photo-input" type="file" accept="image/*" />
+                <img id="photo-preview" alt="" />
+            </div>
+            <div id="doodle-section" class="hidden">
+                <label class="modal-label">Doodle</label>
+                <canvas id="doodle-canvas" width="240" height="200"></canvas>
+                <button id="doodle-clear" type="button">Clear</button>
+            </div>
+            <button id="save-note">Save</button>
+            <button id="cancel-note">Cancel</button>
+        </div>
     </div>
 
-    <h2>Note Settings</h2>
-    <label>
-      Color
-      <input id="note-color" type="color" value="#C1EDB9" />
-    </label>
-    <label>
-      Post as anonymous
-      <input id="anonymous-toggle" type="checkbox" checked />
-    </label>
-    <label>
-      Duration
-      <select id="duration-days">
-        <option value="1">1 day</option>
-        <option value="2">2 days</option>
-        <option value="3">3 days</option>
-        <option value="4">4 days</option>
-        <option value="5">5 days</option>
-        <option value="6">6 days</option>
-        <option value="7">7 days</option>
-      </select>
-    </label>
 
-    <h2>Sticker Tray</h2>
-    <div id="sticker-tray">
-      <button type="button" data-sticker="heart.svg" aria-label="Heart sticker">
-        <img src="assets/stickers/heart.svg" alt="" />
-      </button>
-      <button type="button" data-sticker="smile.svg" aria-label="Smile sticker">
-        <img src="assets/stickers/smile.svg" alt="" />
-      </button>
-      <button type="button" data-sticker="sparkle.svg" aria-label="Sparkle sticker">
-        <img src="assets/stickers/sparkle.svg" alt="" />
-      </button>
-    </div>
+    <!-- Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+        import {
+            getFirestore,
+            collection,
+            addDoc,
+            deleteDoc,
+            doc,
+            onSnapshot,
+            serverTimestamp
+        } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
-    <div class="sidebar-tabs" role="tablist" aria-label="Feed Tabs">
-      <button class="tab-btn active" data-tab="recent" role="tab" aria-selected="true">Recent</button>
-      <button class="tab-btn" data-tab="saved" role="tab" aria-selected="false">Saved</button>
-    </div>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDaIhADuSB359aD6MThCPqwNQieseJ9-4c",
+            authDomain: "scrawl-and-sprawl.firebaseapp.com",
+            projectId: "scrawl-and-sprawl",
+            storageBucket: "scrawl-and-sprawl.firebasestorage.app",
+            messagingSenderId: "326407925260",
+            appId: "1:326407925260:web:90c3eed500fd57250e8829"
+        };
 
-    <div class="tab-panel active" data-panel="recent" role="tabpanel">
-      <h2>Recent Notes</h2>
-      <ul id="recent-notes" class="note-feed"></ul>
-    </div>
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const postsRef = collection(db, "posts");
 
-    <div class="tab-panel" data-panel="saved" role="tabpanel">
-      <h2>Saved Notes</h2>
-      <ul id="saved-notes" class="note-feed"></ul>
-    </div>
+        window.savePost = async (post) => {
+            const ref = await addDoc(postsRef, { ...post, createdAt: serverTimestamp() });
+            return ref.id;
+        };
 
-    <button class="sidebar-btn" type="button">Load More Blooms</button>
-  </aside>
+        window.deletePost = async (id) => {
+            if (!id) return;
+            await deleteDoc(doc(db, "posts", id));
+        };
 
-  <!-- Map -->
-  <div id="map" style="height: 100vh; width: 100%;"></div>
+        window.listenPosts = (onPost) => {
+            return onSnapshot(postsRef, (snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === "added") {
+                        onPost({ id: change.doc.id, ...change.doc.data() });
+                    }
+                });
+            });
+        };
+    </script>
 
-
-  <!-- Modal -->
-  <div id="modal" class="hidden">
-    <div class="modal-content">
-      <h3>New Note</h3>
-      <input id="username" placeholder="Name (optional)" />
-      <textarea id="note-text" placeholder="Write a kind note..."></textarea>
-      <select id="sticker-select">
-        <option value="">No sticker</option>
-        <option value="heart.svg">Heart</option>
-        <option value="smile.svg">Smile</option>
-        <option value="sparkle.svg">Sparkle</option>
-      </select>
-      <label class="modal-label">
-        <input id="attach-sticker" type="checkbox" checked />
-        Attach sticker to note
-      </label>
-      <div id="photo-section" class="hidden">
-        <label class="modal-label">Upload Photo</label>
-        <input id="photo-input" type="file" accept="image/*" />
-        <img id="photo-preview" alt="" />
-      </div>
-      <div id="doodle-section" class="hidden">
-        <label class="modal-label">Doodle</label>
-        <canvas id="doodle-canvas" width="240" height="200"></canvas>
-        <button id="doodle-clear" type="button">Clear</button>
-      </div>
-      <button id="save-note">Save</button>
-      <button id="cancel-note">Cancel</button>
-    </div>
-  </div>
-
-
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      deleteDoc,
-      doc,
-      onSnapshot,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDaIhADuSB359aD6MThCPqwNQieseJ9-4c",
-      authDomain: "scrawl-and-sprawl.firebaseapp.com",
-      projectId: "scrawl-and-sprawl",
-      storageBucket: "scrawl-and-sprawl.firebasestorage.app",
-      messagingSenderId: "326407925260",
-      appId: "1:326407925260:web:90c3eed500fd57250e8829"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const postsRef = collection(db, "posts");
-
-    window.savePost = async (post) => {
-      const ref = await addDoc(postsRef, { ...post, createdAt: serverTimestamp() });
-      return ref.id;
-    };
-
-    window.deletePost = async (id) => {
-      if (!id) return;
-      await deleteDoc(doc(db, "posts", id));
-    };
-
-    window.listenPosts = (onPost) => {
-      return onSnapshot(postsRef, (snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-          if (change.type === "added") {
-            onPost({ id: change.doc.id, ...change.doc.data() });
-          }
-        });
-      });
-    };
-  </script>
-
-  <script src="app.js" defer></script>
-  <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmaWy-IsFFqQzIlh5dX0H6IHGM5dWLk5A&callback=initMap"
-    defer
-  ></script>
+    <script src="app.js" defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmaWy-IsFFqQzIlh5dX0H6IHGM5dWLk5A&callback=initMap"
+        defer></script>
 </body>
+
 </html>
-
-
-
-
