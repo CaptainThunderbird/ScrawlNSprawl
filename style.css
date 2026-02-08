@@ -9,9 +9,10 @@
    ========================================================= */
 
 :root {
-    --paper: #F8F4E1;
-    --paper-2: #F3EED8;
-    --ink: #484639;
+    --paper: #EFE4CF;
+    --paper-2: #E6D7BD;
+    --paper-dark: #C8B08C;
+    --ink: #4B3B2B;
     --ink-soft: rgba(72, 70, 57, 0.6);
     --paper-grain: url("assets/textures/paper-grain.png");
     --paper-grid: url("assets/textures/grid-paper.png");
@@ -36,7 +37,7 @@ body {
     padding: 0;
     overflow-x: hidden;
 
-    background: var(--paper);
+    background: var(--paper-2);
     color: var(--ink);
     font-family: 'Patrick Hand', cursive, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
@@ -138,7 +139,7 @@ body::after {
 
     padding: 16px;
 
-    background: rgba(245, 240, 221, 0.96);
+    background: rgba(235, 220, 198, 0.98);
     color: var(--ink);
 
     border-right: var(--dash);
@@ -911,7 +912,7 @@ button:active {
     width: min(92vw, 420px);
     max-height: 80vh;
     overflow: auto;
-    background: rgba(245, 240, 221, 0.98);
+    background: rgba(214, 191, 160, 0.95);
     border-radius: 8px;
     padding: 18px;
     border: 1px solid rgba(72, 70, 57, 0.18);
