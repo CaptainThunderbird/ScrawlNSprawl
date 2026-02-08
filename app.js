@@ -7,6 +7,7 @@ const stickerSelect = document.getElementById('sticker-select');
 const usernameInput = document.getElementById('username');
 const recentNotes = document.getElementById('recent-notes');
 const mapDiv = document.getElementById('map');
+const locationPill = document.getElementById('location-pill');
 
 // Optional controls (may be null if index.html doesn't have them yet)
 const noteColorInput = document.getElementById('note-color');
@@ -27,6 +28,8 @@ let overlayView;
 let overlayProjection;
 let pendingLatLng = null;
 const items = [];
+let reverseGeocoder = null;
+let lastShortLocation = 'Kindness Map';
 
 function setMode(mode) {
     const allowed = new Set(['note', 'sticker', 'doodle', 'photo']);
@@ -59,8 +62,11 @@ function initMap() {
         zoom: 14
     });
 
+    reverseGeocoder = new google.maps.Geocoder();
+
     map.addListener('click', (e) => {
         pendingLatLng = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+        updateLocationLabel(pendingLatLng);
 
         if (currentMode === 'note') {
             modal.classList.remove('hidden');
@@ -100,6 +106,7 @@ function initMap() {
     if (navigator.geolocation) {
         navigator.geolocation.watchPosition((pos) => {
             userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+            updateLocationLabel(userLocation);
             rerenderVisiblePosts();
         });
     }
@@ -114,6 +121,49 @@ function initMap() {
 
 // Attach for Google Maps callback
 window.initMap = initMap;
+
+function updateLocationLabel(latLng) {
+    if (!reverseGeocoder || !locationPill) return;
+
+    reverseGeocoder.geocode({ location: latLng }, (results, status) => {
+        if (status !== 'OK' || !results || !results.length) return;
+
+        const shortName = getShortLocationName(results);
+        if (!shortName) return;
+
+        lastShortLocation = shortName;
+        locationPill.textContent = shortName;
+    });
+}
+
+function getShortLocationName(results) {
+    const pick = (types) =>
+        results.find((r) => types.some((t) => r.types.includes(t)));
+
+    const preferred =
+        pick(['point_of_interest', 'park', 'university']) ||
+        pick(['neighborhood', 'sublocality', 'sublocality_level_1']) ||
+        pick(['locality']) ||
+        pick(['administrative_area_level_2']) ||
+        results[0];
+
+    if (!preferred) return null;
+
+    if (preferred.address_components) {
+        const comp =
+            preferred.address_components.find((c) =>
+                c.types.includes('point_of_interest')
+            ) ||
+            preferred.address_components.find((c) => c.types.includes('park')) ||
+            preferred.address_components.find((c) => c.types.includes('neighborhood')) ||
+            preferred.address_components.find((c) => c.types.includes('sublocality')) ||
+            preferred.address_components.find((c) => c.types.includes('locality'));
+
+        if (comp?.short_name) return comp.short_name;
+    }
+
+    return preferred.name || preferred.formatted_address || lastShortLocation;
+}
 
 function installOverlay(mapInstance) {
     overlayView = new google.maps.OverlayView();
