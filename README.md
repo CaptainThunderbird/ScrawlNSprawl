@@ -20,11 +20,11 @@ We created a digital third-place that acts as a community kindness layer. Studen
 
 ## 🗺 Core Features
 
-* **📍 Location-Based Sticky Notes:** Click the map to spawn a note with a unique "taped-on" look and random rotation for an authentic scrapbook feel.
+* **📍 Location-Based Posts:** Click the map to drop a note, sticker, photo, or doodle with a unique "taped-on" look and random rotation for an authentic scrapbook feel.
 * **🎨 Sticker Tray:** A selection of hand-drawn SVG stickers to express feelings without needing to type.
 * **🔥 Kindness Heat Glow:** Areas with high note density emit a soft visual "warmth" on the map.
-* **⏳ Ephemeral Content:** Notes expire after 1–7 days to keep the map fresh and the community active.
-* **⭐ Bookmarks:** Save favorite messages to a personal "Saved" tab that persists even after the note expires on the public map.
+* **⏳ Ephemeral Content:** All posts (notes, stickers, photos, doodles) expire after 1–7 days to keep the map fresh and the community active.
+* **⭐ Bookmarks:** Save favorite posts to a personal "Saved" tab that persists even after the post expires on the public map.
 * **🛡 Safety First:** Built-in keyword filtering and a "positive-only" design (no likes/dislikes/comments) to prevent toxicity.
 
 ---
