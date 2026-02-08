@@ -353,13 +353,13 @@ body::after {
 }
 
 .brand-board {
-    background-image: url("assets/textures/jagged-board.svg");
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    padding: 16px 14px 12px 14px;
-    margin-bottom: 14px;
-    transform: rotate(1.4deg);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+    background: rgba(236, 212, 178, 0.95);
+    border: 2px solid rgba(152, 114, 74, 0.5);
+    border-radius: 10px;
+    padding: 22px 18px 18px 18px;
+    margin: 6px 6px 18px 6px;
+    transform: rotate(1.6deg);
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.16);
 }
 
 .brand-board .brand {
