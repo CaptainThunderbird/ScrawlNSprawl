@@ -1082,13 +1082,30 @@ function getPostLocationLabel(post) {
     return nearest.name || null;
 }
 
-function getScrapbookLabel(post) {
-    const location = getPostLocationLabel(post);
+function formatScrapbookLabel(type, location = null) {
     const at = location ? ` at ${location}` : '';
-    if (post.type === 'doodle') return `A doodle was left${at}`;
-    if (post.type === 'sticker') return `A sticker was placed${at}`;
-    if (post.type === 'photo') return `A photo was pinned${at}`;
+    if (type === 'doodle') return `A doodle was left${at}`;
+    if (type === 'sticker') return `A sticker was placed${at}`;
+    if (type === 'photo') return `A photo was pinned${at}`;
     return `A note was left${at}`;
+}
+
+function updateFeedItemLocation(textEl, post) {
+    const location = getPostLocationLabel(post);
+    if (location) {
+        textEl.textContent = formatScrapbookLabel(post.type, location);
+        return;
+    }
+    if (!reverseGeocoder) return;
+    const lat = Number(post.lat);
+    const lng = Number(post.lng);
+    if (Number.isNaN(lat) || Number.isNaN(lng)) return;
+    reverseGeocoder.geocode({ location: { lat, lng } }, (results, status) => {
+        if (status !== 'OK' || !results || !results.length) return;
+        const shortName = getShortLocationName(results);
+        if (!shortName) return;
+        textEl.textContent = formatScrapbookLabel(post.type, shortName);
+    });
 }
 
 function buildFeedItem(post, options = {}) {
@@ -1105,7 +1122,8 @@ function buildFeedItem(post, options = {}) {
     body.className = 'feed-body';
     const text = document.createElement('div');
     if (scrapbookLabel) {
-        text.textContent = getScrapbookLabel(post);
+        text.textContent = formatScrapbookLabel(post.type, null);
+        updateFeedItemLocation(text, post);
     } else {
         const label =
             post.type === 'doodle'
