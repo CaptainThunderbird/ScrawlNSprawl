@@ -99,8 +99,12 @@ body::after {
     pointer-events: none;
     z-index: 3;
     background:
+        url("assets/tape/washi-strip-vert.svg"),
         linear-gradient(to bottom, rgba(248, 244, 225, 0.18), rgba(248, 244, 225, 0.06)),
         var(--paper-grid);
+    background-repeat: no-repeat, repeat, repeat;
+    background-position: left 14px center, center, center;
+    background-size: 28px 260px, auto, auto;
     opacity: 0.35;
     /* lighter so map stays crisp */
     mix-blend-mode: multiply;
@@ -786,6 +790,31 @@ button {
     background: #fff;
     touch-action: none;
     cursor: crosshair;
+}
+
+.mode-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(64px, 1fr));
+    gap: 10px;
+}
+
+.mode-row button {
+    display: grid;
+    place-items: center;
+    gap: 4px;
+    padding: 10px 8px;
+    border-radius: 8px;
+    background: rgba(236, 199, 121, 0.9);
+}
+
+.mode-icon {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.mode-label {
+    font-size: 12px;
+    letter-spacing: 0.2px;
 }
 
 #note-text {
