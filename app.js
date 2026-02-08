@@ -183,6 +183,7 @@ let lastStatusAddress = '';
 let lastPendingAddress = '';
 let lastAccuracyMeters = null;
 let geoState = 'init';
+let hasCenteredOnUser = false;
 const doodleCtx = doodleCanvas?.getContext('2d');
 let isDoodling = false;
 let doodleHasStroke = false;
@@ -412,6 +413,11 @@ function initMap() {
                 geoState = 'ready';
                 userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
                 lastAccuracyMeters = typeof pos.coords.accuracy === 'number' ? pos.coords.accuracy : null;
+                if (!hasCenteredOnUser) {
+                    map.setCenter(userLocation);
+                    map.setZoom(15);
+                    hasCenteredOnUser = true;
+                }
                 updateLocationLabel(userLocation, 'status');
                 rerenderVisiblePosts();
             },
