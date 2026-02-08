@@ -26,6 +26,7 @@ const savedNotes = document.getElementById('saved-notes');
 const mapDiv = document.getElementById('map');
 const locationPill = document.getElementById('location-pill');
 const bookmarksBtn = document.getElementById('bookmarks-btn');
+const addVibeBtn = document.getElementById('add-vibe-btn');
 const tabButtons = document.querySelectorAll('.tab-btn');
 const tabPanels = document.querySelectorAll('.tab-panel');
 const photoSection = document.getElementById('photo-section');
@@ -106,6 +107,22 @@ tabButtons.forEach((btn) => {
 
 bookmarksBtn?.addEventListener('click', () => {
     setActiveTab('saved');
+});
+
+addVibeBtn?.addEventListener('click', () => {
+    if (!map) return;
+    const center = map.getCenter();
+    if (!center) return;
+    pendingLatLng = { lat: center.lat(), lng: center.lng() };
+    updateLocationLabel(pendingLatLng);
+
+    if (typeModal) {
+        typeModal.classList.remove('hidden');
+    } else {
+        setMode('note');
+        modal.classList.remove('hidden');
+    }
+    playSound('pop');
 });
 
 function buildStickerPicker() {
