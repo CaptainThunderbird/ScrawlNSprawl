@@ -61,7 +61,7 @@ body::after{
   z-index: 2;
   opacity: 0.07;
   mix-blend-mode: multiply;
-  background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
+  background-image: url("assets/textures/paper-grain.png");
 }
 
 /* =========================
@@ -123,7 +123,7 @@ body::after{
 
   padding: 16px;
 
-  background: rgba(245, 240, 221, 0.94);
+  background: rgba(245, 240, 221, 0.96);
   color: var(--ink);
 
   border-right: var(--dash);
@@ -138,13 +138,19 @@ body::after{
       rgba(72,70,57,0.06) 1px,
       transparent 1px,
       transparent 22px
-    );
+    ),
+    url("assets/textures/paper-grain.png");
 }
 
 #sidebar h1, #sidebar h2{
   margin: 8px 0 14px;
   letter-spacing: 0.5px;
   position: relative;
+}
+
+#sidebar h1{
+  font-family: 'Gaegu', 'Patrick Hand', cursive;
+  font-size: 28px;
 }
 
 #sidebar h1::after, #sidebar h2::after{
@@ -172,10 +178,13 @@ body::after{
   padding: 10px 12px;
   border-radius: 18px;
 
-  background: rgba(245,240,221,0.97);
+  background: rgba(245,240,221,0.98);
   border: 1px solid rgba(72,70,57,0.14);
   box-shadow: 0 18px 46px rgba(0,0,0,0.14);
   backdrop-filter: blur(10px);
+  background-image:
+    linear-gradient(to bottom, rgba(255,255,255,0.35), rgba(255,255,255,0)),
+    url("assets/textures/paper-grain.png");
 }
 
 .topbar-left, .topbar-center, .topbar-right{
@@ -204,6 +213,7 @@ body::after{
   font-size: 22px;
   line-height: 1;
   letter-spacing: 0.3px;
+  font-family: 'Gaegu', 'Patrick Hand', cursive;
 }
 
 .brand-tagline{
@@ -212,25 +222,23 @@ body::after{
   margin-top: 2px;
 }
 
-.pill{
-  padding: 8px 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(72,70,57,0.14);
-  background: rgba(255,255,255,0.62);
-  box-shadow: var(--shadow-press);
+.topbar-label{
   font-size: 14px;
-  white-space: nowrap;
+  padding-bottom: 3px;
+  border-bottom: 2px solid rgba(72,70,57,0.45);
+  letter-spacing: 0.3px;
 }
 
 .topbar-btn{
-  padding: 8px 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(0,0,0,0.12);
-  background: rgba(236, 199, 121, 0.92);
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.20);
+  background: rgba(240, 221, 182, 0.95);
   cursor: pointer;
   font-family: inherit;
-  box-shadow: var(--shadow-press);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.10);
   transition: transform .15s ease, background .15s ease;
+  font-size: 13px;
 }
 
 .topbar-btn:hover{
@@ -239,18 +247,56 @@ body::after{
 }
 
 .topbar-btn.ghost{
-  background: rgba(255,255,255,0.70);
+  background: rgba(255,255,255,0.85);
 }
 
 .topbar-icon{
-  width: 40px;
-  height: 40px;
-  border-radius: 999px;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
   border: 1px solid rgba(0,0,0,0.12);
-  background: rgba(255,255,255,0.70);
+  background: rgba(255,255,255,0.85);
   cursor: pointer;
   box-shadow: var(--shadow-press);
 }
+
+.sidebar-title-card{
+  margin: 14px 0 10px;
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.7);
+  border: 1px solid rgba(0,0,0,0.15);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  transform: rotate(-1deg);
+}
+
+.sidebar-title{
+  font-family: 'Gaegu', 'Patrick Hand', cursive;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.swatch-row{
+  display: flex;
+  gap: 6px;
+  margin: 6px 0 12px;
+  padding: 6px 0;
+}
+
+.swatch{
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid rgba(0,0,0,0.12);
+  box-shadow: var(--shadow-press);
+}
+.swatch.s1{ background: #f7d9a5; }
+.swatch.s2{ background: #cfe9d3; }
+.swatch.s3{ background: #cfe2f5; }
+.swatch.s4{ background: #f3c6d6; }
+.swatch.s5{ background: #e6d3f2; }
+.swatch.s6{ background: #f5e6b8; }
 
 /* =========================
    Sticky Notes
@@ -367,6 +413,94 @@ button{
   box-shadow: var(--shadow-press);
 }
 
+.sidebar-btn{
+  width: 100%;
+  margin-top: 12px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.85);
+  border: 1px solid rgba(0,0,0,0.18);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+}
+
+.note-feed{
+  list-style: none;
+  padding: 0;
+  margin: 0 0 8px;
+}
+
+.note-feed li{
+  margin: 8px 0;
+  padding: 8px 10px;
+  background: rgba(255,255,255,0.75);
+  border: 1px solid rgba(0,0,0,0.14);
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+}
+
+.note-feed li button{
+  margin-right: 6px;
+  margin-top: 6px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.85);
+}
+
+.sidebar-tabs{
+  display: flex;
+  gap: 6px;
+  margin: 8px 0 6px;
+}
+
+.tab-btn{
+  flex: 1 1 0;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.18);
+  background: rgba(255,255,255,0.75);
+  font-size: 13px;
+}
+
+.tab-btn.active{
+  background: rgba(240, 221, 182, 0.95);
+}
+
+.tab-panel{ display: none; }
+.tab-panel.active{ display: block; }
+
+.modal-label{
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+#photo-preview{
+  display: block;
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.12);
+  margin-top: 6px;
+}
+
+#doodle-canvas{
+  width: 100%;
+  border-radius: 10px;
+  border: 1px dashed rgba(0,0,0,0.2);
+  background: rgba(255,255,255,0.8);
+}
+
+#doodle-clear{
+  margin-top: 6px;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+.heat-0{ box-shadow: 3px 3px 10px rgba(0,0,0,0.15); }
+.heat-1{ box-shadow: 0 0 18px rgba(236, 199, 121, 0.55), 3px 3px 10px rgba(0,0,0,0.15); }
+.heat-2{ box-shadow: 0 0 28px rgba(234, 173, 162, 0.7), 3px 3px 10px rgba(0,0,0,0.15); }
+.heat-3{ box-shadow: 0 0 40px rgba(234, 120, 120, 0.85), 3px 3px 10px rgba(0,0,0,0.15); }
+
 button:hover{
   background: rgba(234, 173, 162, 0.95);
   transform: translateY(-1px);
@@ -405,6 +539,11 @@ button:active{
 #sticker-tray button:hover,
 #sticker-tray .sticker:hover{
   transform: translateY(-2px) rotate(-1deg);
+}
+
+#sticker-tray button.active{
+  outline: 2px solid rgba(72,70,57,0.4);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.18);
 }
 
 /* =========================
@@ -447,7 +586,7 @@ button:active{
   }
 
   .brand-tagline{ display: none; }
-  .pill{ display: none; }
+  .topbar-label{ display: none; }
 
   /* Map shorter so bottom sheet fits */
   #map{

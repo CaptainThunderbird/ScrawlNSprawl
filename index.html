@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Scrawl & Sprawl</title>
-  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Gaegu:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -16,20 +16,20 @@
         <!-- you can change logo path later -->
         <img class="brand-logo" src="assets/icons/logo.png" alt="Scrawl & Sprawl logo">
         <div class="brand-text">
-          <div class="brand-name">🌸 Scrawl & Sprawl</div>
+          <div class="brand-name">Scrawl & Sprawl</div>
           <div class="brand-tagline">turn doomscrolling into bloomscrolling</div>
         </div>
       </div>
     </div>
 
     <div class="topbar-center">
-      <div id="location-pill" class="pill">Kindness Map</div>
+      <div id="location-pill" class="topbar-label">Kindness Map</div>
     </div>
 
     <div class="topbar-right">
       <button class="topbar-btn" type="button">+ Add Vibe</button>
       <button id="bookmarks-btn" class="topbar-btn ghost" type="button">Bookmarks</button>
-      <button class="topbar-icon" type="button">⚙️</button>
+      <button class="topbar-icon" type="button">??</button>
     </div>
   </div>
 
@@ -37,6 +37,19 @@
   <aside id="sidebar">
     <h1>Scrawl & Sprawl</h1>
     <p>Leave a kind note, sticker, or doodle near your location.</p>
+
+    <div class="sidebar-title-card">
+      <div class="sidebar-title">The Bookmarks</div>
+    </div>
+
+    <div class="swatch-row" aria-hidden="true">
+      <span class="swatch s1"></span>
+      <span class="swatch s2"></span>
+      <span class="swatch s3"></span>
+      <span class="swatch s4"></span>
+      <span class="swatch s5"></span>
+      <span class="swatch s6"></span>
+    </div>
 
     <h2>Mode</h2>
     <div class="mode-row">
@@ -81,8 +94,22 @@
       </button>
     </div>
 
-    <h2>Recent Notes</h2>
-    <ul id="recent-notes"></ul>
+    <div class="sidebar-tabs" role="tablist" aria-label="Feed Tabs">
+      <button class="tab-btn active" data-tab="recent" role="tab" aria-selected="true">Recent</button>
+      <button class="tab-btn" data-tab="saved" role="tab" aria-selected="false">Saved</button>
+    </div>
+
+    <div class="tab-panel active" data-panel="recent" role="tabpanel">
+      <h2>Recent Notes</h2>
+      <ul id="recent-notes" class="note-feed"></ul>
+    </div>
+
+    <div class="tab-panel" data-panel="saved" role="tabpanel">
+      <h2>Saved Notes</h2>
+      <ul id="saved-notes" class="note-feed"></ul>
+    </div>
+
+    <button class="sidebar-btn" type="button">Load More Blooms</button>
   </aside>
 
   <!-- Map -->
@@ -101,6 +128,16 @@
         <option value="smile.svg">Smile</option>
         <option value="sparkle.svg">Sparkle</option>
       </select>
+      <div id="photo-section" class="hidden">
+        <label class="modal-label">Upload Photo</label>
+        <input id="photo-input" type="file" accept="image/*" />
+        <img id="photo-preview" alt="" />
+      </div>
+      <div id="doodle-section" class="hidden">
+        <label class="modal-label">Doodle</label>
+        <canvas id="doodle-canvas" width="240" height="200"></canvas>
+        <button id="doodle-clear" type="button">Clear</button>
+      </div>
       <button id="save-note">Save</button>
       <button id="cancel-note">Cancel</button>
     </div>
@@ -114,6 +151,8 @@
       getFirestore,
       collection,
       addDoc,
+      deleteDoc,
+      doc,
       onSnapshot,
       serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
@@ -132,7 +171,13 @@
     const postsRef = collection(db, "posts");
 
     window.savePost = async (post) => {
-      await addDoc(postsRef, { ...post, createdAt: serverTimestamp() });
+      const ref = await addDoc(postsRef, { ...post, createdAt: serverTimestamp() });
+      return ref.id;
+    };
+
+    window.deletePost = async (id) => {
+      if (!id) return;
+      await deleteDoc(doc(db, "posts", id));
     };
 
     window.listenPosts = (onPost) => {
@@ -153,5 +198,6 @@
   ></script>
 </body>
 </html>
+
 
 
