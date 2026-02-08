@@ -21,6 +21,7 @@ const MAX_RADIUS_METERS = 100;
 // Store posts + rendered elements for filtering/re-rendering
 const postsById = new Map();
 const itemById = new Map();
+const BOOKMARKS_KEY = 'sns_bookmarks_v1';
 
 // -------------------- Map + Overlay --------------------
 let map;
@@ -246,6 +247,48 @@ function isWithinRadius(post) {
     return haversineMeters(base, { lat: post.lat, lng: post.lng }) <= MAX_RADIUS_METERS;
 }
 
+function loadBookmarks() {
+    try {
+        const raw = localStorage.getItem(BOOKMARKS_KEY);
+        const list = raw ? JSON.parse(raw) : [];
+        return Array.isArray(list) ? list : [];
+    } catch {
+        return [];
+    }
+}
+
+function saveBookmarks(list) {
+    localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(list));
+}
+
+function upsertBookmark(post) {
+    const list = loadBookmarks();
+    const idx = list.findIndex((p) => p.id === post.id);
+    const payload = {
+        id: post.id,
+        type: post.type || 'note',
+        user: post.user || 'anonymous',
+        message: post.message || '',
+        sticker: post.sticker || '',
+        color: post.color || '#C1EDB9',
+        lat: post.lat,
+        lng: post.lng,
+        expiresAt: post.expiresAt || null
+    };
+    if (idx === -1) list.push(payload);
+    else list[idx] = payload;
+    saveBookmarks(list);
+}
+
+function removeBookmark(id) {
+    const list = loadBookmarks().filter((p) => p.id !== id);
+    saveBookmarks(list);
+}
+
+function isBookmarked(id) {
+    return loadBookmarks().some((p) => p.id === id);
+}
+
 
 // -------------------- Modal Logic --------------------
 cancelBtn.addEventListener('click', () => {
@@ -294,6 +337,9 @@ saveBtn.addEventListener('click', () => {
 function rerenderVisiblePosts() {
   if (!overlayView?.overlay) return;
 
+  const bookmarks = loadBookmarks();
+  const bookmarkedIds = new Set(bookmarks.map((b) => b.id));
+
   // remove old DOM nodes
   itemById.forEach((item) => {
     if (item.element?.parentElement) item.element.parentElement.removeChild(item.element);
@@ -308,7 +354,14 @@ function rerenderVisiblePosts() {
 
   // render filtered posts
   postsById.forEach((post) => {
-    if (isExpired(post)) return;
+    if (isExpired(post) && !bookmarkedIds.has(post.id)) return;
+    if (!isWithinRadius(post)) return;
+    renderPostOnMap(post);
+  });
+
+  // render bookmarks that are no longer in live posts
+  bookmarks.forEach((post) => {
+    if (postsById.has(post.id)) return;
     if (!isWithinRadius(post)) return;
     renderPostOnMap(post);
   });
@@ -361,11 +414,12 @@ function renderPostOnMap(post) {
   el.style.transform = `translate(-50%, -100%) rotate(${rotation}deg)`;
 
   const type = post.type || 'note';
+  const bookmarked = isBookmarked(post.id);
 
   if (type === 'sticker') {
     el.classList.add('sticky-note');
     el.style.background = 'transparent';
-    el.innerHTML = `${post.sticker ? `<img src="assets/stickers/${post.sticker}" width="50">` : '⭐'}`;
+    el.innerHTML = `${post.sticker ? `<img src="assets/stickers/${post.sticker}" width="50">` : '*'}`;
     makeStickerDraggable(el);
   } else {
     el.classList.add('sticky-note');
@@ -376,6 +430,23 @@ function renderPostOnMap(post) {
       ${post.sticker ? `<img src="assets/stickers/${post.sticker}" width="40">` : ''}
     `;
   }
+
+  const bookmarkBtn = document.createElement('button');
+  bookmarkBtn.type = 'button';
+  bookmarkBtn.className = 'bookmark-btn';
+  bookmarkBtn.textContent = bookmarked ? 'Saved' : 'Save';
+  bookmarkBtn.title = bookmarked ? 'Remove bookmark' : 'Save bookmark';
+  bookmarkBtn.setAttribute('aria-pressed', String(bookmarked));
+  bookmarkBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (isBookmarked(post.id)) {
+      removeBookmark(post.id);
+    } else {
+      upsertBookmark(post);
+    }
+    rerenderVisiblePosts();
+  });
+  el.appendChild(bookmarkBtn);
 
   const item = {
     id: post.id,
@@ -402,3 +473,4 @@ function updateRecentNotes(post) {
         recentNotes.removeChild(recentNotes.lastChild);
     }
 }
+

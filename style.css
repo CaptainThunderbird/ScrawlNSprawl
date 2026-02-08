@@ -290,6 +290,19 @@ body::after{
   background-color: #C1EDB9; /* default green */
 }
 
+.bookmark-btn{
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  padding: 4px 8px;
+  font-size: 11px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.85);
+  cursor: pointer;
+  box-shadow: var(--shadow-press);
+}
+
 .sticky-note:active{
   cursor: grabbing;
   z-index: 1000;
