@@ -643,14 +643,7 @@ function findNearestLandmark(latLng) {
 }
 
 function isWithinRadius(post) {
-    const center = map?.getCenter?.() ? map.getCenter().toJSON() : null;
-    const withinCenter = center
-        ? haversineMeters(center, { lat: post.lat, lng: post.lng }) <= MAX_RADIUS_METERS
-        : false;
-    const withinUser = userLocation
-        ? haversineMeters(userLocation, { lat: post.lat, lng: post.lng }) <= MAX_RADIUS_METERS
-        : false;
-    return withinCenter || withinUser;
+    return true;
 }
 
 function getOrCreateClientId() {
